@@ -120,7 +120,7 @@ public class AddSocialAccount extends Activity{
 	
 	
 	
-	
+	//teste
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
