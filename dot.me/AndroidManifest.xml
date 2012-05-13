@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.twittemarkup.app"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="7" />
+
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    
+
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/app_name" >
+        <activity
+            android:label="@string/app_name"
+            android:name=".TwitteMarkupActivity" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.twittemarkup.activity.CreateMarkupActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" >
+                </action>
+            </intent-filter>
+        </activity>
+        <!-- teste -->
+        <activity
+            android:launchMode="singleTask"
+            android:name="com.twittemarkup.activity.AddSocialAccount"
+            android:theme="@android:style/Theme.Black.NoTitleBar" android:screenOrientation="nosensor">
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW" >
+                </action>
+
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+
+                <data
+                    android:host="back"
+                    android:scheme="twitter-client" >
+                </data>
+            </intent-filter>
+        </activity>
+        <activity
+            android:launchMode="singleTask"
+            android:name="com.twittemarkup.activity.TimelineActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor">
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" >
+                </action>
+                <data android:host="facebook_group" android:scheme="add_column"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:host="twitter_search" android:scheme="add_column"/>
+                <data android:scheme="timeline" android:host="reload"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.twittemarkup.activity.TwitteActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" >
+                </action>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.twittemarkup.activity.RegisterActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.twittemarkup.activity.DashboardActivity"
+            android:screenOrientation="nosensor"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" >
+                </action>
+
+                <category android:name="android.intent.category.LAUNCHER" >
+                </category>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.twittemarkup.activity.MarcadoresListActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.twittemarkup.activity.SendTweetActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" >
+                </action>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.twittemarkup.activity.FriendListActivity" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" >
+                </action>
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.twittemarkup.service.UpdateTimelineService" >
+            <intent-filter >
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+
+                <action android:name="com.twittemarkup.status.update" >
+                </action>
+            </intent-filter>
+        </service>
+        <service android:name="com.twittemarkup.utils.ImageUtils$LoadImageService" >
+            <intent-filter >
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+
+                <action android:name="com.twittemarkup.download.images" >
+                </action>
+            </intent-filter>
+        </service>
+
+        <receiver android:name="com.twittemarkup.activity.TimelineActivity$UpdateMensagesBroadcastReciever" >
+            <intent-filter >
+                <action android:name="com.twittemarkup.reciever.UPDATE_MSG" >
+                </action>
+
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.twittemarkup.activity.SearchActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.twittemarkup.activity.SearchResultActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            <intent-filter >
+                <data
+                    android:host="do_search"
+                    android:scheme="twitter_search" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.twittemarkup.activity.MessageInfoActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.twittemarkup.activity.TwitterUserProfileActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            <intent-filter >
+                <data
+                    android:host="find_user"
+                    android:scheme="twitter_search_user" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.twittemarkup.activity.BlackListActivity"></activity>
+        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.twittemarkup.activity.FacebookMessageActivity">
+        </activity>
+        <activity android:name="com.twittemarkup.activity.ManageFacebookGroupsActivity" android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
+        <activity android:name="com.twittemarkup.activity.FacebookCommentActivity" android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
+        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.twittemarkup.activity.ManageCollumnsActivity"></activity>
+    </application>
+
+</manifest>

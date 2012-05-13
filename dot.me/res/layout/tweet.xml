@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  style="@style/LoginBackground">
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/top_timeline" 
+        android:gravity="center_vertical">
+
+        <TextView android:textStyle="bold" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textView1" android:textAppearance="@android:style/TextAppearance.Medium" android:layout_gravity="center" android:text="@string/lbl_twitte" android:textColor="@color/white" android:layout_marginLeft="5dip"></TextView>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right" >
+
+            <Button
+                android:id="@+id/tweet_bt_send"
+                style="@style/Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dip"
+                android:gravity="center_vertical"
+                android:text="@string/send"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/tweet_txt_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_weight="0.2"
+        style="@style/EditTextCustom"
+        android:gravity="top|left"
+        android:inputType="textMultiLine"
+       >
+
+        <requestFocus></requestFocus>
+    </EditText>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp" >
+
+        <ImageView
+            android:id="@+id/message_send_img_profile"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/border_rect" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/send_message_lbl_current_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile Name"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/send_message_lbl_type_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile Type" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tweet_lt_image_tosend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:gravity="center_vertical|right"
+            android:visibility="invisible" >
+
+            <ImageView
+                android:id="@+id/tweet_image_to_send"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:background="@drawable/border_rect"
+                 />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    
+</LinearLayout>
