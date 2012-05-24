@@ -32,12 +32,12 @@ public class FacebookFeedsColumn extends AbstractColumn {
 
 	public FacebookFeedsColumn(Context ctx) {
 		this(ctx, ctx.getString(R.string.news_fedd));
-		command=new OpenFacebookWriter();
-		
+		command = new OpenFacebookWriter();
+
 	}
 
 	private FacebookFeedsColumn(Context ctx, String title) {
-		super(ctx, title,true);
+		super(ctx, title, true);
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class FacebookFeedsColumn extends AbstractColumn {
 		protected Void doInBackground(Void... ins) {
 
 			try {
-				last=facade.getMensagemOf(Mensagem.TIPO_NEWS_FEEDS);
+				last = facade.getMensagemOf(Mensagem.TIPO_NEWS_FEEDS);
 				String response = null;
 				if (graphPath != null) {
 					WebService wservice = new WebService(graphPath);
@@ -133,48 +133,41 @@ public class FacebookFeedsColumn extends AbstractColumn {
 					JSONObject json = new JSONObject(response);
 					messages.addAll(FacebookUtils.createListOfFeeds(facade,
 							facebook, json, Mensagem.TIPO_NEWS_FEEDS));
-					
-					/*JSONArray array = json.getJSONArray("data");
-					for (int i = 0; i < array.length(); i++) {
-						JSONObject object = array.getJSONObject(i);
-						Mensagem m = facade.getOneMessage(
-								object.getString("id"),
-								Mensagem.TIPO_NEWS_FEEDS);
-						if (m == null) {
-							m = Mensagem.createFromFacebookFeed(object);
 
-							if (m == null)
-								continue;
-
-							m.setTipo(Mensagem.TIPO_NEWS_FEEDS);
-
-							String obString = null;
-
-							if (object.getString("type").equals("photo")
-									&& m.getPictureUrl() == null) {
-								obString = object.getString("object_id");
-								Bundle params = new Bundle();
-								params.putString("fields",
-										"picture,source,id,width,height");
-								String response2 = facebook.request(obString,
-										params);
-								try {
-									JSONObject pic_info = new JSONObject(
-											response2);
-									m.getAddtions().put("pic_info", pic_info);
-								} catch (JSONException e) {
-
-								}
-							}
-
-							facade.insert(m);
-
-						}
-
-						messages.add(m);
-
-					}
-					// messages.addAll(createdMessages);*/
+					/*
+					 * JSONArray array = json.getJSONArray("data"); for (int i =
+					 * 0; i < array.length(); i++) { JSONObject object =
+					 * array.getJSONObject(i); Mensagem m =
+					 * facade.getOneMessage( object.getString("id"),
+					 * Mensagem.TIPO_NEWS_FEEDS); if (m == null) { m =
+					 * Mensagem.createFromFacebookFeed(object);
+					 * 
+					 * if (m == null) continue;
+					 * 
+					 * m.setTipo(Mensagem.TIPO_NEWS_FEEDS);
+					 * 
+					 * String obString = null;
+					 * 
+					 * if (object.getString("type").equals("photo") &&
+					 * m.getPictureUrl() == null) { obString =
+					 * object.getString("object_id"); Bundle params = new
+					 * Bundle(); params.putString("fields",
+					 * "picture,source,id,width,height"); String response2 =
+					 * facebook.request(obString, params); try { JSONObject
+					 * pic_info = new JSONObject( response2);
+					 * m.getAddtions().put("pic_info", pic_info); } catch
+					 * (JSONException e) {
+					 * 
+					 * } }
+					 * 
+					 * facade.insert(m);
+					 * 
+					 * }
+					 * 
+					 * messages.add(m);
+					 * 
+					 * } // messages.addAll(createdMessages);
+					 */
 					try {
 						JSONObject pagingObject = json.getJSONObject("paging");
 						nextPage = pagingObject.getString("next");
@@ -199,25 +192,24 @@ public class FacebookFeedsColumn extends AbstractColumn {
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 
-			if(!messages.isEmpty()&&!flagNextPage){
+			if (!messages.isEmpty() && !flagNextPage) {
 				adapter.clear();
 				for (Mensagem m : last) {
-					facade.deleteMensagem(m.getIdMensagem(), m.getTipo());
+					if (!messages.contains(m))
+						facade.deleteMensagem(m.getIdMensagem(), m.getTipo());
+				}
 			}
-			}
-			
+
 			for (Mensagem m : messages) {
 				adapter.addItem(m);
 			}
 			adapter.sort();
-			
+
 			if (flagNextPage) {
 				notifyNextPageFinish();
 			} else {
-				((PullToRefreshListView)listView).onRefreshComplete();
+				((PullToRefreshListView) listView).onRefreshComplete();
 			}
-			
-			
 
 			isLoaddingNextPage = false;
 		}
@@ -226,12 +218,11 @@ public class FacebookFeedsColumn extends AbstractColumn {
 
 	@Override
 	protected void onGetNextPage() {
-		if(nextPage==null||isLoaddingNextPage)
+		if (nextPage == null || isLoaddingNextPage)
 			return;
-		
+
 		super.onGetNextPage();
 
-		
 		if (nextPage != null) {
 			if (!nextPage.equals("none")) {
 				Log.w("facebook-collumn", "next_started");
@@ -246,17 +237,16 @@ public class FacebookFeedsColumn extends AbstractColumn {
 
 	@Override
 	public void init() {
-		final Vector<Mensagem> list=facade.getMensagemOf(Mensagem.TIPO_NEWS_FEEDS);
+		final Vector<Mensagem> list = facade
+				.getMensagemOf(Mensagem.TIPO_NEWS_FEEDS);
 		listView.post(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				updateTwittes(list, true);
-			
-				
+
 			}
 		});
-		
 
 	}
 
@@ -265,5 +255,4 @@ public class FacebookFeedsColumn extends AbstractColumn {
 		return false;
 	}
 
-	
 }

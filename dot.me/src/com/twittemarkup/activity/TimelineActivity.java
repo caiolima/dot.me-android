@@ -746,11 +746,10 @@ public class TimelineActivity extends Activity {
 					collumn.getScrollView().setSelectionFromTop(scrollTo, top);
 				}
 
-				progressDialog.dismiss();
-
 			} catch (JSONException e) {
 				// TODO: handle exception
 			}
+			progressDialog.dismiss();
 		}
 
 	}

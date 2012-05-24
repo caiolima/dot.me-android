@@ -337,4 +337,8 @@ public class Facade {
 		configDao.deleteAll();
 	}
 	
+	public Vector<Mensagem> getMensagemOfLikeId(int type, String idLike){
+		return mensagemBD.getMensagemOfLikeId(type, idLike);
+	}
+	
 }

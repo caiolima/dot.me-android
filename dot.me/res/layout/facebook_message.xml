@@ -150,13 +150,23 @@
                     android:layout_marginRight="5dp"
                     android:text="@string/like" />
 
+                <Button
+                    android:id="@+id/bt_refresh"
+                    style="@style/Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/refresh" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rounded_rect"
                 android:orientation="vertical"
                 android:padding="6dp" >
@@ -210,18 +220,25 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/facebook_list_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/lt_facebook_more_comments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:padding="5dp" android:visibility="gone">
+                    android:padding="5dp"
+                    android:visibility="gone" >
 
                     <TextView
                         android:id="@+id/textView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/view_more_comments" />
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -235,13 +252,6 @@
                         android:id="@+id/facebook_img_loading"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/facebook_list_comments"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" >
                 </LinearLayout>
 
             </LinearLayout>

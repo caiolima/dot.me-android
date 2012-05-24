@@ -165,6 +165,30 @@ public class MensagemBD extends Dao {
 		}
 
 	}
+	
+	protected Vector<Mensagem> getMensagemOfLikeId(int type, String idLike) {
+		try {
+
+			Cursor c = db.getDB().query(DataBase.TB_MENSAGEM, null,
+					DataBase.MENSAGEM_TIPO + "=?",
+					new String[] { Integer.toString(type) }, null, null,
+					null);
+
+			Vector<Mensagem> mensagens = new Vector<Mensagem>();
+			for (int i = 0; i < c.getCount(); i++) {
+				c.moveToPosition(i);
+				
+				Mensagem mensagem=createMessage(c);
+				if(mensagem.getIdMensagem().startsWith(idLike))
+					mensagens.add(mensagem);
+
+			}
+			return mensagens;
+		} catch (Exception e) {
+			return null;
+		}
+
+	}
 
 	protected boolean existsStatus(String id, int tipo) {
 		Cursor c = db.getDB().query(

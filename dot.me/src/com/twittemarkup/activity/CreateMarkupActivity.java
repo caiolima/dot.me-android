@@ -147,6 +147,7 @@ public class CreateMarkupActivity extends Activity{
 				JSONObject json=new JSONObject();
 				try {
 					json.put("id", id);
+					json.put("name", m.getNome());
 					config.setProprietes(json);
 					
 					Facade.getInstance(CreateMarkupActivity.this).insert(config);

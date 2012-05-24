@@ -38,6 +38,7 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewDebug.FlagToString;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
@@ -48,13 +49,13 @@ import android.widget.Toast;
 
 public class FacebookMessageActivity extends Activity {
 
-	private Button bt_comment, bt_like;
+	private Button bt_comment, bt_like,bt_refresh;
 	private TextView txt_qtd_likes, txt_username, txt_message;
 	private ImageView img_load, img_picture, img_avatar;
 	private LinearLayout lt_load, list_comments, lt_more_comments;
 	private Mensagem current_message;
 	private Facade facade;
-	private List<Mensagem> commentsAdded = new ArrayList<Mensagem>();
+	private Vector<Mensagem> commentsAdded = new Vector<Mensagem>();
 	private final int COMMENT_ACTIVITY = 1;
 	private FacebookAccount acc;
 	private boolean flagLike = true;
@@ -62,6 +63,17 @@ public class FacebookMessageActivity extends Activity {
 	private int tipo;
 	private String nextPage;
 	private boolean commentsLoaded=false;
+	
+	private OnClickListener refreshClick=new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			bt_refresh.setEnabled(false);
+			bt_refresh.setText(R.string.refreshing);
+			
+			new LoadCommentsTask(facebook, null, true).execute();
+		}
+	};
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
@@ -95,6 +107,9 @@ public class FacebookMessageActivity extends Activity {
 		img_load = (ImageView) findViewById(R.id.facebook_img_loading);
 		img_avatar = (ImageView) findViewById(R.id.facebook_img_user_avatar);
 		img_picture = (ImageView) findViewById(R.id.img_image_source);
+		bt_refresh=(Button) findViewById(R.id.bt_refresh);
+		
+		bt_refresh.setOnClickListener(refreshClick);
 
 		Intent intent = getIntent();
 		String id = null;
@@ -204,7 +219,7 @@ public class FacebookMessageActivity extends Activity {
 		});
 		final Object data = getLastNonConfigurationInstance();
 
-		new LoadCommentsTask(facebook, (CommentsCache) data).execute();
+		new LoadCommentsTask(facebook, (CommentsCache) data,false).execute();
 
 	}
 
@@ -262,18 +277,20 @@ public class FacebookMessageActivity extends Activity {
 
 		private Facebook facebook;
 		private Vector<Mensagem> comments = new Vector<Mensagem>();
-		
-		private boolean nextPageFlag = false;
+		private final static String QTD_COMMENTS="2";
+ 		private boolean nextPageFlag = false,isRefreshig = false;
 		private CommentsCache data;
-
-		public LoadCommentsTask(Facebook facebook, CommentsCache data) {
+		
+		public LoadCommentsTask(Facebook facebook, CommentsCache data, boolean isRefreshing) {
 			this.facebook = facebook;
 			this.data = data;
+			this.isRefreshig=isRefreshing;
+			nextPage=null;
 		}
 
-		public LoadCommentsTask(Facebook facebook, String nextPage) {
+		public LoadCommentsTask(Facebook facebook, String nextPageToLoad) {
 			this.facebook = facebook;
-			nextPage = nextPage;
+			nextPage = nextPageToLoad;
 			this.nextPageFlag = true;
 		}
 
@@ -281,7 +298,18 @@ public class FacebookMessageActivity extends Activity {
 		protected Void doInBackground(Void... param) {
 
 			if (data == null) {
-
+				Vector<Mensagem> cachedMenssage=facade.getMensagemOfLikeId(Mensagem.TIPO_FACE_COMENTARIO, current_message.getIdMensagem());
+				if(!cachedMenssage.isEmpty()&&!(isRefreshig||nextPageFlag)){
+					String aToken=Account.getFacebookAccount(FacebookMessageActivity.this).getToken();
+					String afterId=cachedMenssage.lastElement().getIdMensagem();
+					comments.addAll(cachedMenssage);
+					nextPage="http://graph.facebook.com/"+
+					current_message.getIdMensagem()+"/comments?limit="+QTD_COMMENTS+"&access_token="+aToken+
+					"&format=json&fields=message,likes,from.picture,from.name,from.id&"
+					+"&offset="+cachedMenssage.size()+"&__after_id="+afterId;
+					return null;
+				}
+				
 				Bundle params = new Bundle();
 				params.putString("fields", "comments,likes");
 
@@ -338,7 +366,7 @@ public class FacebookMessageActivity extends Activity {
 							Bundle b = new Bundle();
 							b.putString("fields",
 									"message,likes,from.picture,from.name,from.id");
-							b.putString("limit", "25");
+							b.putString("limit", QTD_COMMENTS);
 
 							responseComments = facebook.request(
 									current_message.getIdMensagem()
@@ -352,11 +380,8 @@ public class FacebookMessageActivity extends Activity {
 											commentsJSON,
 											Mensagem.TIPO_FACE_COMENTARIO);
 							if (nextPage == null) {
-								/*
-								 * JSONObject refreshedComments = responseJSON
-								 * .getJSONObject("comments");
-								 */
-								try {
+								
+								/*try {
 									JSONArray array = refreshedComments
 											.getJSONArray("data");
 									int lenght = array.length();
@@ -391,18 +416,25 @@ public class FacebookMessageActivity extends Activity {
 									}
 								} catch (JSONException e) {
 									// TODO: handle exception
-								}
+								}*/
+							}
+							
+							for(Mensagem m:list){
+								if(wasAddedOn(m, comments))
+									break;
+								facade.insert(m);
 							}
 
 							comments.addAll(list);
+							/*String tempPage=nextPage;
 							try {
 								JSONObject pagingJsonObject = commentsJSON
 										.getJSONObject("paging");
 								nextPage = pagingJsonObject
 										.getString("next");
 							} catch (JSONException e) {
-								nextPage = "none";
-							}
+								nextPage=tempPage;
+							}*/
 
 						}
 
@@ -448,6 +480,7 @@ public class FacebookMessageActivity extends Activity {
 				for(Object m:data.messages)
 					comments.add((Mensagem)m);
 				nextPage=data.nextPage;
+				
 			}
 			return null;
 		}
@@ -458,12 +491,21 @@ public class FacebookMessageActivity extends Activity {
 
 			lt_load.setVisibility(View.GONE);
 
+			if(isRefreshig){
+				list_comments.removeAllViews();
+				commentsAdded.clear();
+				
+				bt_refresh.setEnabled(true);
+				bt_refresh.setText(R.string.refresh);
+			}
+			
 			LayoutInflater inflater = (LayoutInflater) FacebookMessageActivity.this
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			int cont = 0;
 			if (nextPageFlag) {
-				int count = comments.size();
-				for (int i = count - 1; i > -1; i--) {
+				//int count = comments.size();
+				//for (int i = count - 1; i > -1; i--) {
+				for(int i=0;i<comments.size();i++){
 					Mensagem m = comments.get(i);
 
 					if (wasAddedOn(m, commentsAdded))
@@ -502,7 +544,7 @@ public class FacebookMessageActivity extends Activity {
 							.executeDownload(FacebookMessageActivity.this, img,
 									m.getImagePath());
 
-					list_comments.addView(row, 0);
+					list_comments.addView(row);
 				}
 
 			} else {
@@ -548,9 +590,9 @@ public class FacebookMessageActivity extends Activity {
 				}
 			}
 
-			if (cont > 0
+			/*if ((cont > 0
 					&& commentsAdded.size() < current_message
-							.getCommentsCount() && nextPage != null) {
+							.getCommentsCount() && nextPage != null)||isRefreshig) {*/
 				lt_more_comments.setVisibility(View.VISIBLE);
 				lt_more_comments.setOnClickListener(new View.OnClickListener() {
 
@@ -562,7 +604,7 @@ public class FacebookMessageActivity extends Activity {
 						new LoadCommentsTask(facebook, nextPage).execute();
 					}
 				});
-			}
+			//}
 
 			txt_qtd_likes.setText(Integer.toString(current_message
 					.getLikesCount()));
@@ -574,6 +616,13 @@ public class FacebookMessageActivity extends Activity {
 				bt_comment.setVisibility(View.VISIBLE);
 			
 			commentsLoaded=true;
+			String aToken=Account.getFacebookAccount(FacebookMessageActivity.this).getToken();
+			String afterId=commentsAdded.lastElement().getIdMensagem();
+			
+			nextPage="https://graph.facebook.com/"+
+			current_message.getIdMensagem()+"/comments?limit="+QTD_COMMENTS+"&access_token="+aToken+
+			"&format=json&fields=message,likes,from.picture,from.name,from.id&"
+			+"&offset="+commentsAdded.size()+"&__after_id="+afterId;
 		}
 
 	}
@@ -635,6 +684,8 @@ public class FacebookMessageActivity extends Activity {
 		}
 	}
 
+	
+	
 	private class LoadMessageTask extends AsyncTask<Void, Void, Void> {
 
 		private String id;

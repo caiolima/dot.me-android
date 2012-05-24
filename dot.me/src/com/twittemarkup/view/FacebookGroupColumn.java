@@ -137,6 +137,7 @@ public class FacebookGroupColumn extends AbstractColumn {
 			if(!createdMessages.isEmpty()&&!flagNextPage){
 				adapter.clear();
 				for (Mensagem m : lastMessages) {
+					if(!createdMessages.contains(m))	
 						facade.deleteMensagem(m.getIdMensagem(), m.getTipo());
 				}
 			}
