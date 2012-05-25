@@ -287,41 +287,8 @@ public class TimelineActivity extends Activity {
 						@Override
 						public void execute(Activity activity) {
 
-							Facade.getInstance(TimelineActivity.this)
-									.deleteCollum(curentFilterPosition);
-							AbstractColumn collumn = filters
-									.get(curentFilterPosition);
-							collumn.deleteColumn();
-							filters.remove(curentFilterPosition);
-
-							adapter.removeViewAtPosition(curentFilterPosition);
-
-							curentFilterPosition--;
-							if(curentFilterPosition<0)
-								curentFilterPosition=0;
-							view_flipper.setCurrentItem(curentFilterPosition);
 							
-							adapter.notifyDataSetChanged();
-							currentTittle.setText(filters.get(curentFilterPosition).getColumnTitle());
-							int i=0;
-							for(CollumnConfig config:Facade.getInstance(TimelineActivity.this).getAllConfig()){
-								filters.get(i).setConfig(config);
-								i++;
-							} 
-							/*
-							 * try {
-							 * view_flipper.removeViewAt(curentFilterPosition);
-							 * } catch (NullPointerException e) { int
-							 * lastCurrentFilterPosition = curentFilterPosition;
-							 * view_flipper .setCurrentItem(curentFilterPosition
-							 * - 1); view_flipper.removeView(filters.get(
-							 * lastCurrentFilterPosition) .getScrollView()); }
-							 * filters.get(curentFilterPosition).deleteColumn();
-							 * filters.remove(curentFilterPosition);
-							 * curentFilterPosition--;
-							 * view_flipper.setCurrentItem
-							 * (curentFilterPosition);
-							 */
+							new RemoveCollumnTask().execute();
 
 						}
 					});
@@ -804,6 +771,60 @@ public class TimelineActivity extends Activity {
 				TimelineActivity.current.updateTweets(top);
 		}
 
+	}
+	
+	private class RemoveCollumnTask extends AsyncTask<Void, Void, Void>{
+
+		private ProgressDialog progressDialog;
+		
+		@Override
+		protected void onPostExecute(Void result) {
+
+			adapter.removeViewAtPosition(curentFilterPosition);
+
+			curentFilterPosition--;
+			if(curentFilterPosition<0)
+				curentFilterPosition=0;
+			view_flipper.setCurrentItem(curentFilterPosition);
+			
+			adapter.notifyDataSetChanged();
+			currentTittle.setText(filters.get(curentFilterPosition).getColumnTitle());
+			int i=0;
+			for(CollumnConfig config:Facade.getInstance(TimelineActivity.this).getAllConfig()){
+				filters.get(i).setConfig(config);
+				i++;
+			} 
+			
+			progressDialog.dismiss();
+		}
+
+		@Override
+		protected void onPreExecute() {
+			progressDialog = new ProgressDialog(TimelineActivity.this);
+
+			progressDialog
+					.setMessage(getString(R.string.romoving_collumn));
+
+			try {
+				progressDialog.show();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			Facade.getInstance(TimelineActivity.this)
+			.deleteCollum(curentFilterPosition);
+			
+			AbstractColumn collumn = filters
+					.get(curentFilterPosition);
+			collumn.deleteColumn();
+			filters.remove(curentFilterPosition);
+	
+			return null;
+		}
+		
 	}
 
 }

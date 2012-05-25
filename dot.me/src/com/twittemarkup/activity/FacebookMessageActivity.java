@@ -277,7 +277,7 @@ public class FacebookMessageActivity extends Activity {
 
 		private Facebook facebook;
 		private Vector<Mensagem> comments = new Vector<Mensagem>();
-		private final static String QTD_COMMENTS = "2";
+		private final static String QTD_COMMENTS = "15";
 		private boolean nextPageFlag = false, isRefreshig = false;
 		private CommentsCache data;
 
@@ -305,15 +305,15 @@ public class FacebookMessageActivity extends Activity {
 				if (!cachedMenssage.isEmpty() && !(isRefreshig || nextPageFlag)) {
 					String aToken = Account.getFacebookAccount(
 							FacebookMessageActivity.this).getToken();
-					String afterId = cachedMenssage.lastElement()
+					/*String afterId = cachedMenssage.lastElement()
 							.getIdMensagem();
-					int offset=cachedMenssage.size()-(cachedMenssage.size()%Integer.parseInt(QTD_COMMENTS));
+					int offset=cachedMenssage.size()-(cachedMenssage.size()%Integer.parseInt(QTD_COMMENTS));*/
 					comments.addAll(cachedMenssage);
-					nextPage="https://graph.facebook.com/"+
+					/*nextPage="https://graph.facebook.com/"+
 							  current_message.getIdMensagem
 							  ()+"/comments?limit="+QTD_COMMENTS+"&access_token="+aToken+
 							  "&format=json&fields=message,likes,from.picture,from.name,from.id&"
-							  +"&offset="+offset+"&__after_id="+afterId;
+							  +"&offset="+offset+"&__after_id="+afterId;*/
 					return null;
 				}
 
@@ -340,6 +340,7 @@ public class FacebookMessageActivity extends Activity {
 						try {
 							refreshedComments = responseJSON
 									.getJSONObject("comments");
+							
 						} catch (JSONException e) {
 							// TODO: handle exception
 						}
@@ -379,6 +380,7 @@ public class FacebookMessageActivity extends Activity {
 									current_message.getIdMensagem()
 											+ "/comments", b);
 						}
+						int commentsQtd=0;
 						if (responseComments != null) {
 							JSONObject commentsJSON = new JSONObject(
 									responseComments);
@@ -386,6 +388,7 @@ public class FacebookMessageActivity extends Activity {
 									.createListOfFeeds(facade, facebook,
 											commentsJSON,
 											Mensagem.TIPO_FACE_COMENTARIO);
+							commentsQtd=refreshedComments.getInt("count");
 							if (nextPage == null) {
 
 								/*
@@ -427,7 +430,7 @@ public class FacebookMessageActivity extends Activity {
 							}
 
 							comments.addAll(list);
-							if (!(list.size() < Integer.parseInt(QTD_COMMENTS))) {
+							/*if (!(list.size() < Integer.parseInt(QTD_COMMENTS))||commentsQtd>commentsAdded.size()+list.size()) {
 								String tempPage = nextPage;
 								try {
 									JSONObject pagingJsonObject = commentsJSON
@@ -437,7 +440,8 @@ public class FacebookMessageActivity extends Activity {
 								} catch (JSONException e) {
 									nextPage = tempPage;
 								}
-							}
+							}*/
+							
 
 						}
 
@@ -501,14 +505,14 @@ public class FacebookMessageActivity extends Activity {
 				bt_refresh.setEnabled(true);
 				bt_refresh.setText(R.string.refresh);
 			}
-
+			Collections.sort(comments);
 			LayoutInflater inflater = (LayoutInflater) FacebookMessageActivity.this
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			int cont = 0;
-			if (nextPageFlag) {
-				// int count = comments.size();
-				// for (int i = count - 1; i > -1; i--) {
-				for (int i = 0; i < comments.size(); i++) {
+			//if (nextPageFlag) {
+				int count = comments.size();
+				for (int i = count - 1; i > -1; i--) {
+				//for (int i = 0; i < comments.size(); i++) {
 					Mensagem m = comments.get(i);
 
 					if (wasAddedOn(m, commentsAdded))
@@ -550,7 +554,7 @@ public class FacebookMessageActivity extends Activity {
 					list_comments.addView(row);
 				}
 
-			} else {
+			/*} else {
 				for (Mensagem m : comments) {
 
 					if (wasAddedOn(m, commentsAdded))
@@ -591,7 +595,7 @@ public class FacebookMessageActivity extends Activity {
 
 					list_comments.addView(row);
 				}
-			}
+			}*/
 
 			/*
 			 * if ((cont > 0 && commentsAdded.size() < current_message
@@ -620,9 +624,9 @@ public class FacebookMessageActivity extends Activity {
 				bt_comment.setVisibility(View.VISIBLE);
 
 			commentsLoaded = true;
-			String aToken = Account.getFacebookAccount(
-					FacebookMessageActivity.this).getToken();
-			String afterId = commentsAdded.lastElement().getIdMensagem();
+			//String aToken = Account.getFacebookAccount(
+					//FacebookMessageActivity.this).getToken();
+			//String afterId = commentsAdded.lastElement().getIdMensagem();
 
 			/*
 			  nextPage="https://graph.facebook.com/"+
@@ -631,6 +635,14 @@ public class FacebookMessageActivity extends Activity {
 			  "&format=json&fields=message,likes,from.picture,from.name,from.id&"
 			  +"&offset="+commentsAdded.size()+"&__after_id="+afterId;
 			 */
+			String aToken = Account.getFacebookAccount(
+					FacebookMessageActivity.this).getToken();
+			int qtd_messages=commentsAdded.size();
+			int limit=qtd_messages-(qtd_messages%Integer.parseInt(QTD_COMMENTS))+Integer.parseInt(QTD_COMMENTS);
+			nextPage="https://graph.facebook.com/"+
+					  current_message.getIdMensagem
+					  ()+"/comments?limit="+limit+"&access_token="+aToken+
+					  "&format=json&fields=message,likes,from.picture,from.name,from.id";
 		}
 
 	}

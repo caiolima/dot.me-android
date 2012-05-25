@@ -127,4 +127,5 @@
     <string name="loggingout">Logging out...</string>
     <string name="refresh">Refresh</string>
     <string name="refreshing">Refreshing...</string>
+    <string name="romoving_collumn">Removing collumn...</string>
 </resources>

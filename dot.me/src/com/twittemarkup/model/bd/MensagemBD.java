@@ -206,7 +206,23 @@ public class MensagemBD extends Dao {
 	}
 
 	protected void deleteAll(int type) {
+		if(type==Mensagem.TIPO_FACEBOOK_GROUP||type==Mensagem.TIPO_NEWS_FEEDS){
+			Vector<Mensagem> msgs=getMensagemOf(type);
+			for(Mensagem m:msgs){
+				deleteAllComents(m.getIdMensagem());
+			}
+			
+		}
+			
 		db.getDB().delete(DataBase.TB_MENSAGEM, DataBase.MENSAGEM_TIPO+"=?", new String[]{Integer.toString(type)});
+	}
+	
+	protected void deleteAllComents(String id){
+		Vector<Mensagem> msgs=getMensagemOf(Mensagem.TIPO_FACE_COMENTARIO);
+		for(Mensagem m:msgs){
+			if(m.getIdMensagem().startsWith(id))
+				delete(m.getIdMensagem(), Mensagem.TIPO_FACE_COMENTARIO);
+		}
 	}
 	
 	protected void delete(String id, int type) {
@@ -214,6 +230,8 @@ public class MensagemBD extends Dao {
 				DataBase.TB_MENSAGEM,
 				DataBase.MENSAGEM_ID + "=? and " + DataBase.MENSAGEM_TIPO
 						+ "=?", new String[] { id, Integer.toString(type) });
+		if(type==Mensagem.TIPO_FACEBOOK_GROUP||type==Mensagem.TIPO_NEWS_FEEDS)
+			deleteAllComents(id);
 	}
 
 	protected void deleteAllSearch() {
