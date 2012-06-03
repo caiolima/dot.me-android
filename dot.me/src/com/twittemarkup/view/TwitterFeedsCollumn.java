@@ -2,6 +2,9 @@ package com.twittemarkup.view;
 
 import java.util.Vector;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import twitter4j.auth.AccessToken;
 
 import com.markupartist.android.widget.PullToRefreshListView;
@@ -10,6 +13,7 @@ import com.twittemarkup.app.R;
 import com.twittemarkup.assynctask.UpdateTimelineTask;
 import com.twittemarkup.command.OpenTwitterWriter;
 import com.twittemarkup.model.Account;
+import com.twittemarkup.model.CollumnConfig;
 import com.twittemarkup.model.Mensagem;
 import com.twittemarkup.model.PalavraChave;
 import com.twittemarkup.model.TwitterAccount;
@@ -55,6 +59,17 @@ public class TwitterFeedsCollumn extends AbstractColumn {
 		UpdateParams params = new UpdateParams(currentPage,
 				Constants.QTD_FEEDS, token);
 		new UpdateTimelineTask(ctx, params, (PullToRefreshListView)listView, this).execute();
+		
+		JSONObject prop=config.getProprietes();
+		if(prop!=null){
+			prop.remove("nextPage");
+			try {
+				prop.put("nextPage", currentPage);
+			} catch (JSONException e) {
+				
+			}
+		}
+		
 	}
 
 	@Override
@@ -69,6 +84,16 @@ public class TwitterFeedsCollumn extends AbstractColumn {
 				
 			}
 		});
+		Mensagem m=list.firstElement();
+		if(m!=null){
+			if(m.getData().getTime()-System.currentTimeMillis()>Constants.QTD_MINUTES){
+				currentPage=0;
+				JSONObject prop=config.getProprietes();
+				if (prop!=null) {
+					prop.remove("nextPage");
+				}
+			}
+		}
 	}
 	
 	
@@ -99,4 +124,15 @@ public class TwitterFeedsCollumn extends AbstractColumn {
 
 	}
 
+	@Override
+	public void setConfig(CollumnConfig config) {
+		super.setConfig(config);
+		try {
+			currentPage=config.getProprietes().getInt("nextPage");
+		} catch (JSONException e) {
+			currentPage=0;
+		}
+	}
+	
+	
 }

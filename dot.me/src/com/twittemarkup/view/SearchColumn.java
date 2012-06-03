@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -26,12 +27,14 @@ import com.twittemarkup.assynctask.UpdateAction;
 import com.twittemarkup.command.OpenTwitterWriter;
 import com.twittemarkup.interfaces.IGetUpdateAction;
 import com.twittemarkup.model.Account;
+import com.twittemarkup.model.CollumnConfig;
 import com.twittemarkup.model.Mensagem;
 import com.twittemarkup.model.TwitterAccount;
 import com.twittemarkup.model.User;
 import com.twittemarkup.model.UsuarioTwitter;
 import com.twittemarkup.model.bd.Facade;
 
+import com.twittemarkup.utils.Constants;
 import com.twittemarkup.utils.TwitterUtils;
 
 public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
@@ -154,6 +157,16 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 				user.getTokenSecret());
 
 		new GetSearchTweetsTask(token).execute();
+		
+		JSONObject prop=config.getProprietes();
+		if(prop!=null){
+			prop.remove("nextPage");
+			try {
+				prop.put("nextPage", currentpage);
+			} catch (JSONException e) {
+				
+			}
+		}
 
 	}
 
@@ -222,6 +235,17 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 				
 			}
 		});
+		
+		Mensagem m=toAdd.firstElement();
+		if(m!=null){
+			if(m.getData().getTime()-System.currentTimeMillis()>Constants.QTD_MINUTES){
+				currentpage=0;
+				JSONObject prop=config.getProprietes();
+				if (prop!=null) {
+					prop.remove("nextPage");
+				}
+			}
+		}
 		
 		firstPut = false;
 	}
@@ -292,7 +316,19 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 			}
 
 		}
+		
+		
 
 	}
 
+	@Override
+	public void setConfig(CollumnConfig config) {
+		super.setConfig(config);
+		try {
+			currentpage=config.getProprietes().getInt("nextPage");
+		} catch (JSONException e) {
+			currentpage=0;
+		}
+	}
+	
 }

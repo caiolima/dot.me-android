@@ -15,10 +15,12 @@ import com.twittemarkup.activity.TimelineActivity;
 import com.twittemarkup.command.OpenFacebookWriter;
 import com.twittemarkup.exceptions.LostUserAccessException;
 import com.twittemarkup.model.Account;
+import com.twittemarkup.model.CollumnConfig;
 import com.twittemarkup.model.FacebookAccount;
 import com.twittemarkup.model.FacebookGroup;
 import com.twittemarkup.model.Mensagem;
 import com.twittemarkup.model.bd.Facade;
+import com.twittemarkup.utils.Constants;
 import com.twittemarkup.utils.FacebookUtils;
 import com.twittemarkup.utils.WebService;
 import com.twittemarkup.view.FacebookFeedsColumn.FacebookNewsFeedGetterTask;
@@ -154,6 +156,15 @@ public class FacebookGroupColumn extends AbstractColumn {
 				notifyNextPageFinish();
 			
 
+			JSONObject prop=config.getProprietes();
+			if(prop!=null){
+				prop.remove("nextPage");
+				try {
+					prop.put("nextPage", nextPage);
+				} catch (JSONException e) {
+					
+				}
+			}
 		}
 
 	}
@@ -198,7 +209,28 @@ public class FacebookGroupColumn extends AbstractColumn {
 			}
 		});
 		firstPut = false;
+		
+		Mensagem m=toAdd.firstElement();
+		if(m!=null){
+			if(m.getData().getTime()-System.currentTimeMillis()>Constants.QTD_MINUTES){
+				nextPage=null;
+				JSONObject prop=config.getProprietes();
+				if (prop!=null) {
+					prop.remove("nextPage");
+				}
+			}
+		}
 
+	}
+	
+	@Override
+	public void setConfig(CollumnConfig config) {
+		super.setConfig(config);
+		try {
+			nextPage=config.getProprietes().getString("nextPage");
+		} catch (JSONException e) {
+			
+		}
 	}
 
 }

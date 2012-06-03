@@ -18,9 +18,11 @@ import com.twittemarkup.app.R;
 import com.twittemarkup.command.OpenFacebookWriter;
 import com.twittemarkup.exceptions.LostUserAccessException;
 import com.twittemarkup.model.Account;
+import com.twittemarkup.model.CollumnConfig;
 import com.twittemarkup.model.FacebookAccount;
 import com.twittemarkup.model.Mensagem;
 import com.twittemarkup.model.bd.Facade;
+import com.twittemarkup.utils.Constants;
 import com.twittemarkup.utils.FacebookUtils;
 import com.twittemarkup.utils.WebService;
 
@@ -212,6 +214,16 @@ public class FacebookFeedsColumn extends AbstractColumn {
 			}
 
 			isLoaddingNextPage = false;
+			JSONObject prop=config.getProprietes();
+			if(prop!=null){
+				prop.remove("nextPage");
+				try {
+					prop.put("nextPage", nextPage);
+				} catch (JSONException e) {
+					
+				}
+			}
+			
 		}
 
 	}
@@ -223,16 +235,31 @@ public class FacebookFeedsColumn extends AbstractColumn {
 
 		super.onGetNextPage();
 
-		if (nextPage != null) {
-			if (!nextPage.equals("none")) {
-				Log.w("facebook-collumn", "next_started");
-				isLoaddingNextPage = true;
-				new FacebookNewsFeedGetterTask(facebook, nextPage).execute();
-			} else {
-				notifyNextPageFinish();
+		
+		FacebookAccount faceAcc = Account.getFacebookAccount(ctx);
+		if (faceAcc != null) {
+			try {
+				Facebook facebook = FacebookUtils.getFacebook(ctx, faceAcc);
+				if (nextPage != null) {
+					if (!nextPage.equals("none")) {
+						Log.w("facebook-collumn", "next_started");
+						isLoaddingNextPage = true;
+						new FacebookNewsFeedGetterTask(facebook, nextPage).execute();
+					} else {
+						notifyNextPageFinish();
+
+					}
+				}
+
+			} catch (LostUserAccessException e) {
 
 			}
+
 		}
+		
+		
+		
+		
 	}
 
 	@Override
@@ -247,6 +274,16 @@ public class FacebookFeedsColumn extends AbstractColumn {
 
 			}
 		});
+		Mensagem m=list.firstElement();
+		if(m!=null){
+			if(System.currentTimeMillis()-m.getData().getTime()>Constants.QTD_MINUTES){
+				nextPage=null;
+				JSONObject prop=config.getProprietes();
+				if (prop!=null) {
+					prop.remove("nextPage");
+				}
+			}
+		}
 
 	}
 
@@ -254,5 +291,16 @@ public class FacebookFeedsColumn extends AbstractColumn {
 	public boolean isDeletable() {
 		return false;
 	}
+	
+	@Override
+	public void setConfig(CollumnConfig config) {
+		super.setConfig(config);
+		try {
+			nextPage=config.getProprietes().getString("nextPage");
+		} catch (JSONException e) {
+			
+		}
+	}
+	
 
 }

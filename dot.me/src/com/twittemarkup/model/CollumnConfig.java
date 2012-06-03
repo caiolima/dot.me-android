@@ -52,5 +52,14 @@ public class CollumnConfig {
 		}
 		return out;
 	}
+	
+	public String getNextPage(){
+		try{
+			
+			return proprietes.getString("nextPage");
+		}catch (JSONException e ) {
+			return null;
+		}
+	}
 
 }
