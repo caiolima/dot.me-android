@@ -279,7 +279,7 @@ public class FacebookMessageActivity extends Activity {
 
 		private Facebook facebook;
 		private Vector<Mensagem> comments = new Vector<Mensagem>();
-		private final static String QTD_COMMENTS = "5";
+		private final static String QTD_COMMENTS = "15";
 		private boolean nextPageFlag = false, isRefreshig = false;
 		private CommentsCache data;
 
