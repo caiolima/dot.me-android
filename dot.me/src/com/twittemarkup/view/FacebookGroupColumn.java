@@ -212,7 +212,7 @@ public class FacebookGroupColumn extends AbstractColumn {
 		
 		Mensagem m=toAdd.firstElement();
 		if(m!=null){
-			if(m.getData().getTime()-System.currentTimeMillis()>Constants.QTD_MINUTES){
+			if(System.currentTimeMillis()-m.getData().getTime()>Constants.QTD_MINUTES){
 				nextPage=null;
 				JSONObject prop=config.getProprietes();
 				if (prop!=null) {

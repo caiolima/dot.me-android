@@ -86,7 +86,7 @@ public class TwitterFeedsCollumn extends AbstractColumn {
 		});
 		Mensagem m=list.firstElement();
 		if(m!=null){
-			if(m.getData().getTime()-System.currentTimeMillis()>Constants.QTD_MINUTES){
+			if(System.currentTimeMillis()-m.getData().getTime()>Constants.QTD_MINUTES){
 				currentPage=0;
 				JSONObject prop=config.getProprietes();
 				if (prop!=null) {
