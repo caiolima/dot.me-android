@@ -31,6 +31,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.drawable.AnimationDrawable;
 import android.opengl.Visibility;
 import android.os.AsyncTask;
@@ -94,6 +95,7 @@ public class FacebookMessageActivity extends Activity {
 
 		setContentView(R.layout.facebook_message);
 
+		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		list_comments = (LinearLayout) findViewById(R.id.facebook_list_comments);
 		lt_load = (LinearLayout) findViewById(R.id.lt_loading);
 		lt_more_comments = (LinearLayout) findViewById(R.id.lt_facebook_more_comments);
@@ -277,7 +279,7 @@ public class FacebookMessageActivity extends Activity {
 
 		private Facebook facebook;
 		private Vector<Mensagem> comments = new Vector<Mensagem>();
-		private final static String QTD_COMMENTS = "15";
+		private final static String QTD_COMMENTS = "5";
 		private boolean nextPageFlag = false, isRefreshig = false;
 		private CommentsCache data;
 
@@ -305,45 +307,34 @@ public class FacebookMessageActivity extends Activity {
 				if (!cachedMenssage.isEmpty() && !(isRefreshig || nextPageFlag)) {
 					String aToken = Account.getFacebookAccount(
 							FacebookMessageActivity.this).getToken();
-					/*String afterId = cachedMenssage.lastElement()
-							.getIdMensagem();
-					int offset=cachedMenssage.size()-(cachedMenssage.size()%Integer.parseInt(QTD_COMMENTS));*/
+					/*
+					 * String afterId = cachedMenssage.lastElement()
+					 * .getIdMensagem(); int
+					 * offset=cachedMenssage.size()-(cachedMenssage
+					 * .size()%Integer.parseInt(QTD_COMMENTS));
+					 */
 					comments.addAll(cachedMenssage);
-					/*nextPage="https://graph.facebook.com/"+
-							  current_message.getIdMensagem
-							  ()+"/comments?limit="+QTD_COMMENTS+"&access_token="+aToken+
-							  "&format=json&fields=message,likes,from.picture,from.name,from.id&"
-							  +"&offset="+offset+"&__after_id="+afterId;*/
+					/*
+					 * nextPage="https://graph.facebook.com/"+
+					 * current_message.getIdMensagem
+					 * ()+"/comments?limit="+QTD_COMMENTS
+					 * +"&access_token="+aToken+
+					 * "&format=json&fields=message,likes,from.picture,from.name,from.id&"
+					 * +"&offset="+offset+"&__after_id="+afterId;
+					 */
 					return null;
 				}
 
 				Bundle params = new Bundle();
-				params.putString("fields", "comments,likes");
+				params.putString("fields", "likes");
 
 				try {
 					String response = null;
 					response = facebook.request(
 							current_message.getIdMensagem(), params);
 
-					/*
-					 * if (this.nextPage != null) { WebService web = new
-					 * WebService(nextPage); response = web.webGet("", null); }
-					 * else {
-					 * 
-					 * response = facebook.request(
-					 * current_message.getIdMensagem(), params); }
-					 */
 					if (response != null) {
 						JSONObject responseJSON = new JSONObject(response);
-
-						JSONObject refreshedComments = null;
-						try {
-							refreshedComments = responseJSON
-									.getJSONObject("comments");
-							
-						} catch (JSONException e) {
-							// TODO: handle exception
-						}
 
 						JSONObject likesJSON = null;
 						try {
@@ -359,68 +350,59 @@ public class FacebookMessageActivity extends Activity {
 						}
 
 						String responseComments = null;
-						if (refreshedComments == null) {
-							return null;
-						} else {
-							JSONArray data = refreshedComments
-									.getJSONArray("data");
-							if (data.length() == 0)
-								return null;
-						}
-						if (nextPage != null) {
-							WebService web = new WebService(nextPage);
-							responseComments = web.webGet("", null);
-						} else {
-							Bundle b = new Bundle();
-							b.putString("fields",
-									"message,likes,from.picture,from.name,from.id");
-							b.putString("limit", QTD_COMMENTS);
 
-							responseComments = facebook.request(
-									current_message.getIdMensagem()
-											+ "/comments", b);
-						}
-						int commentsQtd=0;
+						String query = "select id, time from comment where post_id=\""
+								+ current_message.getIdMensagem() + "\"";
+
+						Bundle params2 = new Bundle();
+						params2.putString("method", "fql.query");
+						params2.putString("query", query);
+
+						responseComments = facebook.request(null, params2);
+
 						if (responseComments != null) {
-							JSONObject commentsJSON = new JSONObject(
-									responseComments);
-							List<Mensagem> list = FacebookUtils
-									.createListOfFeeds(facade, facebook,
-											commentsJSON,
-											Mensagem.TIPO_FACE_COMENTARIO);
-							commentsQtd=refreshedComments.getInt("count");
-							if (nextPage == null) {
+							JSONArray array = new JSONArray(responseComments);
+							List<Mensagem> list = new Vector<Mensagem>();
 
-								/*
-								 * try { JSONArray array = refreshedComments
-								 * .getJSONArray("data"); int lenght =
-								 * array.length(); int positionToInsert =
-								 * list.size(); for (int i = lenght - 1; i > -1;
-								 * i--) { JSONObject comment = array
-								 * .getJSONObject(i); String commentId = comment
-								 * .getString("id");
-								 * 
-								 * Bundle b = new Bundle();
-								 * b.putString("fields",
-								 * "message,likes,from.picture,from.name,from.id"
-								 * ); String response2 = facebook.request(
-								 * commentId, b); JSONObject commentMessage =
-								 * new JSONObject( response2);
-								 * 
-								 * Mensagem m = Mensagem
-								 * .createFromFacebookFeed(commentMessage); if
-								 * (m == null) continue;
-								 * 
-								 * m.setTipo(Mensagem.TIPO_FACE_COMENTARIO);
-								 * 
-								 * if (wasAddedOn(m, list)) break;
-								 * 
-								 * facade.insert(m); list.add(positionToInsert,
-								 * m);
-								 * 
-								 * } } catch (JSONException e) { // TODO: handle
-								 * exception }
-								 */
+							try {
+
+								int lenght = array.length();
+								int ini=0;
+								if(nextPage!=null)
+									ini=Integer.parseInt(nextPage);
+								
+								
+								for (int i = ini; i < ini+Integer.parseInt(QTD_COMMENTS); i++) {
+									JSONObject comment = array.getJSONObject(i);
+									String commentId = comment.getString("id");
+
+									if (facade.exsistsStatus(commentId,
+											Mensagem.TIPO_FACE_COMENTARIO))
+										continue;
+
+									Bundle b = new Bundle();
+									b.putString("fields",
+											"message,likes,from.picture,from.name,from.id");
+									String response2 = facebook.request(
+											commentId, b);
+									JSONObject commentMessage = new JSONObject(
+											response2);
+
+									Mensagem m = Mensagem
+											.createFromFacebookFeed(commentMessage);
+									if (m == null)
+										continue;
+
+									m.setTipo(Mensagem.TIPO_FACE_COMENTARIO);
+
+									if (wasAddedOn(m, list))
+										break;
+
+									facade.insert(m);
+									list.add(m);
+
+								}
+							} catch (JSONException e) {
 							}
 
 							for (Mensagem m : list) {
@@ -430,48 +412,8 @@ public class FacebookMessageActivity extends Activity {
 							}
 
 							comments.addAll(list);
-							/*if (!(list.size() < Integer.parseInt(QTD_COMMENTS))||commentsQtd>commentsAdded.size()+list.size()) {
-								String tempPage = nextPage;
-								try {
-									JSONObject pagingJsonObject = commentsJSON
-											.getJSONObject("paging");
-									nextPage = pagingJsonObject
-											.getString("next");
-								} catch (JSONException e) {
-									nextPage = tempPage;
-								}
-							}*/
-							
 
 						}
-
-						/*
-						 * current_message.getAddtions().remove("comments");
-						 * current_message.getAddtions().put("comments",
-						 * commentsJSON);
-						 * 
-						 * facade.deleteMensagem(current_message.getIdMensagem(),
-						 * current_message.getTipo());
-						 * facade.insert(current_message);
-						 * 
-						 * for (String commentId :
-						 * current_message.getAllComments()) { Mensagem m =
-						 * facade.getOneMessage(commentId,
-						 * Mensagem.TIPO_FACE_COMENTARIO); if (m == null) {
-						 * Bundle b = new Bundle(); b.putString("fields",
-						 * "message,likes,from.picture,from.name,from.id");
-						 * String response2 = facebook.request(commentId, b);
-						 * JSONObject commentMessage = new JSONObject(
-						 * response2);
-						 * 
-						 * m = Mensagem.createFromFacebookFeed(commentMessage);
-						 * if (m == null) continue;
-						 * m.setTipo(Mensagem.TIPO_FACE_COMENTARIO); }
-						 * facade.insert(m); comments.add(m); } try { JSONObject
-						 * paging = commentsJSON .getJSONObject("paging");
-						 * this.nextPage = paging.getString("next"); } catch
-						 * (JSONException e) { // TODO: handle exception }
-						 */
 					}
 				} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
@@ -509,93 +451,78 @@ public class FacebookMessageActivity extends Activity {
 			LayoutInflater inflater = (LayoutInflater) FacebookMessageActivity.this
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			int cont = 0;
-			//if (nextPageFlag) {
-				int count = comments.size();
-				for (int i = count - 1; i > -1; i--) {
-				//for (int i = 0; i < comments.size(); i++) {
-					Mensagem m = comments.get(i);
+			// if (nextPageFlag) {
+			int count = comments.size();
+			for (int i = count - 1; i > -1; i--) {
+				// for (int i = 0; i < comments.size(); i++) {
+				Mensagem m = comments.get(i);
 
-					if (wasAddedOn(m, commentsAdded))
-						continue;
-					else
-						commentsAdded.add(m);
+				if (wasAddedOn(m, commentsAdded))
+					continue;
+				else
+					commentsAdded.add(m);
 
-					cont++;
-					View row = inflater.inflate(R.layout.twitte_row, null);
-					ImageView img = (ImageView) row
-							.findViewById(R.id.profile_img);
-					TextView screenName = (TextView) row
-							.findViewById(R.id.screen_name);
-					TextView time = (TextView) row.findViewById(R.id.time);
-					TextView tweetText = (TextView) row
-							.findViewById(R.id.twitte);
+				cont++;
+				View row = inflater.inflate(R.layout.twitte_row, null);
+				ImageView img = (ImageView) row.findViewById(R.id.profile_img);
+				TextView screenName = (TextView) row
+						.findViewById(R.id.screen_name);
+				TextView time = (TextView) row.findViewById(R.id.time);
+				TextView tweetText = (TextView) row.findViewById(R.id.twitte);
 
-					int qtd_likes = m.getLikesCount();
-					if (qtd_likes > 0) {
-						LinearLayout lt_likes = (LinearLayout) findViewById(R.id.lt_likes);
-						lt_likes.setVisibility(View.VISIBLE);
+				int qtd_likes = m.getLikesCount();
+				if (qtd_likes > 0) {
+					LinearLayout lt_likes = (LinearLayout) findViewById(R.id.lt_likes);
+					lt_likes.setVisibility(View.VISIBLE);
 
-						TextView txt_qtd_likesTextView = (TextView) findViewById(R.id.lbl_qtd_likes);
-						txt_qtd_likesTextView.setText(Integer
-								.toString(qtd_likes));
-					}
-					screenName.setText(m.getNome_usuario());
-					time.setText(TwitterUtils.friendlyFormat(m.getData()));
-					tweetText.setText(TwitterUtils.createMessage(m
-							.getMensagem()));
-					tweetText.setMovementMethod(LinkMovementMethod
-							.getInstance());
-					TwitterUtils.stripUnderlines(tweetText);
-
-					TwitterImageDownloadTask
-							.executeDownload(FacebookMessageActivity.this, img,
-									m.getImagePath());
-
-					list_comments.addView(row);
+					TextView txt_qtd_likesTextView = (TextView) findViewById(R.id.lbl_qtd_likes);
+					txt_qtd_likesTextView.setText(Integer.toString(qtd_likes));
 				}
+				screenName.setText(m.getNome_usuario());
+				time.setText(TwitterUtils.friendlyFormat(m.getData()));
+				tweetText.setText(TwitterUtils.createMessage(m.getMensagem()));
+				tweetText.setMovementMethod(LinkMovementMethod.getInstance());
+				TwitterUtils.stripUnderlines(tweetText);
 
-			/*} else {
-				for (Mensagem m : comments) {
+				TwitterImageDownloadTask.executeDownload(
+						FacebookMessageActivity.this, img, m.getImagePath());
 
-					if (wasAddedOn(m, commentsAdded))
-						continue;
-					else
-						commentsAdded.add(m);
+				list_comments.addView(row);
+			}
 
-					cont++;
-					View row = inflater.inflate(R.layout.twitte_row, null);
-					ImageView img = (ImageView) row
-							.findViewById(R.id.profile_img);
-					TextView screenName = (TextView) row
-							.findViewById(R.id.screen_name);
-					TextView time = (TextView) row.findViewById(R.id.time);
-					TextView tweetText = (TextView) row
-							.findViewById(R.id.twitte);
-
-					int qtd_likes = m.getLikesCount();
-					if (qtd_likes > 0) {
-						LinearLayout lt_likes = (LinearLayout) findViewById(R.id.lt_likes);
-						lt_likes.setVisibility(View.VISIBLE);
-
-						TextView txt_qtd_likesTextView = (TextView) findViewById(R.id.lbl_qtd_likes);
-						txt_qtd_likesTextView.setText(Integer
-								.toString(qtd_likes));
-					}
-					screenName.setText(m.getNome_usuario());
-					time.setText(TwitterUtils.friendlyFormat(m.getData()));
-					tweetText.setText(TwitterUtils.createMessage(m
-							.getMensagem()));
-					tweetText.setMovementMethod(LinkMovementMethod
-							.getInstance());
-					TwitterUtils.stripUnderlines(tweetText);
-
-					TwitterImageDownloadTask
-							.executeDownload(FacebookMessageActivity.this, img,
-									m.getImagePath());
-
-					list_comments.addView(row);
-				}
-			}*/
+			/*
+			 * } else { for (Mensagem m : comments) {
+			 * 
+			 * if (wasAddedOn(m, commentsAdded)) continue; else
+			 * commentsAdded.add(m);
+			 * 
+			 * cont++; View row = inflater.inflate(R.layout.twitte_row, null);
+			 * ImageView img = (ImageView) row .findViewById(R.id.profile_img);
+			 * TextView screenName = (TextView) row
+			 * .findViewById(R.id.screen_name); TextView time = (TextView)
+			 * row.findViewById(R.id.time); TextView tweetText = (TextView) row
+			 * .findViewById(R.id.twitte);
+			 * 
+			 * int qtd_likes = m.getLikesCount(); if (qtd_likes > 0) {
+			 * LinearLayout lt_likes = (LinearLayout)
+			 * findViewById(R.id.lt_likes);
+			 * lt_likes.setVisibility(View.VISIBLE);
+			 * 
+			 * TextView txt_qtd_likesTextView = (TextView)
+			 * findViewById(R.id.lbl_qtd_likes);
+			 * txt_qtd_likesTextView.setText(Integer .toString(qtd_likes)); }
+			 * screenName.setText(m.getNome_usuario());
+			 * time.setText(TwitterUtils.friendlyFormat(m.getData()));
+			 * tweetText.setText(TwitterUtils.createMessage(m .getMensagem()));
+			 * tweetText.setMovementMethod(LinkMovementMethod .getInstance());
+			 * TwitterUtils.stripUnderlines(tweetText);
+			 * 
+			 * TwitterImageDownloadTask
+			 * .executeDownload(FacebookMessageActivity.this, img,
+			 * m.getImagePath());
+			 * 
+			 * list_comments.addView(row); } }
+			 */
 
 			/*
 			 * if ((cont > 0 && commentsAdded.size() < current_message
@@ -624,25 +551,34 @@ public class FacebookMessageActivity extends Activity {
 				bt_comment.setVisibility(View.VISIBLE);
 
 			commentsLoaded = true;
-			//String aToken = Account.getFacebookAccount(
-					//FacebookMessageActivity.this).getToken();
-			//String afterId = commentsAdded.lastElement().getIdMensagem();
+			// String aToken = Account.getFacebookAccount(
+			// FacebookMessageActivity.this).getToken();
+			// String afterId = commentsAdded.lastElement().getIdMensagem();
 
 			/*
-			  nextPage="https://graph.facebook.com/"+
-			  current_message.getIdMensagem
-			  ()+"/comments?limit="+QTD_COMMENTS+"&access_token="+aToken+
-			  "&format=json&fields=message,likes,from.picture,from.name,from.id&"
-			  +"&offset="+commentsAdded.size()+"&__after_id="+afterId;
+			 * nextPage="https://graph.facebook.com/"+
+			 * current_message.getIdMensagem
+			 * ()+"/comments?limit="+QTD_COMMENTS+"&access_token="+aToken+
+			 * "&format=json&fields=message,likes,from.picture,from.name,from.id&"
+			 * +"&offset="+commentsAdded.size()+"&__after_id="+afterId;
 			 */
 			String aToken = Account.getFacebookAccount(
 					FacebookMessageActivity.this).getToken();
-			int qtd_messages=commentsAdded.size();
-			int limit=qtd_messages-(qtd_messages%Integer.parseInt(QTD_COMMENTS))+Integer.parseInt(QTD_COMMENTS);
-			nextPage="https://graph.facebook.com/"+
-					  current_message.getIdMensagem
-					  ()+"/comments?limit="+limit+"&access_token="+aToken+
-					  "&format=json&fields=message,likes,from.picture,from.name,from.id";
+			int qtd_messages = commentsAdded.size();
+			int limit = qtd_messages
+					- (qtd_messages % Integer.parseInt(QTD_COMMENTS))
+					+ Integer.parseInt(QTD_COMMENTS);
+
+			nextPage = ""+limit;
+
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+			/*
+			 * nextPage = "https://graph.facebook.com/" +
+			 * current_message.getIdMensagem() + "/comments?limit=" + limit +
+			 * "&access_token=" + aToken +
+			 * "&format=json&fields=message,likes,from.picture,from.name,from.id"
+			 * ;
+			 */
 		}
 
 	}
