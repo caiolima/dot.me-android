@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.EventLogTags.Description;
 
 import com.twittemarkup.activity.TimelineActivity;
@@ -202,10 +203,19 @@ public class Facade {
 		marcadorBD.delete(id);
 	}
 
-	public void deleteMensagem(String id, int type) {
-		SubjectMessage mSubject = TimelineActivity.getmSubject();
+	public void deleteMensagem(final String id, final int type) {
+		final SubjectMessage mSubject = TimelineActivity.getmSubject();
+		Handler h=TimelineActivity.h;
+		if(h!=null){
+			h.post(new Runnable() {
+				
+				@Override
+				public void run() {
+					mSubject.notifyMessageRemovedObservers(getOneMessage(id, type));
+				}
+			});
+		}
 		
-		mSubject.notifyMessageRemovedObservers(getOneMessage(id, type));
 		mensagemBD.delete(id, type);
 	}
 

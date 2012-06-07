@@ -371,8 +371,11 @@ public class FacebookMessageActivity extends Activity {
 								if(nextPage!=null)
 									ini=Integer.parseInt(nextPage);
 								
+								int toDownload=ini+Integer.parseInt(QTD_COMMENTS);
+								if(toDownload>lenght)
+									toDownload=lenght;
 								
-								for (int i = ini; i < ini+Integer.parseInt(QTD_COMMENTS); i++) {
+								for (int i = ini; i < toDownload; i++) {
 									JSONObject comment = array.getJSONObject(i);
 									String commentId = comment.getString("id");
 
@@ -439,14 +442,19 @@ public class FacebookMessageActivity extends Activity {
 			super.onPostExecute(result);
 
 			lt_load.setVisibility(View.GONE);
-
+	
 			if (isRefreshig) {
-				list_comments.removeAllViews();
-				commentsAdded.clear();
+				//list_comments.removeAllViews();
+				//commentsAdded.clear();
 
 				bt_refresh.setEnabled(true);
 				bt_refresh.setText(R.string.refresh);
 			}
+			
+			if(comments.size()==0){
+				Toast.makeText(FacebookMessageActivity.this, FacebookMessageActivity.this.getString(R.string.no_new_comments),Toast.LENGTH_SHORT).show();
+			}
+			
 			Collections.sort(comments);
 			LayoutInflater inflater = (LayoutInflater) FacebookMessageActivity.this
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -490,44 +498,6 @@ public class FacebookMessageActivity extends Activity {
 				list_comments.addView(row);
 			}
 
-			/*
-			 * } else { for (Mensagem m : comments) {
-			 * 
-			 * if (wasAddedOn(m, commentsAdded)) continue; else
-			 * commentsAdded.add(m);
-			 * 
-			 * cont++; View row = inflater.inflate(R.layout.twitte_row, null);
-			 * ImageView img = (ImageView) row .findViewById(R.id.profile_img);
-			 * TextView screenName = (TextView) row
-			 * .findViewById(R.id.screen_name); TextView time = (TextView)
-			 * row.findViewById(R.id.time); TextView tweetText = (TextView) row
-			 * .findViewById(R.id.twitte);
-			 * 
-			 * int qtd_likes = m.getLikesCount(); if (qtd_likes > 0) {
-			 * LinearLayout lt_likes = (LinearLayout)
-			 * findViewById(R.id.lt_likes);
-			 * lt_likes.setVisibility(View.VISIBLE);
-			 * 
-			 * TextView txt_qtd_likesTextView = (TextView)
-			 * findViewById(R.id.lbl_qtd_likes);
-			 * txt_qtd_likesTextView.setText(Integer .toString(qtd_likes)); }
-			 * screenName.setText(m.getNome_usuario());
-			 * time.setText(TwitterUtils.friendlyFormat(m.getData()));
-			 * tweetText.setText(TwitterUtils.createMessage(m .getMensagem()));
-			 * tweetText.setMovementMethod(LinkMovementMethod .getInstance());
-			 * TwitterUtils.stripUnderlines(tweetText);
-			 * 
-			 * TwitterImageDownloadTask
-			 * .executeDownload(FacebookMessageActivity.this, img,
-			 * m.getImagePath());
-			 * 
-			 * list_comments.addView(row); } }
-			 */
-
-			/*
-			 * if ((cont > 0 && commentsAdded.size() < current_message
-			 * .getCommentsCount() && nextPage != null)||isRefreshig) {
-			 */
 			lt_more_comments.setVisibility(View.VISIBLE);
 			lt_more_comments.setOnClickListener(new View.OnClickListener() {
 
@@ -543,42 +513,21 @@ public class FacebookMessageActivity extends Activity {
 
 			txt_qtd_likes.setText(Integer.toString(current_message
 					.getLikesCount()));
-			/*
-			 * txt_qtd_comments.setText(Integer.toString(current_message
-			 * .getCommentsCount()));
-			 */
+			
 			if (!bt_comment.isShown())
 				bt_comment.setVisibility(View.VISIBLE);
 
 			commentsLoaded = true;
-			// String aToken = Account.getFacebookAccount(
-			// FacebookMessageActivity.this).getToken();
-			// String afterId = commentsAdded.lastElement().getIdMensagem();
-
-			/*
-			 * nextPage="https://graph.facebook.com/"+
-			 * current_message.getIdMensagem
-			 * ()+"/comments?limit="+QTD_COMMENTS+"&access_token="+aToken+
-			 * "&format=json&fields=message,likes,from.picture,from.name,from.id&"
-			 * +"&offset="+commentsAdded.size()+"&__after_id="+afterId;
-			 */
-			String aToken = Account.getFacebookAccount(
-					FacebookMessageActivity.this).getToken();
+			
 			int qtd_messages = commentsAdded.size();
-			int limit = qtd_messages
+			/*int limit = qtd_messages
 					- (qtd_messages % Integer.parseInt(QTD_COMMENTS))
-					+ Integer.parseInt(QTD_COMMENTS);
+					+ Integer.parseInt(QTD_COMMENTS);*/
 
-			nextPage = ""+limit;
+			nextPage = ""+qtd_messages;
 
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-			/*
-			 * nextPage = "https://graph.facebook.com/" +
-			 * current_message.getIdMensagem() + "/comments?limit=" + limit +
-			 * "&access_token=" + aToken +
-			 * "&format=json&fields=message,likes,from.picture,from.name,from.id"
-			 * ;
-			 */
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+			
 		}
 
 	}

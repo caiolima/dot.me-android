@@ -21,7 +21,7 @@ public class Constants {
 	
 	public static final int QTD_FEEDS=25;
 	
-	public static final long QTD_MINUTES=600000;
+	public static final long QTD_MINUTES=3*600000;
 	
 	
 }

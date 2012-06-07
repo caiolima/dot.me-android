@@ -128,6 +128,10 @@ public class FacebookCommentActivity extends Activity{
 			super.onPostExecute(result);
 			
 			pDialog.cancel();
+			if(response==null){
+				Toast.makeText(FacebookCommentActivity.this, getString(R.string.erro_posting_comment), Toast.LENGTH_SHORT).show();
+				return ;
+			}
 			try{
 				JSONObject responseJSON=new JSONObject(response);
 				String idComment=responseJSON.getString("id");

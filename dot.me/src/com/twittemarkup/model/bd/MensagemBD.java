@@ -2,6 +2,7 @@ package com.twittemarkup.model.bd;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Vector;
 
@@ -70,7 +71,7 @@ public class MensagemBD extends Dao {
 	protected Vector<Mensagem> getAllMensagens() throws MalformedURLException {
 		try {
 			Cursor c = db.getDB().query(DataBase.TB_MENSAGEM, null, null, null,
-					null, null, DataBase.MENSAGEM_DATE + " DESC");
+					null, null,null);
 
 			Vector<Mensagem> mensagens = new Vector<Mensagem>();
 			for (int i = 0; i < c.getCount(); i++) {
@@ -80,6 +81,8 @@ public class MensagemBD extends Dao {
 				mensagens.add(mensagem);
 
 			}
+			
+			Collections.sort(mensagens);
 			return mensagens;
 		} catch (Exception e) {
 			return null;
@@ -183,6 +186,7 @@ public class MensagemBD extends Dao {
 					mensagens.add(mensagem);
 
 			}
+			
 			return mensagens;
 		} catch (Exception e) {
 			return null;

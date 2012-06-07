@@ -50,7 +50,7 @@ public class FacebookGroup {
 			group.setId(jsonObject.getString("id"));
 			group.setName(jsonObject.getString("name"));
 			group.setDescription("");
-			group.setUrlImage(new URL("http://facebook.com"+jsonObject.getString("picture")));
+			group.setUrlImage(new URL(jsonObject.getString("picture")));
 		} catch (JSONException e) {
 			return null;
 		} catch (MalformedURLException e) {

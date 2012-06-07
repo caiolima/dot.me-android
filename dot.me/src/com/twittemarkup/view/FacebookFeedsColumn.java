@@ -63,41 +63,6 @@ public class FacebookFeedsColumn extends AbstractColumn {
 		}
 	}
 
-	/*
-	 * private class FeedsRecieverListener extends BaseRequestListener{
-	 * 
-	 * private PullToRefreshListView listView; private Vector<Mensagem>
-	 * messages=new Vector<Mensagem>();
-	 * 
-	 * public FeedsRecieverListener(PullToRefreshListView lst){
-	 * this.listView=lst; }
-	 * 
-	 * @Override public void onComplete(String response, Object state) { try {
-	 * JSONObject json=new JSONObject(response); JSONArray
-	 * array=json.getJSONArray("data"); for(int i=0;i<array.length();i++){
-	 * Mensagem m=Mensagem.createFromFacebookFeed(array.getJSONObject(i));
-	 * if(m!=null){ Facade.getInstance(ctx).insert(m); messages.add(m); }
-	 * 
-	 * } TimelineActivity.h.post(new Runnable() {
-	 * 
-	 * @Override public void run() { listView.onRefreshComplete();
-	 * 
-	 * } });
-	 * 
-	 * updateTwittes(messages, true);
-	 * 
-	 * } catch (JSONException e) {
-	 * 
-	 * }
-	 * 
-	 * 
-	 * }
-	 * 
-	 * }
-	 */
-
-	// private int num_new_feeds;
-
 	public class FacebookNewsFeedGetterTask extends AsyncTask<Void, Void, Void> {
 
 		private Vector<Mensagem> messages = new Vector<Mensagem>();
@@ -136,40 +101,6 @@ public class FacebookFeedsColumn extends AbstractColumn {
 					messages.addAll(FacebookUtils.createListOfFeeds(facade,
 							facebook, json, Mensagem.TIPO_NEWS_FEEDS));
 
-					/*
-					 * JSONArray array = json.getJSONArray("data"); for (int i =
-					 * 0; i < array.length(); i++) { JSONObject object =
-					 * array.getJSONObject(i); Mensagem m =
-					 * facade.getOneMessage( object.getString("id"),
-					 * Mensagem.TIPO_NEWS_FEEDS); if (m == null) { m =
-					 * Mensagem.createFromFacebookFeed(object);
-					 * 
-					 * if (m == null) continue;
-					 * 
-					 * m.setTipo(Mensagem.TIPO_NEWS_FEEDS);
-					 * 
-					 * String obString = null;
-					 * 
-					 * if (object.getString("type").equals("photo") &&
-					 * m.getPictureUrl() == null) { obString =
-					 * object.getString("object_id"); Bundle params = new
-					 * Bundle(); params.putString("fields",
-					 * "picture,source,id,width,height"); String response2 =
-					 * facebook.request(obString, params); try { JSONObject
-					 * pic_info = new JSONObject( response2);
-					 * m.getAddtions().put("pic_info", pic_info); } catch
-					 * (JSONException e) {
-					 * 
-					 * } }
-					 * 
-					 * facade.insert(m);
-					 * 
-					 * }
-					 * 
-					 * messages.add(m);
-					 * 
-					 * } // messages.addAll(createdMessages);
-					 */
 					try {
 						JSONObject pagingObject = json.getJSONObject("paging");
 						nextPage = pagingObject.getString("next");
@@ -187,6 +118,14 @@ public class FacebookFeedsColumn extends AbstractColumn {
 				e.printStackTrace();
 			}
 
+			if (!messages.isEmpty() && !flagNextPage) {
+
+				for (Mensagem m : last) {
+					if (!messages.contains(m))
+						facade.deleteMensagem(m.getIdMensagem(), m.getTipo());
+				}
+			}
+
 			return null;
 		}
 
@@ -196,12 +135,8 @@ public class FacebookFeedsColumn extends AbstractColumn {
 
 			if (!messages.isEmpty() && !flagNextPage) {
 				adapter.clear();
-				for (Mensagem m : last) {
-					if (!messages.contains(m))
-						facade.deleteMensagem(m.getIdMensagem(), m.getTipo());
-				}
 			}
-
+			
 			for (Mensagem m : messages) {
 				adapter.addItem(m);
 			}
@@ -214,16 +149,16 @@ public class FacebookFeedsColumn extends AbstractColumn {
 			}
 
 			isLoaddingNextPage = false;
-			JSONObject prop=config.getProprietes();
-			if(prop!=null){
+			JSONObject prop = config.getProprietes();
+			if (prop != null) {
 				prop.remove("nextPage");
 				try {
 					prop.put("nextPage", nextPage);
 				} catch (JSONException e) {
-					
+
 				}
 			}
-			
+
 		}
 
 	}
@@ -235,7 +170,6 @@ public class FacebookFeedsColumn extends AbstractColumn {
 
 		super.onGetNextPage();
 
-		
 		FacebookAccount faceAcc = Account.getFacebookAccount(ctx);
 		if (faceAcc != null) {
 			try {
@@ -244,7 +178,8 @@ public class FacebookFeedsColumn extends AbstractColumn {
 					if (!nextPage.equals("none")) {
 						Log.w("facebook-collumn", "next_started");
 						isLoaddingNextPage = true;
-						new FacebookNewsFeedGetterTask(facebook, nextPage).execute();
+						new FacebookNewsFeedGetterTask(facebook, nextPage)
+								.execute();
 					} else {
 						notifyNextPageFinish();
 
@@ -256,10 +191,7 @@ public class FacebookFeedsColumn extends AbstractColumn {
 			}
 
 		}
-		
-		
-		
-		
+
 	}
 
 	@Override
@@ -274,12 +206,12 @@ public class FacebookFeedsColumn extends AbstractColumn {
 
 			}
 		});
-		Mensagem m=list.firstElement();
-		if(m!=null){
-			if(System.currentTimeMillis()-m.getData().getTime()>Constants.QTD_MINUTES){
-				nextPage=null;
-				JSONObject prop=config.getProprietes();
-				if (prop!=null) {
+		Mensagem m = list.firstElement();
+		if (m != null) {
+			if (System.currentTimeMillis() - m.getData().getTime() > Constants.QTD_MINUTES) {
+				nextPage = null;
+				JSONObject prop = config.getProprietes();
+				if (prop != null) {
 					prop.remove("nextPage");
 				}
 			}
@@ -291,16 +223,15 @@ public class FacebookFeedsColumn extends AbstractColumn {
 	public boolean isDeletable() {
 		return false;
 	}
-	
+
 	@Override
 	public void setConfig(CollumnConfig config) {
 		super.setConfig(config);
 		try {
-			nextPage=config.getProprietes().getString("nextPage");
+			nextPage = config.getProprietes().getString("nextPage");
 		} catch (JSONException e) {
-			
+
 		}
 	}
-	
 
 }

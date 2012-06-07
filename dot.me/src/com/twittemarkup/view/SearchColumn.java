@@ -43,6 +43,7 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 	private Context ctx;
 	private Handler h = TimelineActivity.h;
 	private int currentpage;
+	private Vector<Mensagem> mensagensAdded = new Vector<Mensagem>();
 	private boolean flagNextPage = false;
 
 	public SearchColumn(Context ctx, String search) {
@@ -51,7 +52,7 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 		this.search = search;
 		currentpage = 0;
 
-		command=new OpenTwitterWriter(search);
+		command = new OpenTwitterWriter(search);
 		// addCacheResult();
 	}
 
@@ -110,8 +111,9 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 						((PullToRefreshListView) listView).onRefreshComplete();
 						if (!mensagens.isEmpty()) {
 							adapter.clear();
-							for(Mensagem m:last)
-								facade.deleteMensagem(m.getIdMensagem(), m.getTipo());
+							for (Mensagem m : last)
+								facade.deleteMensagem(m.getIdMensagem(),
+										m.getTipo());
 
 						}
 					} else if (currentpage > 1) {
@@ -157,14 +159,14 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 				user.getTokenSecret());
 
 		new GetSearchTweetsTask(token).execute();
-		
-		JSONObject prop=config.getProprietes();
-		if(prop!=null){
+
+		JSONObject prop = config.getProprietes();
+		if (prop != null) {
 			prop.remove("nextPage");
 			try {
 				prop.put("nextPage", currentpage);
 			} catch (JSONException e) {
-				
+
 			}
 		}
 
@@ -210,7 +212,7 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 	@Override
 	public void init() {
 
-		final Vector<Mensagem> toAdd=new Vector<Mensagem>();
+		final Vector<Mensagem> toAdd = new Vector<Mensagem>();
 		Facade facade = Facade.getInstance(ctx);
 		for (final Mensagem m : facade
 				.getMensagemOf(Mensagem.TIPO_TWEET_SEARCH)) {
@@ -219,34 +221,35 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 						.getMensagem().toLowerCase().split(" ")));
 				if (parts.contains(search.toLowerCase()))
 					toAdd.add(m);
-					
+
 			} catch (Exception e) {
 
 			}
 		}
-		
-		listView.post(new Runnable() {
+		Handler h = TimelineActivity.h;
+		if (h != null) {
+			h.post(new Runnable() {
 
-			@Override
-			public void run() {
-				for(Mensagem m:toAdd)
-					adapter.addItem(m);
-						
-				
-			}
-		});
-		
-		Mensagem m=toAdd.firstElement();
-		if(m!=null){
-			if(System.currentTimeMillis()-m.getData().getTime()>Constants.QTD_MINUTES){
-				currentpage=0;
-				JSONObject prop=config.getProprietes();
-				if (prop!=null) {
+				@Override
+				public void run() {
+					for (Mensagem m : toAdd)
+						adapter.addItem(m);
+
+				}
+			});
+		}
+
+		Mensagem m = toAdd.firstElement();
+		if (m != null) {
+			if (System.currentTimeMillis() - m.getData().getTime() > Constants.QTD_MINUTES) {
+				currentpage = 0;
+				JSONObject prop = config.getProprietes();
+				if (prop != null) {
 					prop.remove("nextPage");
 				}
 			}
 		}
-		
+
 		firstPut = false;
 	}
 
@@ -277,14 +280,7 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 				for (Tweet tweet : result.getTweets()) {
 					Mensagem m = Mensagem.createFromTweet(tweet);
 
-					Facade facade = Facade.getInstance(ctx);
-
-					if (!facade.exsistsStatus(m.getIdMensagem(), m.getTipo())) {
-
-						facade.insert(m);
-						mensagens.add(m);
-
-					}
+					mensagens.add(m);
 
 				}
 
@@ -305,8 +301,17 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 
-			for (Mensagem m : mensagens)
-				adapter.addItem(m);
+			for (Mensagem m : mensagens) {
+				Facade facade = Facade.getInstance(ctx);
+
+				if (!facade.exsistsStatus(m.getIdMensagem(), m.getTipo()))
+					facade.insert(m);
+
+				if (!mensagensAdded.contains(m)) {
+					adapter.addItem(m);
+					mensagensAdded.add(m);
+				}
+			}
 
 			if (currentpage == 1) {
 				((PullToRefreshListView) listView).onRefreshComplete();
@@ -316,8 +321,6 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 			}
 
 		}
-		
-		
 
 	}
 
@@ -325,10 +328,10 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 	public void setConfig(CollumnConfig config) {
 		super.setConfig(config);
 		try {
-			currentpage=config.getProprietes().getInt("nextPage");
+			currentpage = config.getProprietes().getInt("nextPage");
 		} catch (JSONException e) {
-			currentpage=0;
+			currentpage = 0;
 		}
 	}
-	
+
 }
