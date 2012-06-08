@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import twitter4j.DirectMessage;
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.Tweet;
@@ -90,6 +91,26 @@ public class Mensagem implements Comparable<Mensagem> {
 		this.tipo = tipo;
 	}
 
+	public static Mensagem createFromDirectMensagem(DirectMessage dm){
+		try {
+			Mensagem mensagem = new Mensagem();
+
+			mensagem.setAction(OpenTwitterStatusAction.getInstance());
+			
+			mensagem.idMensagem = Long.toString(dm.getId());
+			mensagem.nome_usuario = dm.getSender().getName();
+			mensagem.mensagem = dm.getText();
+			mensagem.imagePath = dm.getSender().getProfileImageURL();
+			mensagem.data = dm.getCreatedAt();
+			mensagem.idUser = dm.getSender().getId();
+			mensagem.tipo = TIPO_STATUS;
+
+			return mensagem;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
 	public static Mensagem creteFromTwitterStatus(Status s) {
 		try {
 			Mensagem mensagem = new Mensagem();

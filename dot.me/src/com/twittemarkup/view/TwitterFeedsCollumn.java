@@ -84,6 +84,9 @@ public class TwitterFeedsCollumn extends AbstractColumn {
 				
 			}
 		});
+		
+		if(list.isEmpty())
+			return;
 		Mensagem m=list.firstElement();
 		if(m!=null){
 			if(System.currentTimeMillis()-m.getData().getTime()>Constants.QTD_MINUTES){

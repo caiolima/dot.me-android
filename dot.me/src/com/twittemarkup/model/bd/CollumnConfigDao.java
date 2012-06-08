@@ -169,4 +169,16 @@ public class CollumnConfigDao extends Dao {
 		
 	}
 	
+	protected boolean existsCollumnType(String type){
+		
+		Cursor c = db.getDB().query(DataBase.TB_COLUMNS_CONFIG, null, DataBase.COLUMNS_CONFIG_TYPE+"=?",
+				new String[]{type}, null, null,null);
+		
+		if(c.getCount()>0)
+			return true;
+		
+		return false;
+		
+	}
+	
 }

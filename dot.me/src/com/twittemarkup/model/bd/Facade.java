@@ -351,4 +351,8 @@ public class Facade {
 		return mensagemBD.getMensagemOfLikeId(type, idLike);
 	}
 	
+	public boolean existsCollumnType(String type){
+		return configDao.existsCollumnType(type);
+	}
+	
 }

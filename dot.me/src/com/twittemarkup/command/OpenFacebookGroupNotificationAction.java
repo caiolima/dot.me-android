@@ -26,7 +26,7 @@ public class OpenFacebookGroupNotificationAction implements IMessageAction{
 	public void execute(Mensagem m, Context ctx) {
 		try {
 			String link=m.getAddtions().getString("link");
-			String id=link.replace("http://www.facebook.com/groups/", "").replace("/", "_");
+			String id=link.replace("http://www.facebook.com/groups/", "").replace("permalink/", "").replace("/", "_");
 			if(id.contains("?comment_id=")){
 				id=id.substring(0, id.indexOf("?comment_id="));
 			}

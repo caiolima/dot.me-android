@@ -10,10 +10,12 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 
 import com.facebook.android.Facebook;
 import com.markupartist.android.widget.PullToRefreshListView;
+import com.twittemarkup.activity.TimelineActivity;
 import com.twittemarkup.app.R;
 import com.twittemarkup.command.OpenFacebookWriter;
 import com.twittemarkup.exceptions.LostUserAccessException;
@@ -136,7 +138,7 @@ public class FacebookFeedsColumn extends AbstractColumn {
 			if (!messages.isEmpty() && !flagNextPage) {
 				adapter.clear();
 			}
-			
+
 			for (Mensagem m : messages) {
 				adapter.addItem(m);
 			}
@@ -198,23 +200,31 @@ public class FacebookFeedsColumn extends AbstractColumn {
 	public void init() {
 		final Vector<Mensagem> list = facade
 				.getMensagemOf(Mensagem.TIPO_NEWS_FEEDS);
-		listView.post(new Runnable() {
+		Handler h = TimelineActivity.h;
+		if (h != null) {
+			h.post(new Runnable() {
 
-			@Override
-			public void run() {
-				updateTwittes(list, true);
+				@Override
+				public void run() {
+					updateTwittes(list, true);
 
-			}
-		});
-		Mensagem m = list.firstElement();
-		if (m != null) {
-			if (System.currentTimeMillis() - m.getData().getTime() > Constants.QTD_MINUTES) {
-				nextPage = null;
-				JSONObject prop = config.getProprietes();
-				if (prop != null) {
-					prop.remove("nextPage");
+				}
+			});
+		}
+
+		try {
+			Mensagem m = list.firstElement();
+			if (m != null) {
+				if (System.currentTimeMillis() - m.getData().getTime() > Constants.QTD_MINUTES) {
+					nextPage = null;
+					JSONObject prop = config.getProprietes();
+					if (prop != null) {
+						prop.remove("nextPage");
+					}
 				}
 			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 
 	}

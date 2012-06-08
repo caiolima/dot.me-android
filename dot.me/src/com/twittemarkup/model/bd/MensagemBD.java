@@ -71,17 +71,17 @@ public class MensagemBD extends Dao {
 	protected Vector<Mensagem> getAllMensagens() throws MalformedURLException {
 		try {
 			Cursor c = db.getDB().query(DataBase.TB_MENSAGEM, null, null, null,
-					null, null,null);
+					null, null, null);
 
 			Vector<Mensagem> mensagens = new Vector<Mensagem>();
 			for (int i = 0; i < c.getCount(); i++) {
 				c.moveToPosition(i);
-				Mensagem mensagem=createMessage(c);
+				Mensagem mensagem = createMessage(c);
 
 				mensagens.add(mensagem);
 
 			}
-			
+
 			Collections.sort(mensagens);
 			return mensagens;
 		} catch (Exception e) {
@@ -111,8 +111,9 @@ public class MensagemBD extends Dao {
 
 		return null;
 	}
-	
-	private Mensagem createMessage(Cursor c) throws MalformedURLException, JSONException{
+
+	private Mensagem createMessage(Cursor c) throws MalformedURLException,
+			JSONException {
 		Mensagem mensagem = new Mensagem();
 
 		mensagem.setIdMensagem(c.getString(0));
@@ -123,25 +124,41 @@ public class MensagemBD extends Dao {
 		mensagem.setData(new Date(c.getLong(5)));
 		mensagem.setIdUser(c.getLong(6));
 		mensagem.setAddtions(new JSONObject(c.getString(7)));
-		
-		int tipo=mensagem.getTipo();
-		if(tipo==Mensagem.TIPO_STATUS||tipo==Mensagem.TIPO_TWEET_SEARCH){
+
+		int tipo = mensagem.getTipo();
+		if (tipo == Mensagem.TIPO_STATUS || tipo == Mensagem.TIPO_TWEET_SEARCH) {
 			mensagem.setAction(OpenTwitterStatusAction.getInstance());
-		}else if(tipo==Mensagem.TIPO_FACEBOOK_GROUP||tipo==Mensagem.TIPO_NEWS_FEEDS){
+		} else if (tipo == Mensagem.TIPO_FACEBOOK_GROUP
+				|| tipo == Mensagem.TIPO_NEWS_FEEDS) {
 			mensagem.setAction(OpenFacebookStatusAction.getInstance());
-		}else if(tipo==Mensagem.TIPO_FACEBOOK_NOTIFICATION){
-			String type=mensagem.getAddtions().getString("link");
-			if(type.startsWith("http://www.facebook.com/groups/")){
-				mensagem.setAction(OpenFacebookGroupNotificationAction.getInstance());
-			}else if(type.startsWith("http://www.facebook.com/permalink.php?story_fbid=")){
-				mensagem.setAction(OpenFacebookTaggedAction.getInstance());
-			}else if(type.startsWith("http://www.facebook.com/")&&type.contains("/posts/")){
-				mensagem.setAction(OpenFriendPostAction.getInstance());
-			}else if(type.startsWith("http://www.facebook.com/photo.php?fbid=")){
-				mensagem.setAction(OpenLinkActivity.getInstance());
+		} else if (tipo == Mensagem.TIPO_FACEBOOK_NOTIFICATION) {
+			try {
+				String type = mensagem.getAddtions().getString("link");
+				if (type.startsWith("http://www.facebook.com/groups/")) {
+					type=type.replace("http://www.facebook.com/groups/", "");
+					type.replace("/", "_");
+					
+					type=type.substring(0, type.length()-1);
+					if(type.contains("_"))
+						mensagem.setAction(OpenFacebookGroupNotificationAction
+							.getInstance());
+					else
+						mensagem.setAction(OpenLinkActivity.getInstance());
+				} else if (type
+						.startsWith("http://www.facebook.com/permalink.php?story_fbid=")) {
+					mensagem.setAction(OpenFacebookTaggedAction.getInstance());
+				} else if (type.startsWith("http://www.facebook.com/")
+						&& type.contains("/posts/")) {
+					mensagem.setAction(OpenFriendPostAction.getInstance());
+				} else if (type
+						.startsWith("http://www.facebook.com/photo.php?fbid=")) {
+					mensagem.setAction(OpenLinkActivity.getInstance());
+				}
+			} catch (JSONException e) {
+				mensagem.setAction(OpenTwitterStatusAction.getInstance());
 			}
 		}
-		
+
 		return mensagem;
 	}
 
@@ -150,43 +167,42 @@ public class MensagemBD extends Dao {
 
 			Cursor c = db.getDB().query(DataBase.TB_MENSAGEM, null,
 					DataBase.MENSAGEM_TIPO + "=?",
-					new String[] { Integer.toString(type) }, null, null,
-					DataBase.MENSAGEM_DATE + " DESC");
+					new String[] { Integer.toString(type) }, null, null, null);
 
 			Vector<Mensagem> mensagens = new Vector<Mensagem>();
 			for (int i = 0; i < c.getCount(); i++) {
 				c.moveToPosition(i);
-				
-				Mensagem mensagem=createMessage(c);
+
+				Mensagem mensagem = createMessage(c);
 
 				mensagens.add(mensagem);
 
 			}
+			Collections.sort(mensagens);
 			return mensagens;
 		} catch (Exception e) {
 			return null;
 		}
 
 	}
-	
+
 	protected Vector<Mensagem> getMensagemOfLikeId(int type, String idLike) {
 		try {
 
 			Cursor c = db.getDB().query(DataBase.TB_MENSAGEM, null,
 					DataBase.MENSAGEM_TIPO + "=?",
-					new String[] { Integer.toString(type) }, null, null,
-					null);
+					new String[] { Integer.toString(type) }, null, null, null);
 
 			Vector<Mensagem> mensagens = new Vector<Mensagem>();
 			for (int i = 0; i < c.getCount(); i++) {
 				c.moveToPosition(i);
-				
-				Mensagem mensagem=createMessage(c);
-				if(mensagem.getIdMensagem().startsWith(idLike))
+
+				Mensagem mensagem = createMessage(c);
+				if (mensagem.getIdMensagem().startsWith(idLike))
 					mensagens.add(mensagem);
 
 			}
-			
+
 			return mensagens;
 		} catch (Exception e) {
 			return null;
@@ -210,31 +226,34 @@ public class MensagemBD extends Dao {
 	}
 
 	protected void deleteAll(int type) {
-		if(type==Mensagem.TIPO_FACEBOOK_GROUP||type==Mensagem.TIPO_NEWS_FEEDS){
-			Vector<Mensagem> msgs=getMensagemOf(type);
-			for(Mensagem m:msgs){
+		if (type == Mensagem.TIPO_FACEBOOK_GROUP
+				|| type == Mensagem.TIPO_NEWS_FEEDS) {
+			Vector<Mensagem> msgs = getMensagemOf(type);
+			for (Mensagem m : msgs) {
 				deleteAllComents(m.getIdMensagem());
 			}
-			
+
 		}
-			
-		db.getDB().delete(DataBase.TB_MENSAGEM, DataBase.MENSAGEM_TIPO+"=?", new String[]{Integer.toString(type)});
+
+		db.getDB().delete(DataBase.TB_MENSAGEM, DataBase.MENSAGEM_TIPO + "=?",
+				new String[] { Integer.toString(type) });
 	}
-	
-	protected void deleteAllComents(String id){
-		Vector<Mensagem> msgs=getMensagemOf(Mensagem.TIPO_FACE_COMENTARIO);
-		for(Mensagem m:msgs){
-			if(m.getIdMensagem().startsWith(id))
+
+	protected void deleteAllComents(String id) {
+		Vector<Mensagem> msgs = getMensagemOf(Mensagem.TIPO_FACE_COMENTARIO);
+		for (Mensagem m : msgs) {
+			if (m.getIdMensagem().startsWith(id))
 				delete(m.getIdMensagem(), Mensagem.TIPO_FACE_COMENTARIO);
 		}
 	}
-	
+
 	protected void delete(String id, int type) {
 		db.getDB().delete(
 				DataBase.TB_MENSAGEM,
 				DataBase.MENSAGEM_ID + "=? and " + DataBase.MENSAGEM_TIPO
 						+ "=?", new String[] { id, Integer.toString(type) });
-		if(type==Mensagem.TIPO_FACEBOOK_GROUP||type==Mensagem.TIPO_NEWS_FEEDS)
+		if (type == Mensagem.TIPO_FACEBOOK_GROUP
+				|| type == Mensagem.TIPO_NEWS_FEEDS)
 			deleteAllComents(id);
 	}
 

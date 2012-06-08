@@ -129,4 +129,6 @@
     <string name="refreshing">Refreshing...</string>
     <string name="romoving_collumn">Removing collumn...</string>
     <string name="no_new_comments">No new comments!</string>
+    <string name="no_new_updates">No new updates.</string>
+    
 </resources>

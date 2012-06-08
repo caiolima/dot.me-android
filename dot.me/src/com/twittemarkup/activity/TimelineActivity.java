@@ -49,7 +49,7 @@ import com.twittemarkup.view.FacebookFeedsColumn;
 import com.twittemarkup.view.FacebookGroupColumn;
 import com.twittemarkup.command.OpenManageCollumnCommand;
 import com.twittemarkup.view.MarkupColunm;
-import com.twittemarkup.view.NotificationsCollumn;
+import com.twittemarkup.view.MeCollumn;
 import com.twittemarkup.view.SearchColumn;
 import com.twittemarkup.view.TwitterFeedsCollumn;
 
@@ -269,10 +269,7 @@ public class TimelineActivity extends Activity {
 							android.R.drawable.ic_menu_search));
 					actions.add(new OpenSearchCommand());
 				}
-				items.add(new Item(getString(R.string.new_markup),
-						android.R.drawable.ic_menu_add));
-				actions.add(new OpenCreateMarkupCommand());
-
+				
 				items.add(new Item(getString(R.string.manage_collumns),
 						android.R.drawable.ic_menu_agenda));
 
@@ -484,8 +481,8 @@ public class TimelineActivity extends Activity {
 				filters.add(column);
 
 				adapter.addView(column.getScrollView());
-			} else if (config.getType().equals(CollumnConfig.NOTIFICATION_FACE)) {
-				column = new NotificationsCollumn(this);
+			} else if (config.getType().equals(CollumnConfig.ME)) {
+				column = new MeCollumn(this);
 				filters.add(column);
 
 				adapter.addView(column.getScrollView());

@@ -214,16 +214,16 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 
 		final Vector<Mensagem> toAdd = new Vector<Mensagem>();
 		Facade facade = Facade.getInstance(ctx);
-		for (final Mensagem m : facade
-				.getMensagemOf(Mensagem.TIPO_TWEET_SEARCH)) {
-			try {
-				Vector<String> parts = new Vector<String>(Arrays.asList(m
-						.getMensagem().toLowerCase().split(" ")));
-				if (parts.contains(search.toLowerCase()))
+		Vector<Mensagem> mensagens=facade
+				.getMensagemOf(Mensagem.TIPO_TWEET_SEARCH);
+		for (final Mensagem m : mensagens) {
+			JSONObject adds=m.getAddtions();
+			try{
+				String searchTag=adds.getString("search_tag");
+				if(searchTag.equals(search))
 					toAdd.add(m);
-
-			} catch (Exception e) {
-
+			}catch (Exception e) {
+				continue;
 			}
 		}
 		Handler h = TimelineActivity.h;
@@ -239,6 +239,9 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 			});
 		}
 
+		if(toAdd.isEmpty())
+			return ;
+		
 		Mensagem m = toAdd.firstElement();
 		if (m != null) {
 			if (System.currentTimeMillis() - m.getData().getTime() > Constants.QTD_MINUTES) {
@@ -300,8 +303,23 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
-
+			
 			for (Mensagem m : mensagens) {
+				JSONObject adds=m.getAddtions();
+				if(adds!=null){
+					try {
+						adds.put("search_tag", search);
+					} catch (JSONException e) {
+						continue;
+					}
+				}else{
+					adds=new JSONObject();
+					try {
+						adds.put("search_tag", search);
+					} catch (JSONException e) {
+						continue;
+					}
+				}
 				Facade facade = Facade.getInstance(ctx);
 
 				if (!facade.exsistsStatus(m.getIdMensagem(), m.getTipo()))

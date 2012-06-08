@@ -3,6 +3,11 @@ package com.twittemarkup.utils;
 import java.util.Date;
 import java.util.Vector;
 
+import com.twittemarkup.model.Mensagem;
+import com.twittemarkup.model.User;
+import com.twittemarkup.model.bd.Facade;
+
+import android.content.Context;
 import android.text.GetChars;
 import android.text.Html;
 import android.text.Spannable;
@@ -11,6 +16,7 @@ import android.text.TextPaint;
 import android.text.style.URLSpan;
 import android.widget.TextView;
 
+import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
@@ -160,6 +166,38 @@ public class TwitterUtils {
 
 		}
 		textView.setText(s);
+	}
+	
+	public static ResponseUpdate updateTweets(Context ctx,ResponseList<twitter4j.Status> list,int type) {
+		// ImageUtils.loadImages(list);
+		Mensagem lastMessage = null;
+		Vector<Mensagem> mensagens = new Vector<Mensagem>();
+		for (twitter4j.Status status : list) {
+			Mensagem m = Mensagem.creteFromTwitterStatus(status);
+			Facade facade = Facade.getInstance(ctx);
+			User u = User.createFromTwitterUser(status.getUser());
+			facade.insert(u);
+			m.setTipo(type);
+
+			if (!facade.exsistsStatus(m.getIdMensagem(), m.getTipo())) {
+
+				facade.insert(m);
+
+			}
+
+			mensagens.add(m);
+			lastMessage = m;
+		}
+		
+		ResponseUpdate response = new ResponseUpdate();
+		response.lastMessage = lastMessage;
+		response.mensagens = mensagens;
+		return response;
+	}
+	
+	public static class ResponseUpdate {
+		public Vector<Mensagem> mensagens;
+		public Mensagem lastMessage;
 	}
 
 }

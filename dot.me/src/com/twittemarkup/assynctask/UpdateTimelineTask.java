@@ -26,6 +26,7 @@ import com.twittemarkup.service.UpdateTimelineService;
 import com.twittemarkup.utils.Constants;
 import com.twittemarkup.utils.ImageUtils;
 import com.twittemarkup.utils.TwitterUtils;
+import com.twittemarkup.utils.TwitterUtils.ResponseUpdate;
 import com.twittemarkup.utils.UpdateParams;
 import com.twittemarkup.view.AbstractColumn;
 
@@ -68,7 +69,7 @@ public class UpdateTimelineTask extends AsyncTask<Void, Void, Void> {
 			Paging page = new Paging(n_page, qtd_feeds);
 			list = TwitterUtils.getTwitter(accessToken).getHomeTimeline(page);
 
-			ResponseUpdate response = updateTweets(list);
+			ResponseUpdate response = TwitterUtils.updateTweets(ctx,list,Mensagem.TIPO_STATUS);
 			messages = response.mensagens;
 			/*
 			 * Mensagem lastMessage = response.lastMessage;
@@ -149,36 +150,5 @@ public class UpdateTimelineTask extends AsyncTask<Void, Void, Void> {
 			adapter.sort();
 		}
 
-	}
-
-	private ResponseUpdate updateTweets(ResponseList<twitter4j.Status> list) {
-		// ImageUtils.loadImages(list);
-		Mensagem lastMessage = null;
-		Vector<Mensagem> mensagens = new Vector<Mensagem>();
-		for (twitter4j.Status status : list) {
-			Mensagem m = Mensagem.creteFromTwitterStatus(status);
-			Facade facade = Facade.getInstance(ctx);
-			User u = User.createFromTwitterUser(status.getUser());
-			facade.insert(u);
-
-			if (!facade.exsistsStatus(m.getIdMensagem(), m.getTipo())) {
-
-				facade.insert(m);
-
-			}
-
-			mensagens.add(m);
-			lastMessage = m;
-		}
-		ResponseUpdate response = new ResponseUpdate();
-		response.lastMessage = lastMessage;
-		response.mensagens = mensagens;
-		return response;
-	}
-
-	private class ResponseUpdate {
-		public Vector<Mensagem> mensagens;
-		public Mensagem lastMessage;
-	}
-
+	}	
 }
