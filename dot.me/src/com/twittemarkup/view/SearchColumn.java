@@ -23,6 +23,7 @@ import com.markupartist.android.widget.PullToRefreshListView;
 import com.twittemarkup.activity.SearchResultActivity;
 import com.twittemarkup.activity.TimelineActivity;
 import com.twittemarkup.adapter.MessageAdapter;
+import com.twittemarkup.assynctask.AssyncTaskManager;
 import com.twittemarkup.assynctask.UpdateAction;
 import com.twittemarkup.command.OpenTwitterWriter;
 import com.twittemarkup.interfaces.IGetUpdateAction;
@@ -259,7 +260,8 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 	private class GetSearchTweetsTask extends AsyncTask<Void, Void, Void> {
 
 		private AccessToken token;
-		private Vector<Mensagem> mensagens = new Vector<Mensagem>();;
+		private Vector<Mensagem> mensagens = new Vector<Mensagem>();
+		private Vector<Mensagem> cachedMessages=new Vector<Mensagem>();
 
 		public GetSearchTweetsTask(AccessToken token) {
 			this.token = token;
@@ -268,6 +270,8 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 		@Override
 		protected Void doInBackground(Void... params) {
 
+			AssyncTaskManager.getInstance().addProccess(this);
+			
 			Twitter twitter = TwitterUtils.getTwitter(token);
 			Query q = new Query(search);
 			if (flagNextPage)
@@ -338,6 +342,7 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 				adapter.sort();
 			}
 
+			AssyncTaskManager.getInstance().removeProcess(this);
 		}
 
 	}

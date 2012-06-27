@@ -205,9 +205,9 @@ public class MarkupColunm extends AbstractColumn implements MessageObserver {
 	}
 
 	@Override
-	public void notifyMessageRemoved(Mensagem m) {
+	public void notifyMessageRemoved(String id,int type) {
 		
-		adapter.deleteMensagem(m);
+		adapter.deleteMensagem(id,type);
 		adapter.sort();
 		
 	}

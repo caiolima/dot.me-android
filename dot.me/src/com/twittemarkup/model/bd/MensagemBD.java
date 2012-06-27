@@ -91,7 +91,7 @@ public class MensagemBD extends Dao {
 	}
 
 	protected Mensagem getOne(String id, int type) {
-		try {
+		
 			Cursor c = db.getDB().query(
 					DataBase.TB_MENSAGEM,
 					null,
@@ -103,11 +103,17 @@ public class MensagemBD extends Dao {
 			if (c.getCount() > 0) {
 				c.moveToFirst();
 
-				return createMessage(c);
+				try {
+					return createMessage(c);
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-		} catch (Exception e) {
-
-		}
+		
 
 		return null;
 	}

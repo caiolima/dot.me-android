@@ -21,6 +21,8 @@ import com.twittemarkup.app.R;
 import com.twittemarkup.assynctask.TwitterImageDownloadTask;
 import com.twittemarkup.message.action.ISendAction;
 import com.twittemarkup.model.Account;
+import com.twittemarkup.model.Draft;
+import com.twittemarkup.model.bd.Facade;
 
 public class SendTweetActivity extends Activity {
 
@@ -38,6 +40,7 @@ public class SendTweetActivity extends Activity {
 	private Bundle sendParams;
 	private ISendAction action;
 	private String typeText;
+	private boolean isToSaveDraft=true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +120,11 @@ public class SendTweetActivity extends Activity {
 
 		if (preText != null) {
 			txt_text.setText(preText);
+		}
+		
+		Draft savedDraft=Facade.getInstance(this).getOneDraft(action.getDraftId());
+		if(savedDraft!=null){
+			txt_text.setText(savedDraft.getText());
 		}
 
 	}
@@ -202,6 +210,7 @@ public class SendTweetActivity extends Activity {
 			progressDialog.cancel();
 			parent.finish();
 			Toast.makeText(parent, action.getResultMessage(parent), Toast.LENGTH_SHORT).show();
+			isToSaveDraft=!action.messageSent();
 		}
 
 	}
@@ -252,4 +261,22 @@ public class SendTweetActivity extends Activity {
 	}
 	*/
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		if(isToSaveDraft&&!txt_text.getText().toString().equals("")){
+			Draft d=new Draft();
+			d.setId(action.getDraftId());
+			d.setText(txt_text.getText().toString());
+			
+			Facade.getInstance(this).insert(d);
+			
+		}else if(Facade.getInstance(this).existsDraft(action.getDraftId())){
+			Facade.getInstance(this).deleteDraft(action.getDraftId());
+		}
+			
+	}
+
+	
 }

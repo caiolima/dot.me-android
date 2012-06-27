@@ -11,5 +11,7 @@ public interface ISendAction {
 	public void execute(Activity a,String message,Bundle b);
 	public String getResultMessage(Context c);
 	public Account getAccount(Context c);
+	public String getDraftId();
+	public boolean messageSent();
 	
 }

@@ -25,7 +25,8 @@ import android.os.Bundle;
 
 public class SendTwitteAction implements ISendAction {
 	private boolean messageSent = false;
-
+	private String inReplyId="none";
+	
 	@Override
 	public void execute(Activity a, String message, Bundle b) {
 
@@ -36,6 +37,7 @@ public class SendTwitteAction implements ISendAction {
 			idReplyStatus = b.getLong("inReply");
 
 		if (idReplyStatus != -1) {
+			inReplyId=""+inReplyId;
 			StatusUpdate update = new StatusUpdate(message);
 			update.setInReplyToStatusId(idReplyStatus);
 
@@ -68,6 +70,18 @@ public class SendTwitteAction implements ISendAction {
 	public Account getAccount(Context c) {
 		
 		return Account.getTwitterAccount(c);
+	}
+
+	@Override
+	public String getDraftId() {
+		// TODO Auto-generated method stub
+		return "twitter_"+inReplyId;
+	}
+
+	@Override
+	public boolean messageSent() {
+		// TODO Auto-generated method stub
+		return messageSent;
 	}
 
 }

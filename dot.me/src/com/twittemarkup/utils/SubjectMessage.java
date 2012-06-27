@@ -27,9 +27,9 @@ public class SubjectMessage {
 		}
 	}
 	
-	public void notifyMessageRemovedObservers(Mensagem m){
+	public void notifyMessageRemovedObservers(String id,int type){
 		for(MessageObserver mObserver:observers){
-			mObserver.notifyMessageRemoved(m);
+			mObserver.notifyMessageRemoved(id,type);
 		}
 	}
 	

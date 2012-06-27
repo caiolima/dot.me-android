@@ -17,6 +17,7 @@ import com.facebook.android.Facebook;
 import com.markupartist.android.widget.PullToRefreshListView;
 import com.twittemarkup.activity.TimelineActivity;
 import com.twittemarkup.app.R;
+import com.twittemarkup.assynctask.AssyncTaskManager;
 import com.twittemarkup.command.OpenFacebookWriter;
 import com.twittemarkup.exceptions.LostUserAccessException;
 import com.twittemarkup.model.Account;
@@ -83,10 +84,20 @@ public class FacebookFeedsColumn extends AbstractColumn {
 			flagNextPage = true;
 
 		}
+		
+
+		@Override
+		protected void onCancelled() {
+			super.onCancelled();
+			
+			
+		}
 
 		@Override
 		protected Void doInBackground(Void... ins) {
-
+			AssyncTaskManager manager=AssyncTaskManager.getInstance();
+			manager.addProccess(this);
+			
 			try {
 				last = facade.getMensagemOf(Mensagem.TIPO_NEWS_FEEDS);
 				String response = null;
@@ -161,6 +172,7 @@ public class FacebookFeedsColumn extends AbstractColumn {
 				}
 			}
 
+			AssyncTaskManager.getInstance().removeProcess(this);
 		}
 
 	}

@@ -1,6 +1,7 @@
 package com.twittemarkup.adapter;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Vector;
 
 import com.twittemarkup.activity.FacebookMessageActivity;
@@ -36,10 +37,11 @@ import android.widget.TextView;
 public class FeddAdapter extends BaseAdapter {
 
 	private Vector<Mensagem> list = new Vector<Mensagem>();
+	private HashMap<String, Mensagem> hash = new HashMap<String, Mensagem>();
 	private Context ctx;
 	private LayoutInflater mInflater;
 	private AbstractColumn column;
-	private int selection=0;
+	private int selection = 0;
 
 	public FeddAdapter(Context ctx, AbstractColumn column) {
 		this.ctx = ctx;
@@ -71,9 +73,17 @@ public class FeddAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Log.w("dot.me", "Getting view at position " + position);
 		Mensagem m = (Mensagem) getItem(position);
-		selection=position;
+		selection = position;
 		if (m != null) {
-			convertView = mInflater.inflate(R.layout.twitte_row, null);
+			convertView = mInflater.inflate(R.layout.feed_row, null);
+
+			LinearLayout lt = (LinearLayout) convertView
+					.findViewById(R.id.twitte_row_view);
+			lt.setBackgroundResource(R.color.backgorung);
+
+			LinearLayout container = (LinearLayout) convertView
+					.findViewById(R.id.text_container);
+			container.setBackgroundResource(R.drawable.timeline_shape);
 
 			ViewHolder holder = new ViewHolder();
 			holder.txt_nome = (TextView) convertView
@@ -83,7 +93,10 @@ public class FeddAdapter extends BaseAdapter {
 			holder.data = (TextView) convertView.findViewById(R.id.time);
 			holder.txt_texto = (TextView) convertView.findViewById(R.id.twitte);
 			View v = convertView.findViewById(R.id.line);
-			v.setVisibility(View.GONE);
+
+			v.setBackgroundResource(R.color.light_blue);
+
+			// v.setVisibility(View.GONE);
 			convertView.setTag(holder);// Tag que serve para identificar a
 			// view
 			LinearLayout linearLayout = (LinearLayout) convertView
@@ -140,6 +153,7 @@ public class FeddAdapter extends BaseAdapter {
 		}
 
 		list.add(position, o);
+		hash.put(o.getIdMensagem() + "_" + o.getTipo(), o);
 		notifyDataSetChanged();
 	}
 
@@ -163,7 +177,9 @@ public class FeddAdapter extends BaseAdapter {
 				subject.notifyMessageAddedObservers(o);
 
 		}
+		hash.put(o.getIdMensagem() + "_" + o.getTipo(), o);
 		list.add(o);
+
 		notifyDataSetChanged();
 	}
 
@@ -293,20 +309,24 @@ public class FeddAdapter extends BaseAdapter {
 		this.column = column;
 	}
 
-	public void deleteMensagem(Mensagem m) {
+	public void deleteMensagem(String id, int type) {
 
-		int pos = list.indexOf(m);
 		try {
-			list.remove(pos);
+			Mensagem m = hash.get(id + "_" + type);
+			try {
+				list.remove(m);
 
-			notifyDataSetChanged();
-		} catch (IndexOutOfBoundsException e) {
+				notifyDataSetChanged();
+			} catch (IndexOutOfBoundsException e) {
+				// TODO: handle exception
+			}
+		} catch (NullPointerException e) {
 			// TODO: handle exception
 		}
 	}
 
 	public int getSelection() {
-		
+
 		return selection;
 	}
 

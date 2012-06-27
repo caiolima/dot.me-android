@@ -2,6 +2,7 @@ package com.twittemarkup.activity;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -33,6 +34,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
 import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -53,7 +55,8 @@ public class FacebookMessageActivity extends Activity {
 	private Button bt_comment, bt_like, bt_refresh;
 	private TextView txt_qtd_likes, txt_username, txt_message;
 	private ImageView img_load, img_picture, img_avatar;
-	private LinearLayout lt_load, list_comments, lt_more_comments;
+	private LinearLayout lt_load, list_comments, lt_more_comments,
+			lt_facebook_profile;
 	private Mensagem current_message;
 	private Facade facade;
 	private Vector<Mensagem> commentsAdded = new Vector<Mensagem>();
@@ -73,6 +76,19 @@ public class FacebookMessageActivity extends Activity {
 			bt_refresh.setText(R.string.refreshing);
 
 			new LoadCommentsTask(facebook, null, true).execute();
+		}
+	};
+
+	private OnClickListener openProfile = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+
+			Intent intent = new Intent(Intent.ACTION_VIEW,
+					Uri.parse("http://www.facebook.com/"
+							+ current_message.getIdUser()));
+			startActivity(intent);
+
 		}
 	};
 
@@ -110,9 +126,11 @@ public class FacebookMessageActivity extends Activity {
 		img_avatar = (ImageView) findViewById(R.id.facebook_img_user_avatar);
 		img_picture = (ImageView) findViewById(R.id.img_image_source);
 		bt_refresh = (Button) findViewById(R.id.bt_refresh);
+		lt_facebook_profile = (LinearLayout) findViewById(R.id.facebook_profile_lt);
 
 		bt_refresh.setOnClickListener(refreshClick);
-
+		lt_facebook_profile.setOnClickListener(openProfile);
+		
 		Intent intent = getIntent();
 		String id = null;
 		if (intent != null) {
@@ -367,14 +385,15 @@ public class FacebookMessageActivity extends Activity {
 							try {
 
 								int lenght = array.length();
-								int ini=0;
-								if(nextPage!=null)
-									ini=Integer.parseInt(nextPage);
-								
-								int toDownload=ini+Integer.parseInt(QTD_COMMENTS);
-								if(toDownload>lenght)
-									toDownload=lenght;
-								
+								int ini = 0;
+								if (nextPage != null)
+									ini = Integer.parseInt(nextPage);
+
+								int toDownload = ini
+										+ Integer.parseInt(QTD_COMMENTS);
+								if (toDownload > lenght)
+									toDownload = lenght;
+
 								for (int i = ini; i < toDownload; i++) {
 									JSONObject comment = array.getJSONObject(i);
 									String commentId = comment.getString("id");
@@ -442,19 +461,23 @@ public class FacebookMessageActivity extends Activity {
 			super.onPostExecute(result);
 
 			lt_load.setVisibility(View.GONE);
-	
+
 			if (isRefreshig) {
-				//list_comments.removeAllViews();
-				//commentsAdded.clear();
+				// list_comments.removeAllViews();
+				// commentsAdded.clear();
 
 				bt_refresh.setEnabled(true);
 				bt_refresh.setText(R.string.refresh);
 			}
-			
-			if(comments.size()==0){
-				Toast.makeText(FacebookMessageActivity.this, FacebookMessageActivity.this.getString(R.string.no_new_comments),Toast.LENGTH_SHORT).show();
+
+			if (comments.size() == 0) {
+				Toast.makeText(
+						FacebookMessageActivity.this,
+						FacebookMessageActivity.this
+								.getString(R.string.no_new_comments),
+						Toast.LENGTH_SHORT).show();
 			}
-			
+
 			Collections.sort(comments);
 			LayoutInflater inflater = (LayoutInflater) FacebookMessageActivity.this
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -513,21 +536,22 @@ public class FacebookMessageActivity extends Activity {
 
 			txt_qtd_likes.setText(Integer.toString(current_message
 					.getLikesCount()));
-			
+
 			if (!bt_comment.isShown())
 				bt_comment.setVisibility(View.VISIBLE);
 
 			commentsLoaded = true;
-			
-			int qtd_messages = commentsAdded.size();
-			/*int limit = qtd_messages
-					- (qtd_messages % Integer.parseInt(QTD_COMMENTS))
-					+ Integer.parseInt(QTD_COMMENTS);*/
 
-			nextPage = ""+qtd_messages;
+			int qtd_messages = commentsAdded.size();
+			/*
+			 * int limit = qtd_messages - (qtd_messages %
+			 * Integer.parseInt(QTD_COMMENTS)) + Integer.parseInt(QTD_COMMENTS);
+			 */
+
+			nextPage = "" + qtd_messages;
 
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-			
+
 		}
 
 	}

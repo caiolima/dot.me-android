@@ -62,6 +62,9 @@ public abstract class AbstractColumn {
 		if (isToRefresh) {
 			listView = new PullToRefreshListView(ctx);
 			
+			listView.setDividerHeight(0);
+			((PullToRefreshListView)listView).getmRefreshView().setBackgroundResource(R.color.backgorung);
+			
 
 			((PullToRefreshListView) listView)
 					.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {

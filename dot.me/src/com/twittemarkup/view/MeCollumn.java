@@ -20,6 +20,7 @@ import com.facebook.android.Facebook;
 import com.markupartist.android.widget.PullToRefreshListView;
 import com.twittemarkup.activity.TimelineActivity;
 import com.twittemarkup.app.R;
+import com.twittemarkup.assynctask.AssyncTaskManager;
 import com.twittemarkup.exceptions.LostUserAccessException;
 import com.twittemarkup.model.Account;
 import com.twittemarkup.model.FacebookAccount;
@@ -102,6 +103,8 @@ public class MeCollumn extends AbstractColumn {
 
 		@Override
 		protected Void doInBackground(Void... v) {
+			AssyncTaskManager.getInstance().addProccess(this);
+			
 			cachedMessages=facade.getMensagemOf(Mensagem.TIPO_FACEBOOK_NOTIFICATION);
 			TwitterAccount twitterAcc = Account.getTwitterAccount(ctx);
 			if (twitterAcc != null) {
@@ -225,7 +228,7 @@ public class MeCollumn extends AbstractColumn {
 			if(isLoaddingNextPage)
 				notifyNextPageFinish();
 			
-			
+			AssyncTaskManager.getInstance().removeProcess(this);
 		}
 
 	}

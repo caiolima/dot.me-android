@@ -4,5 +4,9 @@
     <color name="black">#000</color>
     <color name="light_blue">#E8E8E8</color>
     <color name="link_color">#00BFFF</color>
+    <color name="font_color">#4682B4</color>
+    <color name="backgorung">#dee6f8</color>
+    <color name="round_stroke">#7a7b7d</color>
+    <color name="rect_stroke">#a7b4ce</color>
     
 </resources>

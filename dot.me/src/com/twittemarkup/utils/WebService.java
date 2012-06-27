@@ -118,7 +118,7 @@ public class WebService {
 	}
 
 	// Use this method to do a HttpGet/WebGet on the web service
-	public String webGet(String methodName, Map<String, String> params) {
+	public String webGet(String methodName, Map<String, String> params) throws NullPointerException {
 		String getUrl = webServiceUrl + methodName;
 
 		int i = 0;
@@ -156,7 +156,7 @@ public class WebService {
 			ret = EntityUtils.toString(response.getEntity());
 		} catch (IOException e) {
 			Log.e("Groshie:", e.getMessage());
-		}
+		} 
 
 		return ret;
 	}

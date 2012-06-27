@@ -6,11 +6,11 @@ import java.util.Vector;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.EventLogTags.Description;
 
 import com.twittemarkup.activity.TimelineActivity;
 import com.twittemarkup.model.Account;
 import com.twittemarkup.model.CollumnConfig;
+import com.twittemarkup.model.Draft;
 import com.twittemarkup.model.FacebookAccount;
 import com.twittemarkup.model.FacebookGroup;
 import com.twittemarkup.model.Marcador;
@@ -18,7 +18,6 @@ import com.twittemarkup.model.Mensagem;
 import com.twittemarkup.model.PalavraChave;
 import com.twittemarkup.model.TwitterAccount;
 import com.twittemarkup.model.User;
-import com.twittemarkup.model.UsuarioTwitter;
 import com.twittemarkup.utils.BlackListUtils;
 import com.twittemarkup.utils.Menssage;
 import com.twittemarkup.utils.SubjectMessage;
@@ -36,6 +35,7 @@ public class Facade {
 	private FacebookBD facebookBd;
 	private FacebookGroupsBD facebookGroupBd;
 	private CollumnConfigDao configDao;
+	private DraftBD draftBD;
 	
 
 	public static Facade getInstance(Context ctx) {
@@ -57,6 +57,7 @@ public class Facade {
 		facebookBd = new FacebookBD(ctx);
 		facebookGroupBd = new FacebookGroupsBD(ctx);
 		configDao= new CollumnConfigDao(ctx);
+		draftBD=new DraftBD(ctx);
 		
 	}
 
@@ -211,7 +212,7 @@ public class Facade {
 				
 				@Override
 				public void run() {
-					mSubject.notifyMessageRemovedObservers(getOneMessage(id, type));
+					mSubject.notifyMessageRemovedObservers(id, type);
 				}
 			});
 		}
@@ -353,6 +354,22 @@ public class Facade {
 	
 	public boolean existsCollumnType(String type){
 		return configDao.existsCollumnType(type);
+	}
+	
+	public void insert(Draft d){
+		draftBD.insert(d);
+	}
+	
+	public void deleteDraft(String id){
+		draftBD.delete(id);
+	}
+	
+	public Draft getOneDraft(String id){
+		return draftBD.getOne(id);
+	}
+	
+	public boolean existsDraft(String id){
+		return draftBD.exists(id);
 	}
 	
 }

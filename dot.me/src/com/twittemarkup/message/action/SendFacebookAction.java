@@ -20,7 +20,8 @@ import android.os.Bundle;
 
 public class SendFacebookAction implements ISendAction {
 
-	private String id;
+	private String id,toUser;
+	
 	
 	@Override
 	public void execute(Activity a, String message, Bundle sendParams) {
@@ -30,7 +31,7 @@ public class SendFacebookAction implements ISendAction {
 
 			Bundle b = new Bundle();
 			b.putString("message", message);
-			String toUser = "me";
+			toUser = "me";
 			if (sendParams != null) {
 				String to = sendParams.getString("toID");
 				if (to != null)
@@ -81,6 +82,21 @@ public class SendFacebookAction implements ISendAction {
 	public Account getAccount(Context c) {
 		// TODO Auto-generated method stub
 		return  Account.getFacebookAccount(c);
+	}
+
+	@Override
+	public String getDraftId() {
+		
+		return "facebook_"+toUser;
+	}
+
+	@Override
+	public boolean messageSent() {
+		
+		if(id!=null)
+			return true;
+		else
+			return false;
 	}
 
 }

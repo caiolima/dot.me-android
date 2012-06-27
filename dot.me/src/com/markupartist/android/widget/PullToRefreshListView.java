@@ -116,7 +116,15 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
         mRefreshViewHeight = mRefreshView.getMeasuredHeight();
     }
 
-    @Override
+    public RelativeLayout getmRefreshView() {
+		return mRefreshView;
+	}
+
+	public void setmRefreshView(RelativeLayout mRefreshView) {
+		this.mRefreshView = mRefreshView;
+	}
+
+	@Override
     protected void onAttachedToWindow() {
         setSelection(1);
     }

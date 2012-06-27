@@ -54,85 +54,94 @@
             android:orientation="vertical" >
 
             <LinearLayout
-                android:id="@+id/linearLayout1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:background="@drawable/rounded_rect"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:id="@+id/facebook_img_user_avatar"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/border_rect" />
+                android:orientation="vertical" >
 
                 <LinearLayout
-                    android:id="@+id/linearLayout2"
+                    android:id="@+id/facebook_profile_lt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical" >
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:id="@+id/facebook_img_user_avatar"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/border_rect" />
 
                     <LinearLayout
-                        android:id="@+id/linearLayout5"
+                        android:id="@+id/linearLayout2"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" >
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical" >
 
-                        <TextView
-                            android:id="@+id/facebook_txt_username"
-                            style="@style/FontStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:text="Large Text"
-                            android:textStyle="bold" />
+                        <LinearLayout
+                            android:id="@+id/linearLayout5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" >
 
+                            <TextView
+                                android:id="@+id/facebook_txt_username"
+                                style="@style/FontStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:text="Large Text"
+                                android:textColor="@color/font_color"
+                                android:textStyle="bold" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout11"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/rounded_rect"
-                android:orientation="vertical" android:padding="10dp">
-
-                <TextView
-                    android:id="@+id/facebook_txt_message"
-                    style="@style/FontStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TextView" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp" android:background="@color/round_stroke">
+                </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout9"
+                    android:id="@+id/linearLayout11"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:orientation="vertical" android:gravity="center">
+                    android:orientation="vertical"
+                    android:padding="10dp" >
 
-                    <ImageView
-                        android:id="@+id/img_image_source"
+                    <TextView
+                        android:id="@+id/facebook_txt_message"
+                        style="@style/FontStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/border_rect"
-                        android:visibility="gone" />
+                        android:text="TextView" />
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout9"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:gravity="center"
+                        android:orientation="vertical" >
+
+                        <ImageView
+                            android:id="@+id/img_image_source"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="@drawable/border_rect"
+                            android:visibility="gone" />
+                    </LinearLayout>
                 </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -163,7 +172,7 @@
                 android:id="@+id/linearlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
@@ -226,6 +235,18 @@
                     android:orientation="vertical" >
                 </LinearLayout>
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/rounded_rect"
+                android:orientation="vertical" >
+
                 <LinearLayout
                     android:id="@+id/lt_facebook_more_comments"
                     android:layout_width="match_parent"
@@ -253,8 +274,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
-
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

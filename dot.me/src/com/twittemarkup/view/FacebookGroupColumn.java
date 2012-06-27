@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import com.facebook.android.Facebook;
 import com.markupartist.android.widget.PullToRefreshListView;
 import com.twittemarkup.activity.TimelineActivity;
+import com.twittemarkup.assynctask.AssyncTaskManager;
 import com.twittemarkup.command.OpenFacebookWriter;
 import com.twittemarkup.exceptions.LostUserAccessException;
 import com.twittemarkup.model.Account;
@@ -92,7 +93,7 @@ public class FacebookGroupColumn extends AbstractColumn {
 
 		@Override
 		protected Void doInBackground(Void... params) {
-
+			AssyncTaskManager.getInstance().addProccess(this);
 			try {
 				
 				for (Mensagem m : facade.getMensagemOf(Mensagem.TIPO_FACEBOOK_GROUP)) {
@@ -165,7 +166,9 @@ public class FacebookGroupColumn extends AbstractColumn {
 					
 				}
 			}
+			AssyncTaskManager.getInstance().removeProcess(this);
 		}
+		
 
 	}
 
