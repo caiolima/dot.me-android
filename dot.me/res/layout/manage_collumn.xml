@@ -44,11 +44,11 @@
         android:background="@drawable/rounded_rect"
         android:orientation="vertical" android:padding="5dp">
 
-        <com.twittemarkup.view.DragNDropListView
+        <com.dot.me.view.DragNDropListView
             android:id="@+id/manage_collumn_lst"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
-        </com.twittemarkup.view.DragNDropListView>
+        </com.dot.me.view.DragNDropListView>
     </LinearLayout>
 
 </LinearLayout>

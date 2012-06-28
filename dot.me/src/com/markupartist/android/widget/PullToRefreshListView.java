@@ -1,7 +1,7 @@
 package com.markupartist.android.widget;
 
 
-import com.twittemarkup.app.R;
+import com.dot.me.app.R;
 
 import android.content.Context;
 import android.util.AttributeSet;

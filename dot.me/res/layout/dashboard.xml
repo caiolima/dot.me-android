@@ -17,7 +17,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/timeline_button" >
 </Button>
-                <TextView style="@style/DashboardText" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textView1" android:layout_marginTop="3dip" android:text="@string/dashboard_timeline"></TextView>
+                <TextView style="@style/DashboardText" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textView1" android:layout_marginTop="3dip" android:text="@string/feeds"></TextView>
             </LinearLayout>
             <LinearLayout android:layout_width="wrap_content" android:id="@+id/linearLayout3" android:layout_height="wrap_content" android:layout_weight="0.5" android:gravity="center" android:orientation="vertical">
                 <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/marcador_button" android:id="@+id/dashboard_bt_markup"></Button>
@@ -36,10 +36,6 @@
             </LinearLayout>
         </LinearLayout>
         <LinearLayout android:id="@+id/linearLayout9" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="0.33" android:layout_marginTop="10dip">
-            <LinearLayout android:gravity="center" android:id="@+id/linearLayout11" android:orientation="vertical" android:layout_weight="0.5" android:layout_width="fill_parent" android:layout_height="wrap_content">
-                <Button android:background="@drawable/logout_button" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/dashboard_bt_logout"></Button>
-                <TextView style="@style/DashboardText" android:id="@+id/textView6" android:layout_width="wrap_content" android:text="@string/dashboard_logout" android:layout_height="wrap_content"></TextView>
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
     

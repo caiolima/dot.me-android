@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.twittemarkup.app"
+    package="com.dot.me.app"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.twittemarkup.activity.CreateMarkupActivity"
+            android:name="com.dot.me.activity.CreateMarkupActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" >
@@ -40,7 +40,7 @@
         <!-- teste -->
         <activity
             android:launchMode="singleTask"
-            android:name="com.twittemarkup.activity.AddSocialAccount"
+            android:name="com.dot.me.activity.AddSocialAccount"
             android:theme="@android:style/Theme.Black.NoTitleBar" android:screenOrientation="nosensor">
             <intent-filter >
                 <action android:name="android.intent.action.VIEW" >
@@ -59,7 +59,7 @@
         </activity>
         <activity
             android:launchMode="singleTask"
-            android:name="com.twittemarkup.activity.TimelineActivity"
+            android:name="com.dot.me.activity.TimelineActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" >
@@ -73,7 +73,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.twittemarkup.activity.TwitteActivity"
+            android:name="com.dot.me.activity.TwitteActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" >
@@ -81,11 +81,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.twittemarkup.activity.RegisterActivity"
+            android:name="com.dot.me.activity.RegisterActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
         <activity
-            android:name="com.twittemarkup.activity.DashboardActivity"
+            android:name="com.dot.me.activity.DashboardActivity"
             android:screenOrientation="nosensor"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter >
@@ -97,46 +97,46 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.twittemarkup.activity.MarcadoresListActivity"
+            android:name="com.dot.me.activity.MarcadoresListActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
         <activity
-            android:name="com.twittemarkup.activity.SendTweetActivity"
+            android:name="com.dot.me.activity.SendTweetActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" >
                 </action>
             </intent-filter>
         </activity>
-        <activity android:name="com.twittemarkup.activity.FriendListActivity" >
+        <activity android:name="com.dot.me.activity.FriendListActivity" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" >
                 </action>
             </intent-filter>
         </activity>
 
-        <service android:name="com.twittemarkup.service.UpdateTimelineService" >
+        <service android:name="com.dot.me.service.UpdateTimelineService" >
             <intent-filter >
                 <category android:name="android.intent.category.DEFAULT" >
                 </category>
 
-                <action android:name="com.twittemarkup.status.update" >
+                <action android:name="com.dot.me.status.update" >
                 </action>
             </intent-filter>
         </service>
-        <service android:name="com.twittemarkup.utils.ImageUtils$LoadImageService" >
+        <service android:name="com.dot.me.utils.ImageUtils$LoadImageService" >
             <intent-filter >
                 <category android:name="android.intent.category.DEFAULT" >
                 </category>
 
-                <action android:name="com.twittemarkup.download.images" >
+                <action android:name="com.dot.me.download.images" >
                 </action>
             </intent-filter>
         </service>
 
-        <receiver android:name="com.twittemarkup.activity.TimelineActivity$UpdateMensagesBroadcastReciever" >
+        <receiver android:name="com.dot.me.activity.TimelineActivity$UpdateMensagesBroadcastReciever" >
             <intent-filter >
-                <action android:name="com.twittemarkup.reciever.UPDATE_MSG" >
+                <action android:name="com.dot.me.reciever.UPDATE_MSG" >
                 </action>
 
                 <category android:name="android.intent.category.DEFAULT" >
@@ -145,11 +145,11 @@
         </receiver>
 
         <activity
-            android:name="com.twittemarkup.activity.SearchActivity"
+            android:name="com.dot.me.activity.SearchActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
         <activity
-            android:name="com.twittemarkup.activity.SearchResultActivity"
+            android:name="com.dot.me.activity.SearchResultActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter >
                 <data
@@ -163,11 +163,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.twittemarkup.activity.MessageInfoActivity"
+            android:name="com.dot.me.activity.MessageInfoActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
         <activity
-            android:name="com.twittemarkup.activity.TwitterUserProfileActivity"
+            android:name="com.dot.me.activity.TwitterUserProfileActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter >
                 <data
@@ -180,12 +180,13 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.twittemarkup.activity.BlackListActivity"></activity>
-        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.twittemarkup.activity.FacebookMessageActivity">
+        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.BlackListActivity"></activity>
+        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.FacebookMessageActivity">
         </activity>
-        <activity android:name="com.twittemarkup.activity.ManageFacebookGroupsActivity" android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
-        <activity android:name="com.twittemarkup.activity.FacebookCommentActivity" android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
-        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.twittemarkup.activity.ManageCollumnsActivity"></activity>
+        <activity android:name="com.dot.me.activity.ManageFacebookGroupsActivity" android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
+        <activity android:name="com.dot.me.activity.FacebookCommentActivity" android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
+        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.ManageCollumnsActivity"></activity>
+        <activity android:name="com.dot.me.activity.TwitterLoginActivity"  android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
     </application>
 
 </manifest>
