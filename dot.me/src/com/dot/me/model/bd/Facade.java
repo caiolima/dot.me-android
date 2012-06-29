@@ -16,6 +16,7 @@ import com.dot.me.model.FacebookGroup;
 import com.dot.me.model.Marcador;
 import com.dot.me.model.Mensagem;
 import com.dot.me.model.PalavraChave;
+import com.dot.me.model.TrendLocation;
 import com.dot.me.model.TwitterAccount;
 import com.dot.me.model.User;
 import com.dot.me.utils.BlackListUtils;
@@ -36,7 +37,7 @@ public class Facade {
 	private FacebookGroupsBD facebookGroupBd;
 	private CollumnConfigDao configDao;
 	private DraftBD draftBD;
-	
+	private LocationSelectedBD locationBD;
 
 	public static Facade getInstance(Context ctx) {
 		if (singleton == null)
@@ -46,7 +47,7 @@ public class Facade {
 	}
 
 	private Facade(Context ctx) {
-		
+
 		twitterBD = new TwitterBD(ctx);
 		palavraChaveBD = new PalavraChaveBD(ctx);
 		marcadorBD = new MarcadorBD(ctx);
@@ -56,9 +57,10 @@ public class Facade {
 		blackListBd = new BlackListDB(ctx);
 		facebookBd = new FacebookBD(ctx);
 		facebookGroupBd = new FacebookGroupsBD(ctx);
-		configDao= new CollumnConfigDao(ctx);
-		draftBD=new DraftBD(ctx);
-		
+		configDao = new CollumnConfigDao(ctx);
+		draftBD = new DraftBD(ctx);
+		locationBD=new LocationSelectedBD(ctx);
+
 	}
 
 	public static void destroy() {
@@ -74,21 +76,21 @@ public class Facade {
 		twitterBD.delete();
 		mensagemBD.deleteAll(Mensagem.TIPO_STATUS);
 		mensagemBD.deleteAll(Mensagem.TIPO_TWEET_SEARCH);
-		
+
 		configDao.deleteOfType("twitter");
 		twitterSearchBD.deleteAll();
 	}
-	
-	public void logoutFacebook(){
+
+	public void logoutFacebook() {
 		facebookBd.delete();
 		mensagemBD.deleteAll(Mensagem.TIPO_FACE_COMENTARIO);
 		mensagemBD.deleteAll(Mensagem.TIPO_FACEBOOK_GROUP);
 		mensagemBD.deleteAll(Mensagem.TIPO_FACEBOOK_NOTIFICATION);
 		mensagemBD.deleteAll(Mensagem.TIPO_NEWS_FEEDS);
-		
+
 		facebookGroupBd.deleteAll();
 		configDao.deleteOfType("face");
-		
+
 	}
 
 	public Vector<Account> lastSavedSession() {
@@ -206,17 +208,18 @@ public class Facade {
 
 	public void deleteMensagem(final String id, final int type) {
 		final SubjectMessage mSubject = TimelineActivity.getmSubject();
-		Handler h=TimelineActivity.h;
-		if(h!=null){
+		Handler h = TimelineActivity.h;
+		if (h != null) {
 			h.post(new Runnable() {
-				
+
 				@Override
 				public void run() {
-					mSubject.notifyMessageRemovedObservers(id, type);
+					if (mSubject != null)
+						mSubject.notifyMessageRemovedObservers(id, type);
 				}
 			});
 		}
-		
+
 		mensagemBD.delete(id, type);
 	}
 
@@ -316,60 +319,71 @@ public class Facade {
 	public void update(Mensagem m) {
 		mensagemBD.update(m);
 	}
-	
-	public void insert(CollumnConfig c){
+
+	public void insert(CollumnConfig c) {
 		configDao.insert(c);
 	}
-	
-	public void deleteCollum(int pos){
+
+	public void deleteCollum(int pos) {
 		configDao.delete(pos);
-		
+
 	}
-	
-	public ArrayList<CollumnConfig> getAllConfig(){
-		
+
+	public ArrayList<CollumnConfig> getAllConfig() {
+
 		return configDao.getAll();
-		
+
 	}
-	
-	public CollumnConfig getOneConfig(int pos){
+
+	public CollumnConfig getOneConfig(int pos) {
 		return configDao.getOne(pos);
 	}
-	
-	public void update(CollumnConfig config){
+
+	public void update(CollumnConfig config) {
 		configDao.update(config);
 	}
 
-	public  void changePos(CollumnConfig config, int toPos){
+	public void changePos(CollumnConfig config, int toPos) {
 		configDao.changePos(config, toPos);
 	}
-	
-	public void deleteAllCollumnConfig(){
+
+	public void deleteAllCollumnConfig() {
 		configDao.deleteAll();
 	}
-	
-	public Vector<Mensagem> getMensagemOfLikeId(int type, String idLike){
+
+	public Vector<Mensagem> getMensagemOfLikeId(int type, String idLike) {
 		return mensagemBD.getMensagemOfLikeId(type, idLike);
 	}
-	
-	public boolean existsCollumnType(String type){
+
+	public boolean existsCollumnType(String type) {
 		return configDao.existsCollumnType(type);
 	}
-	
-	public void insert(Draft d){
+
+	public void insert(Draft d) {
 		draftBD.insert(d);
 	}
-	
-	public void deleteDraft(String id){
+
+	public void deleteDraft(String id) {
 		draftBD.delete(id);
 	}
-	
-	public Draft getOneDraft(String id){
+
+	public Draft getOneDraft(String id) {
 		return draftBD.getOne(id);
 	}
-	
-	public boolean existsDraft(String id){
+
+	public boolean existsDraft(String id) {
 		return draftBD.exists(id);
 	}
+
+	public void insert(TrendLocation l){
+		locationBD.insert(l);
+	}
 	
+	public void deleteCurrentLocation(){
+		locationBD.deleteCurrent();
+	}
+	
+	public TrendLocation getSaved(){
+		return locationBD.getSaved();
+	}
 }

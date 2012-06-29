@@ -134,5 +134,10 @@
     <string name="feeds">Feeds</string>
     <string name="loading_cached_messages">Loading cached messages...</string>
     <string name="adding_twitter">Add a twitter account</string>
+    <string name="search">Search</string>
+    <string name="trend_topics">Trend Topics</string>
+    <string name="trends">Trends</string>
+    <string name="change">change</string>
+    <string name="location_select">Select a location</string>
     
 </resources>

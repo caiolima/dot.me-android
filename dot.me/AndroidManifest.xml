@@ -187,6 +187,7 @@
         <activity android:name="com.dot.me.activity.FacebookCommentActivity" android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
         <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.ManageCollumnsActivity"></activity>
         <activity android:name="com.dot.me.activity.TwitterLoginActivity"  android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
+        <activity android:name="com.dot.me.activity.TrendsLocationsActivity" android:theme="@android:style/Theme.Light.NoTitleBar" ></activity>
     </application>
 
 </manifest>

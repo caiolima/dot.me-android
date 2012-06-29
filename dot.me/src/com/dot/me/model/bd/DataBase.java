@@ -16,6 +16,7 @@ public class DataBase {
 			TB_FACEBOOK = "tb_facebook",
 			TB_FACEBOOK_GROUPS = "facebook_groups",
 			TB_COLUMNS_CONFIG = "collumn_config", TB_DRAFTS = "drafts",
+			TB_LOCATION_SELECTED="location_selected",
 
 			TWITTER_ID = "idTwitter", TWITTER_NAME = "name",
 			TWITTER_TOKEN = "token", TWITTER_TOKEN_SECRET = "tokenSecret",
@@ -54,7 +55,10 @@ public class DataBase {
 			COLUMNS_CONFIG_POS = "pos", COLUMNS_CONFIG_TYPE = "c_type",
 			COLUMNS_CONFIG_PROPRITIES = "c_propreties",
 
-			DRAFTS_ID = "drafts_id", DRAFTS_TEXT = "drafts_text";
+			DRAFTS_ID = "drafts_id", DRAFTS_TEXT = "drafts_text",
+			
+			LOCATION_SELECTED_WOEID="woeid",
+			LOCATION_SELECT_NAME="name";
 
 	private static DataBase singleton;
 	private final String[] CREATE_SQL = new String[] {
@@ -121,7 +125,11 @@ public class DataBase {
 					+ " int not null," + "" + USER_NICK + " text);",
 
 			"CREATE TABLE IF NOT EXISTS " + TB_BLACKLIST + "("
-					+ BLACKLIST_ID_PALAVRA + " integer primary key)"
+					+ BLACKLIST_ID_PALAVRA + " integer primary key)",
+			
+				"CREATE TABLE IF NOT EXISTS " + TB_LOCATION_SELECTED + "("
+						+ LOCATION_SELECTED_WOEID + " int not null," + "" + LOCATION_SELECT_NAME
+						+ " text not null);",
 
 	};
 	private SQLiteDatabase db;
