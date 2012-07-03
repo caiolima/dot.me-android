@@ -55,6 +55,10 @@ public class GetTrendsLocationsTask extends AsyncTask<Void, Void, Void>{
 	protected void onPostExecute(Void result) {
 		
 		if(response!=null){
+			TrendLocation t=new TrendLocation();
+			t.setName("Wolrd");
+			t.setWoeid(1);
+			activity.getAdapter().add(t);
 			Collections.sort(response);
 			for(TrendLocation tL:response){
 				activity.getAdapter().add(tL);

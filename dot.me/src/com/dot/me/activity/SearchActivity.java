@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import com.dot.me.app.R;
 import com.dot.me.assynctask.TrendTopicsGetterTask;
 import com.dot.me.model.Account;
+import com.dot.me.model.TrendLocation;
+import com.dot.me.model.bd.Facade;
 import com.dot.me.utils.Constants;
 
 import android.app.Activity;
@@ -33,7 +35,7 @@ public class SearchActivity extends Activity{
 	private ListView lst_tt;
 	private LinearLayout lt_imgLoading;
 	private boolean openTimeline;
-	private TextView txt_change;
+	private TextView txt_change,txt_trends;
 	private ImageView img_load;
 	private ArrayAdapter<String> adapter;
 	
@@ -65,6 +67,7 @@ public class SearchActivity extends Activity{
 		img_load=(ImageView) findViewById(R.id.image_loading);
 		setLt_imgLoading((LinearLayout) findViewById(R.id.lt_image_loading));
 		txt_change=(TextView) findViewById(R.id.txt_change_trends);
+		txt_trends=(TextView) findViewById(R.id.txt_trends);
 		
 		txt_change.setOnClickListener(new TextView.OnClickListener() {
 			
@@ -117,9 +120,26 @@ public class SearchActivity extends Activity{
 			}
 		});
 		
-		new TrendTopicsGetterTask(this, 23424768).execute();
+		
 		
 	}
+
+	
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		TrendLocation t=Facade.getInstance(this).getSavedTrend();
+		
+		txt_trends.setText(getString(R.string.trends)+" > "+t.getName());
+		adapter.clear();
+		new TrendTopicsGetterTask(this, t.getWoeid()).execute();
+		
+		
+	}
+
+
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

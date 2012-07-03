@@ -637,7 +637,7 @@ public class FacebookMessageActivity extends Activity {
 		protected Void doInBackground(Void... v) {
 
 			try {
-				Mensagem m = facade.getOneMessage(id, tipo);
+				m = facade.getOneMessage(id, tipo);
 				if (m == null) {
 					String response = facebook.request(id,
 							FacebookUtils.getStandartFeedsBundle());

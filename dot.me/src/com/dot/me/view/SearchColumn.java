@@ -262,6 +262,7 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 		private AccessToken token;
 		private Vector<Mensagem> mensagens = new Vector<Mensagem>();
 		private Vector<Mensagem> cachedMessages=new Vector<Mensagem>();
+		private List<Mensagem> last;
 
 		public GetSearchTweetsTask(AccessToken token) {
 			this.token = token;
@@ -270,6 +271,21 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 		@Override
 		protected Void doInBackground(Void... params) {
 
+			last = new ArrayList<Mensagem>();
+
+			for (Mensagem m : facade.getMensagemOf(Mensagem.TIPO_TWEET_SEARCH)) {
+				try {
+					Vector<String> parts = new Vector<String>(Arrays.asList(m
+							.getMensagem().toLowerCase().split(" ")));
+					if (parts.contains(search.toLowerCase()))
+						last.add(m);
+				} catch (Exception e) {
+
+				}
+
+			}
+
+			
 			AssyncTaskManager.getInstance().addProccess(this);
 			
 			Twitter twitter = TwitterUtils.getTwitter(token);
@@ -307,6 +323,17 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
+			
+			if (currentpage == 1) {
+				((PullToRefreshListView) listView).onRefreshComplete();
+				if (!mensagens.isEmpty()) {
+					adapter.clear();
+					for (Mensagem m : last)
+						facade.deleteMensagem(m.getIdMensagem(),
+								m.getTipo());
+
+				}
+			}
 			
 			for (Mensagem m : mensagens) {
 				JSONObject adds=m.getAddtions();

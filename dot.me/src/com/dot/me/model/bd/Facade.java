@@ -375,7 +375,8 @@ public class Facade {
 		return draftBD.exists(id);
 	}
 
-	public void insert(TrendLocation l){
+	public void setLocation(TrendLocation l){
+		locationBD.deleteCurrent();
 		locationBD.insert(l);
 	}
 	
@@ -383,7 +384,14 @@ public class Facade {
 		locationBD.deleteCurrent();
 	}
 	
-	public TrendLocation getSaved(){
-		return locationBD.getSaved();
+	public TrendLocation getSavedTrend(){
+		TrendLocation t=locationBD.getSaved();
+		if(t==null){
+			t=new TrendLocation();
+			t.setName("World");
+			t.setWoeid(1);
+		}
+			
+		return t;
 	}
 }

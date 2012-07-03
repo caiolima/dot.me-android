@@ -120,11 +120,6 @@ public class TwitterUtils {
 				String link=word.substring(initPos);
 				String preText=word.substring(0, initPos);
 				word = preText+"<a href=\"" + link + "\">" + link + "</a>";
-			} else if (word.startsWith("#")) {
-				word = "<a href=\"twitter_search://do_search?search="
-						+ word.substring(1) + "\">" + word + "</a>";
-			} else if (word.startsWith("@")) {
-				word = createMentionLink(word);
 			}
 
 			out += word + " ";

@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import twitter4j.DirectMessage;
+import twitter4j.HashtagEntity;
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.Tweet;
@@ -114,9 +115,26 @@ public class Mensagem implements Comparable<Mensagem> {
 	public static Mensagem creteFromTwitterStatus(Status s) {
 		try {
 			Mensagem mensagem = new Mensagem();
-
+			
+			String text=s.getText();
+			
+			for(HashtagEntity h:s.getHashtagEntities()){
+				
+				String subText="<a href=\"twitter_search://do_search?search="+h.getText()+"\">#"+h.getText()+"</a>";
+				text=text.replace("#"+h.getText(), subText);
+				
+			}
+			
+			for(UserMentionEntity u:s.getUserMentionEntities()){
+				
+				String subText="<a href=\"twitter_search_user://find_user?username="+u.getScreenName()+"\">@"+u.getScreenName()+"</a>";
+				text=text.replace("@"+u.getScreenName(), subText);
+				
+			}
+			
 			mensagem.setAction(OpenTwitterStatusAction.getInstance());
 			mensagem.addtions = createAddtions(s);
+			mensagem.addtions.put("htmlText", text);
 			mensagem.idMensagem = Long.toString(s.getId());
 			mensagem.nome_usuario = s.getUser().getName();
 			mensagem.mensagem = s.getText();
@@ -162,8 +180,26 @@ public class Mensagem implements Comparable<Mensagem> {
 			throws MalformedURLException, JSONException {
 		Mensagem m = new Mensagem();
 
+		
+		
 		JSONObject json = new JSONObject();
+		String text=t.getText();
+		
+		for(HashtagEntity h:t.getHashtagEntities()){
+			
+			String subText="<a href=\"twitter_search://do_search?search="+h.getText()+"\">#"+h.getText()+"</a>";
+			text=text.replace("#"+h.getText(), subText);
+			
+		}
+		
+		for(UserMentionEntity u:t.getUserMentionEntities()){
+			
+			String subText="<a href=\"twitter_search_user://find_user?username="+u.getScreenName()+"\">@"+u.getScreenName()+"</a>";
+			text=text.replace("@"+u.getScreenName(), subText);
+			
+		}
 		json.put("inReplyId", -1);
+		json.put("htmlText", text);
 		m.setAddtions(json);
 		m.data = t.getCreatedAt();
 		m.imagePath = new URL(t.getProfileImageUrl());
@@ -522,6 +558,14 @@ public class Mensagem implements Comparable<Mensagem> {
 			return true;
 
 		return false;
+	}
+	
+	public String getHtmlText(){
+		try{
+			return addtions.getString("htmlText");
+		}catch (JSONException e) {
+			return mensagem;
+		}
 	}
 
 }

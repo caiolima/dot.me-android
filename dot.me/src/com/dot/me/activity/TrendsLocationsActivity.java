@@ -3,10 +3,13 @@ package com.dot.me.activity;
 import com.dot.me.app.R;
 import com.dot.me.assynctask.GetTrendsLocationsTask;
 import com.dot.me.model.TrendLocation;
+import com.dot.me.model.bd.Facade;
 
 import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,6 +44,19 @@ public class TrendsLocationsActivity extends Activity{
 						.getBackground();
 				frameAnimation.start();
 			}
+		});
+		
+		lst_locations.setOnItemClickListener(new ListView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long arg3) {
+				TrendLocation t=adapter.getItem(position);
+				Facade.getInstance(TrendsLocationsActivity.this).setLocation(t);
+				
+				finish();
+			}
+			
 		});
 		
 		new GetTrendsLocationsTask(this).execute();

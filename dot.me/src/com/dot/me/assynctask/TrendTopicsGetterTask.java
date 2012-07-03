@@ -22,7 +22,7 @@ public class TrendTopicsGetterTask extends AsyncTask<Void,Void,Void>{
 	
 	public TrendTopicsGetterTask(SearchActivity s,int woid) {
 		this.activity=s;
-		this.woid=23424768;
+		this.woid=woid;
 	}
 	
 	@Override

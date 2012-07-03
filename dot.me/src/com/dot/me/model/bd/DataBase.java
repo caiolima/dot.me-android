@@ -136,7 +136,7 @@ public class DataBase {
 	private SQLiteHelper dbHelper;
 
 	public DataBase(Context c) {
-		dbHelper = new SQLiteHelper(c, "TwitteMarkup", 17, CREATE_SQL);
+		dbHelper = new SQLiteHelper(c, "TwitteMarkup", 18, CREATE_SQL);
 		setDB(dbHelper.getWritableDatabase());
 	}
 

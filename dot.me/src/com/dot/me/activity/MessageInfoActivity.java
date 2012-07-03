@@ -94,7 +94,7 @@ public class MessageInfoActivity extends Activity {
 		});
 
 		if (m != null) {
-			txt_content.setText(TwitterUtils.createMessage(m.getMensagem()));
+			txt_content.setText(TwitterUtils.createMessage(m.getHtmlText()));
 			txt_content.setMovementMethod(LinkMovementMethod.getInstance());
 			TwitterUtils.stripUnderlines(txt_content);
 			txt_name.setText(m.getNome_usuario());
