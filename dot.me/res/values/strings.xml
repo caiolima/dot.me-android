@@ -139,5 +139,7 @@
     <string name="trends">Trends</string>
     <string name="change">change</string>
     <string name="location_select">Select a location</string>
+    <string name="manage_acc">Manage Accounts</string>
+    <string name="manage_labels">Manage Labels</string>
     
 </resources>

@@ -6,7 +6,9 @@ import com.dot.me.model.TrendLocation;
 import com.dot.me.model.bd.Facade;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -53,6 +55,9 @@ public class TrendsLocationsActivity extends Activity{
 					long arg3) {
 				TrendLocation t=adapter.getItem(position);
 				Facade.getInstance(TrendsLocationsActivity.this).setLocation(t);
+				
+				Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse("dotme://refresh_trends"));
+				startActivity(intent);
 				
 				finish();
 			}

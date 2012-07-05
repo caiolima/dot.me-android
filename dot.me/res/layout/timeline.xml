@@ -10,8 +10,11 @@
         android:id="@+id/linearLayout1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:background="@drawable/top_timeline"
-        android:baselineAligned="false" android:padding="7dp">
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:padding="7dp" >
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -20,12 +23,13 @@
 
             <ImageButton
                 android:id="@+id/timeline_bt_more"
-                style="@style/ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
+                android:background="@null"
                 android:gravity="center"
-                android:src="@drawable/more_button" />
+                android:src="@drawable/navigation_expand" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -43,6 +47,7 @@
             android:gravity="center"
             android:text="TextView"
             android:textColor="@color/white"
+            android:textSize="15dp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -52,12 +57,13 @@
 
             <ImageButton
                 android:id="@+id/timeline_bt_tweet"
-                style="@style/ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
+                android:background="@null"
                 android:gravity="right|center"
-                android:src="@drawable/balao" />
+                android:src="@drawable/content_edit" />
+
         </LinearLayout>
 
     </LinearLayout>

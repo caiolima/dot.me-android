@@ -35,7 +35,9 @@ import com.dot.me.command.AbstractCommand;
 import com.dot.me.command.OpenCreateMarkupCommand;
 import com.dot.me.command.OpenFacebookGroupCommand;
 import com.dot.me.command.OpenManageCollumnCommand;
+import com.dot.me.command.OpenManageLabelsCommand;
 import com.dot.me.command.OpenSearchCommand;
+import com.dot.me.command.OpenAccountCommand;
 import com.dot.me.model.Account;
 import com.dot.me.model.CollumnConfig;
 import com.dot.me.model.FacebookGroup;
@@ -243,7 +245,7 @@ public class TimelineActivity extends Activity {
 		currentTittle = (TextView) findViewById(R.id.category_name);
 		bt_send = (ImageButton) findViewById(R.id.timeline_bt_tweet);
 		bt_more = (ImageButton) findViewById(R.id.timeline_bt_more);
-
+		
 		bt_send.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
@@ -258,6 +260,14 @@ public class TimelineActivity extends Activity {
 			public void onClick(View v) {
 				final Vector<AbstractCommand> actions = new Vector<AbstractCommand>();
 				final Vector<Item> items = new Vector<Item>();
+				items.add(new Item(getString(R.string.manage_acc),
+						R.drawable.social_acc));
+				actions.add(new OpenAccountCommand());
+				
+				items.add(new Item(getString(R.string.manage_labels),R.drawable.labels));
+				
+				actions.add(new OpenManageLabelsCommand());
+				
 				if (Account.getFacebookAccount(TimelineActivity.this) != null) {
 					items.add(new Item(getString(R.string.group_columns),
 							android.R.drawable.ic_menu_my_calendar));
@@ -291,6 +301,9 @@ public class TimelineActivity extends Activity {
 					});
 
 				}
+				
+				
+				
 
 				ArrayAdapter<Item> adapter = new ArrayAdapter<Item>(
 						TimelineActivity.this,

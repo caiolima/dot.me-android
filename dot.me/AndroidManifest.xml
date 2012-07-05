@@ -146,11 +146,17 @@
 
         <activity
             android:name="com.dot.me.activity.SearchActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            android:theme="@android:style/Theme.Light.NoTitleBar" android:launchMode="singleTask">
+            <intent-filter>
+                <data android:scheme="dotme" android:host="refresh_trends"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
         <activity
             android:name="com.dot.me.activity.SearchResultActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor">
             <intent-filter >
                 <data
                     android:host="do_search"
@@ -188,6 +194,7 @@
         <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.ManageCollumnsActivity"></activity>
         <activity android:name="com.dot.me.activity.TwitterLoginActivity"  android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
         <activity android:name="com.dot.me.activity.TrendsLocationsActivity" android:theme="@android:style/Theme.Light.NoTitleBar" ></activity>
+        <activity android:name="com.dot.me.activity.ManageLabelsActivity"  android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
     </application>
 
 </manifest>
