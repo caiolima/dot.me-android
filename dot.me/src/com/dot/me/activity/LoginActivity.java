@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import oauth.signpost.OAuthProvider;
 
 import com.dot.me.app.R;
-import com.dot.me.model.Marcador;
+import com.dot.me.model.Label;
 import com.dot.me.model.UsuarioTwitter;
 import com.dot.me.model.bd.DataBase;
 import com.dot.me.model.bd.Facade;

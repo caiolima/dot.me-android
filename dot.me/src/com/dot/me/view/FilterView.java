@@ -8,7 +8,7 @@ import java.util.Vector;
 
 import com.dot.me.activity.TimelineActivity;
 import com.dot.me.app.R;
-import com.dot.me.model.Marcador;
+import com.dot.me.model.Label;
 import com.dot.me.utils.ImageUtils;
 
 import twitter4j.ResponseList;
@@ -31,9 +31,9 @@ public class FilterView {
 	private ScrollView scrollView;
 	private LinearLayout list_twittes;
 	private Vector<Status> tweets = new Vector<Status>();
-	private Marcador marcador;
+	private Label marcador;
 
-	public FilterView(Marcador m, Context ctx) {
+	public FilterView(Label m, Context ctx) {
 		marcador = m;
 
 		this.ctx = ctx;
@@ -91,11 +91,11 @@ public class FilterView {
 		}
 	}
 
-	public Marcador getMarcador() {
+	public Label getMarcador() {
 		return marcador;
 	}
 
-	public void setMarcador(Marcador marcador) {
+	public void setMarcador(Label marcador) {
 		this.marcador = marcador;
 	}
 

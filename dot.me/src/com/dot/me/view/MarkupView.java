@@ -16,7 +16,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.dot.me.app.R;
-import com.dot.me.model.Marcador;
+import com.dot.me.model.Label;
 import com.dot.me.utils.ImageUtils;
 
 public class MarkupView {
@@ -25,9 +25,9 @@ public class MarkupView {
 	private ScrollView scrollView;
 	private LinearLayout list_twittes;
 	private Vector<Status> tweets = new Vector<Status>();
-	private Marcador marcador;
+	private Label marcador;
 	
-	public MarkupView(Marcador m, Context ctx) {
+	public MarkupView(Label m, Context ctx) {
 		marcador = m;
 
 		this.ctx = ctx;
@@ -97,10 +97,10 @@ public class MarkupView {
 	public void setList_twittes(LinearLayout list_twittes) {
 		this.list_twittes = list_twittes;
 	}
-	public Marcador getMarcador() {
+	public Label getMarcador() {
 		return marcador;
 	}
-	public void setMarcador(Marcador marcador) {
+	public void setMarcador(Label marcador) {
 		this.marcador = marcador;
 	}
 	

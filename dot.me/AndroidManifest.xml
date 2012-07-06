@@ -64,6 +64,7 @@
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" >
                 </action>
+                
                 <data android:host="facebook_group" android:scheme="add_column"/>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.BROWSABLE"/>

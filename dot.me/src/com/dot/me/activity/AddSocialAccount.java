@@ -224,7 +224,12 @@ public class AddSocialAccount extends Activity {
 
 			}
 		});
+		
+		updateLayout();
 
+	}
+
+	private void updateLayout() {
 		TwitterAccount tAcc = Account.getTwitterAccount(this);
 		if (tAcc != null) {
 			twitterPane.setVisibility(View.VISIBLE);
@@ -250,7 +255,6 @@ public class AddSocialAccount extends Activity {
 
 		if (fAcc == null && tAcc == null)
 			bt_ok.setVisibility(View.GONE);
-
 	}
 
 	private static int countNewIntent = 0;
@@ -357,19 +361,21 @@ public class AddSocialAccount extends Activity {
 			try {
 				String oAuthURL = authProvider.retrieveRequestToken(
 						commonHttpOAuthConsumer, "twitter-client://back");
-				/*Intent intent = new Intent(Intent.ACTION_VIEW,
-						Uri.parse(oAuthURL));
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
-						| Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(intent);*/
-				Intent intent=new Intent(AddSocialAccount.this,TwitterLoginActivity.class);
-				Bundle b=new Bundle();
-				b.putString("url",	oAuthURL);
-				
+				/*
+				 * Intent intent = new Intent(Intent.ACTION_VIEW,
+				 * Uri.parse(oAuthURL));
+				 * intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+				 * Intent.FLAG_ACTIVITY_NEW_TASK); startActivity(intent);
+				 */
+				Intent intent = new Intent(AddSocialAccount.this,
+						TwitterLoginActivity.class);
+				Bundle b = new Bundle();
+				b.putString("url", oAuthURL);
+
 				intent.putExtras(b);
-				
+
 				startActivity(intent);
-				
+
 			} catch (OAuthMessageSignerException e) {
 				e.printStackTrace();
 			} catch (OAuthNotAuthorizedException e) {
@@ -481,7 +487,7 @@ public class AddSocialAccount extends Activity {
 			collumnConfig.setType(CollumnConfig.TWITTER_COLLUMN);
 
 			Facade.getInstance(AddSocialAccount.this).insert(collumnConfig);
-			
+
 			collumnConfig = new CollumnConfig();
 			try {
 				JSONObject prop2 = new JSONObject();
@@ -496,15 +502,13 @@ public class AddSocialAccount extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			if(!Facade.getInstance(AddSocialAccount.this).existsCollumnType(CollumnConfig.ME))
-				Facade.getInstance(AddSocialAccount.this).insert(collumnConfig);
-			
-			Intent intent = new Intent(AddSocialAccount.this,
-					DashboardActivity.class);
 
-			startActivity(intent);
-			finish();
+			if (!Facade.getInstance(AddSocialAccount.this).existsCollumnType(
+					CollumnConfig.ME))
+				Facade.getInstance(AddSocialAccount.this).insert(collumnConfig);
+
+			updateLayout();
+			
 		}
 
 	}
@@ -616,15 +620,14 @@ public class AddSocialAccount extends Activity {
 
 				collumnConfig.setType(CollumnConfig.ME);
 
-				if(!Facade.getInstance(AddSocialAccount.this).existsCollumnType(CollumnConfig.ME))
-					Facade.getInstance(AddSocialAccount.this).insert(collumnConfig);
+				if (!Facade.getInstance(AddSocialAccount.this)
+						.existsCollumnType(CollumnConfig.ME))
+					Facade.getInstance(AddSocialAccount.this).insert(
+							collumnConfig);
 
 				loadingDialog.dismiss();
 
-				Intent intent = new Intent(AddSocialAccount.this,
-						DashboardActivity.class);
-				startActivity(intent);
-				finish();
+				updateLayout();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

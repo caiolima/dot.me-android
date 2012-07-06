@@ -10,7 +10,7 @@ import com.dot.me.activity.TimelineActivity;
 import com.dot.me.app.R;
 import com.dot.me.assynctask.UpdateTimelineTask;
 import com.dot.me.model.Account;
-import com.dot.me.model.Marcador;
+import com.dot.me.model.Label;
 import com.dot.me.model.Mensagem;
 import com.dot.me.model.PalavraChave;
 import com.dot.me.model.TwitterAccount;
@@ -25,11 +25,11 @@ import android.content.Context;
 
 public class MarkupColunm extends AbstractColumn implements MessageObserver {
 
-	private Marcador marcador;
+	private Label marcador;
 	private int currentPage;
 	private boolean flagNextPage = false;
 
-	public MarkupColunm(Marcador m, Context ctx) {
+	public MarkupColunm(Label m, Context ctx) {
 		super(ctx, m.getNome(), false);
 
 		marcador = m;
@@ -60,11 +60,11 @@ public class MarkupColunm extends AbstractColumn implements MessageObserver {
 		}
 	}
 
-	public Marcador getMarcador() {
+	public Label getMarcador() {
 		return marcador;
 	}
 
-	public void setMarcador(Marcador marcador) {
+	public void setMarcador(Label marcador) {
 		this.marcador = marcador;
 	}
 

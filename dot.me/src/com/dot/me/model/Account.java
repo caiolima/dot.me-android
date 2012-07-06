@@ -12,7 +12,7 @@ public abstract class Account {
 
 	private String name;
 	private URL profileImage;
-	private static Vector<Marcador> marcadores=new Vector<Marcador>();
+	private static Vector<Label> marcadores=new Vector<Label>();
 	private static Vector<Account> loggedUsers=new Vector<Account>();
 	
 	public abstract URL processProfileImage();
@@ -28,17 +28,17 @@ public abstract class Account {
 		this.name = name;
 	}	
 	
-	public static Vector<Marcador> getMarcadores(Context ctx) {
+	public static Vector<Label> getMarcadores(Context ctx) {
 		if(marcadores.isEmpty()){
-			Vector<Marcador> markups=Facade.getInstance(ctx).getAllMarcadores();
-			for(Marcador m:markups)
+			Vector<Label> markups=Facade.getInstance(ctx).getAllMarcadores();
+			for(Label m:markups)
 				marcadores.add(m);
 		}
 		
 		return marcadores;
 	}
 	
-	public static void setMarcadores(Vector<Marcador> marcadores) {
+	public static void setMarcadores(Vector<Label> marcadores) {
 		Account.marcadores = marcadores;
 	}
 	

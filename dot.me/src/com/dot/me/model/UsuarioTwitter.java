@@ -23,14 +23,14 @@ public class UsuarioTwitter {
 	private String email="a";
 	private long twitterId;
 	private static UsuarioTwitter current;
-	private Vector<Marcador> marcadores=new Vector<Marcador>();
+	private Vector<Label> marcadores=new Vector<Label>();
 	
 	
-	public Vector<Marcador> getMarcadores() {
+	public Vector<Label> getMarcadores() {
 		return marcadores;
 	}
 
-	public void setMarcadores(Vector<Marcador> marcadores) {
+	public void setMarcadores(Vector<Label> marcadores) {
 		this.marcadores = marcadores;
 	}
 

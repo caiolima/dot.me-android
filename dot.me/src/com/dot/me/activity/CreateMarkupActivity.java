@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import com.dot.me.app.R;
 import com.dot.me.model.Account;
 import com.dot.me.model.CollumnConfig;
-import com.dot.me.model.Marcador;
+import com.dot.me.model.Label;
 import com.dot.me.model.PalavraChave;
 import com.dot.me.model.UsuarioTwitter;
 import com.dot.me.model.bd.Facade;
@@ -41,7 +41,8 @@ public class CreateMarkupActivity extends Activity{
 	private Button bt_criar;
 	private TextView lb_title;
 	private boolean atualiza=false;
-	private Marcador currentMarcador;
+	private Label currentMarcador;
+	private boolean labelCreted=false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +123,7 @@ public class CreateMarkupActivity extends Activity{
 			response=webService.doPost("", params);*/
 			String nome=txt_nome.getText().toString();
 			
-			Marcador m=new Marcador();
+			Label m=new Label();
 			m.setNome(nome);
 			
 			
@@ -213,9 +214,11 @@ public class CreateMarkupActivity extends Activity{
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
-							if (out.equals(getString(R.string.markup_create_success))||out.equals(getString(R.string.markup_updated_success)))
-								
-								CreateMarkupActivity.this.finish();
+							if (out.equals(getString(R.string.markup_create_success))||out.equals(getString(R.string.markup_updated_success))){
+								labelCreted=true;
+								CreateMarkupActivity.this.setResult(RESULT_OK);
+								finish();
+							}
 						}
 					}).create();
 			d.show();
@@ -225,6 +228,16 @@ public class CreateMarkupActivity extends Activity{
 		
 		
 	}
+
+	@Override
+	protected void onDestroy() {
+		if(!labelCreted)
+			setResult(RESULT_CANCELED);
+		super.onDestroy();
+	}
+	
+	
+	
 	
 	
 }

@@ -2,7 +2,7 @@ package com.dot.me.model.bd;
 
 import java.util.Vector;
 
-import com.dot.me.model.Marcador;
+import com.dot.me.model.Label;
 import com.dot.me.model.PalavraChave;
 import com.dot.me.utils.Menssage;
 
@@ -18,7 +18,7 @@ public class MarcadorBD extends Dao{
 		super(ctx);
 	}
 
-	protected int insert(Marcador m){
+	protected int insert(Label m){
 		
 		ContentValues values=new ContentValues();
 		values.put(DataBase.MARCADOR_NOME, m.getNome());
@@ -52,14 +52,14 @@ public class MarcadorBD extends Dao{
 		db.getDB().delete(DataBase.TB_MARCADOR, null, null);
 	}
 	
-	protected Vector<Marcador> getAll(){
+	protected Vector<Label> getAll(){
 		Cursor c=db.getDB().query(DataBase.TB_MARCADOR, null, null,null, null, null, null);
-		Vector<Marcador> marcadores=new Vector<Marcador>();
+		Vector<Label> marcadores=new Vector<Label>();
 		
 		for(int i=0;i<c.getCount();i++){
 			c.moveToPosition(i);
 			
-			Marcador m=new Marcador();
+			Label m=new Label();
 			m.setIdMarcador(c.getInt(0));
 			m.setNome(c.getString(1));
 			m.setPalavrasChave(Facade.getInstance(ctx).getByMarcador(m.getIdMarcador()));
@@ -71,14 +71,14 @@ public class MarcadorBD extends Dao{
 		return marcadores;
 	}
 	
-	protected Marcador getOne(int id){
+	protected Label getOne(int id){
 		Cursor c=db.getDB().query(DataBase.TB_MARCADOR, null, DataBase.MARCADOR_ID+"=?",new String[]{Long.toString(id)}, null, null, null);
 	
-		Marcador m=null;
+		Label m=null;
 		if(c.getCount()>0){
 			c.moveToFirst();
 			
-			m=new Marcador();
+			m=new Label();
 			m.setIdMarcador(c.getInt(0));
 			m.setNome(c.getString(1));
 			m.setEnnabled(c.getInt(2));
@@ -91,7 +91,7 @@ public class MarcadorBD extends Dao{
 		
 	}
 	
-	protected int update(Marcador m, String[] palavras){
+	protected int update(Label m, String[] palavras){
 		
 		ContentValues values=new ContentValues();
 		values.put(DataBase.MARCADOR_NOME, m.getNome());
@@ -136,7 +136,7 @@ public class MarcadorBD extends Dao{
 		return Menssage.SUCCESS;
 	}
 	
-	protected void manageMarkup(Marcador m){
+	protected void manageMarkup(Label m){
 		
 		ContentValues values=new ContentValues();
 		values.put(DataBase.MARCADOR_ENABLED,m.isEnnabled());

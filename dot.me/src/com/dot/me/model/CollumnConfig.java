@@ -62,4 +62,17 @@ public class CollumnConfig {
 		}
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		try{
+			CollumnConfig c=(CollumnConfig) o;
+			return c.pos==this.pos;
+				
+		}catch (ClassCastException e) {
+			return false;
+		}
+	}
+	
+	
+
 }

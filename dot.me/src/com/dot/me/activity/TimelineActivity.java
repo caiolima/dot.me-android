@@ -2,6 +2,7 @@ package com.dot.me.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -34,6 +35,7 @@ import com.dot.me.assynctask.UpdateAction;
 import com.dot.me.command.AbstractCommand;
 import com.dot.me.command.OpenCreateMarkupCommand;
 import com.dot.me.command.OpenFacebookGroupCommand;
+import com.dot.me.command.OpenManageBlackListCommand;
 import com.dot.me.command.OpenManageCollumnCommand;
 import com.dot.me.command.OpenManageLabelsCommand;
 import com.dot.me.command.OpenSearchCommand;
@@ -41,8 +43,9 @@ import com.dot.me.command.OpenAccountCommand;
 import com.dot.me.model.Account;
 import com.dot.me.model.CollumnConfig;
 import com.dot.me.model.FacebookGroup;
-import com.dot.me.model.Marcador;
+import com.dot.me.model.Label;
 import com.dot.me.model.Mensagem;
+import com.dot.me.model.bd.DataBase;
 import com.dot.me.model.bd.Facade;
 import com.dot.me.utils.Constants;
 import com.dot.me.utils.Item;
@@ -59,7 +62,7 @@ public class TimelineActivity extends Activity {
 
 	private static TimelineActivity current;
 	private Vector<Account> users;
-	private List<AbstractColumn> filters = new ArrayList<AbstractColumn>();
+	private Vector<AbstractColumn> filters = new Vector<AbstractColumn>();
 	private ViewPager view_flipper;
 	public static Handler h = new Handler();
 	private TextView currentTittle;
@@ -72,8 +75,8 @@ public class TimelineActivity extends Activity {
 	private static SubjectMessage mSubject;
 	private HashMap<AbstractColumn, Integer> hashSavedSelection = new HashMap<AbstractColumn, Integer>();
 	private AbstractCommand currentCommand;
-	
-	
+	private boolean reload = false, isStarting = true;
+
 	public Vector<Mensagem> getCurrentList() {
 		return currentList;
 	}
@@ -82,6 +85,176 @@ public class TimelineActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		current = this;
+
+		if (!isStarting) {
+			boolean finish;
+			int qtdDeleted = 0;
+			do {
+				finish = true;
+				Iterator<AbstractColumn> i = filters.iterator();
+				while (i.hasNext()) {
+					AbstractColumn c = i.next();
+					CollumnConfig config = c.getConfig();
+					if (config.getType().equals(CollumnConfig.MARKUP)) {
+						int id;
+						try {
+							id = config.getProprietes().getInt("id");
+							Label m = Facade.getInstance(this).getOneMarcador(
+									id);
+
+							boolean isToRemove = false;
+							if (m == null) {
+								isToRemove = true;
+							} else if (m.isEnnabled() == 0) {
+								isToRemove = true;
+							}
+
+							if (isToRemove) {
+
+								filters.remove(c);
+								adapter.removeViewAtPosition(config.getPos()
+										- qtdDeleted);
+								Facade.getInstance(this).deleteCollum(
+										config.getPos()-qtdDeleted);
+								finish = false;
+								qtdDeleted++;
+								break;
+							}
+						} catch (JSONException e) {
+							// TODO: handle exception
+						}
+					}
+				}
+			} while (!finish);
+
+			List<Label> list = new ArrayList<Label>();
+			for (AbstractColumn a : filters) {
+				if (a instanceof MarkupColunm) {
+					MarkupColunm mark = (MarkupColunm) a;
+					list.add(mark.getMarcador());
+				}
+			}
+
+			for (Label m : Facade.getInstance(this).getAllMarcadores()) {
+				if (!list.contains(m)) {
+					AbstractColumn column = null;
+
+					if (m.isEnnabled() != 1)
+						continue;
+
+					column = new MarkupColunm(m, this);
+
+					CollumnConfig config = new CollumnConfig();
+					config.setType(CollumnConfig.MARKUP);
+					JSONObject json = new JSONObject();
+					try {
+						json.put("id", m.getIdMarcador());
+						json.put("name", m.getNome());
+						config.setProprietes(json);
+
+						Facade.getInstance(this).insert(config);
+						column.setConfig(config);
+
+						filters.add(column);
+						adapter.addView(column.getScrollView());
+						mSubject.registerObserver((MarkupColunm) column);
+					} catch (JSONException e) {
+
+					}
+
+				}
+			}
+		}
+
+		ArrayList<CollumnConfig> list = Facade.getInstance(this).getAllConfig();
+		for (CollumnConfig c : list) {
+			if (c.getType().equals(CollumnConfig.MARKUP)) {
+				int id;
+				try {
+					id = c.getProprietes().getInt("id");
+					Label m = Facade.getInstance(this).getOneMarcador(id);
+					if (m == null)
+						Facade.getInstance(this).deleteCollum(c.getPos());
+				} catch (JSONException e) {
+
+				}
+
+			}
+		}
+
+		adapter.notifyDataSetChanged();
+	}
+
+	private void verifyMarkupCollumns() {
+		boolean finish;
+		int qtdDeleted=0;
+		do {
+			finish = true;
+			for (CollumnConfig config : Facade.getInstance(this).getAllConfig()) {
+				if (config.getType().equals(CollumnConfig.MARKUP)) {
+					int id;
+					try {
+						id = config.getProprietes().getInt("id");
+						Label m = Facade.getInstance(this).getOneMarcador(id);
+						boolean isToRemove = false;
+						if (m == null) {
+							isToRemove = true;
+						} else if (m.isEnnabled() == 0) {
+							isToRemove = true;
+						}
+
+						if (isToRemove) {
+							Facade.getInstance(this).deleteCollum(
+									config.getPos()-qtdDeleted);
+							finish = false;
+							qtdDeleted++;
+							continue;
+						}
+					} catch (JSONException e) {
+
+					}
+
+				}
+			}
+		} while (!finish);
+
+		List<Label> list = new ArrayList<Label>();
+		for (AbstractColumn a : filters) {
+			if (a instanceof MarkupColunm) {
+				MarkupColunm mark = (MarkupColunm) a;
+				list.add(mark.getMarcador());
+			}
+		}
+
+		for (Label m : Facade.getInstance(this).getAllMarcadores()) {
+			if (!list.contains(m)) {
+				AbstractColumn column = null;
+
+				if (m.isEnnabled() != 1)
+					continue;
+
+				column = new MarkupColunm(m, this);
+
+				CollumnConfig config = new CollumnConfig();
+				config.setType(CollumnConfig.MARKUP);
+				JSONObject json = new JSONObject();
+				try {
+					json.put("id", m.getIdMarcador());
+					json.put("name", m.getNome());
+					config.setProprietes(json);
+
+					Facade.getInstance(this).insert(config);
+					column.setConfig(config);
+
+					filters.add(column);
+					adapter.addView(column.getScrollView());
+					mSubject.registerObserver((MarkupColunm) column);
+				} catch (JSONException e) {
+
+				}
+
+			}
+		}
 
 	}
 
@@ -160,20 +333,19 @@ public class TimelineActivity extends Activity {
 				return;
 			} else if (uri.getScheme().equals("timeline")) {
 				if (uri.getHost().equals("reload")) {
+					reload = true;
 					finish();
-					startActivity(new Intent(this,TimelineActivity.class));
-					/*filters.clear();
-
-					loadCollumns();
-					currentTittle.setText(filters.get(curentFilterPosition)
-							.getColumnTitle());
-					try {
-						adapter.notifyDataSetChanged();
-						new InitViewTask().execute();
-					} catch (Exception e) {
-						finish();
-						startActivity(new Intent(this,TimelineActivity.class));
-					}*/
+					startActivity(new Intent(this, TimelineActivity.class));
+					/*
+					 * filters.clear();
+					 * 
+					 * loadCollumns();
+					 * currentTittle.setText(filters.get(curentFilterPosition)
+					 * .getColumnTitle()); try { adapter.notifyDataSetChanged();
+					 * new InitViewTask().execute(); } catch (Exception e) {
+					 * finish(); startActivity(new
+					 * Intent(this,TimelineActivity.class)); }
+					 */
 
 				}
 			}
@@ -234,6 +406,11 @@ public class TimelineActivity extends Activity {
 		current = this;
 		super.onCreate(savedInstanceState);
 
+		Facade.destroy();
+		DataBase.start(this);
+
+		reload = false;
+
 		mSubject = new SubjectMessage();
 
 		this.setContentView(R.layout.timeline);
@@ -245,7 +422,7 @@ public class TimelineActivity extends Activity {
 		currentTittle = (TextView) findViewById(R.id.category_name);
 		bt_send = (ImageButton) findViewById(R.id.timeline_bt_tweet);
 		bt_more = (ImageButton) findViewById(R.id.timeline_bt_more);
-		
+
 		bt_send.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
@@ -263,47 +440,49 @@ public class TimelineActivity extends Activity {
 				items.add(new Item(getString(R.string.manage_acc),
 						R.drawable.social_acc));
 				actions.add(new OpenAccountCommand());
+
+				items.add(new Item(getString(R.string.manage_collumns),
+						R.drawable.collumn));
+
+				actions.add(new OpenManageCollumnCommand());
 				
-				items.add(new Item(getString(R.string.manage_labels),R.drawable.labels));
+				items.add(new Item(getString(R.string.manage_labels),
+						R.drawable.labels));
 				
 				actions.add(new OpenManageLabelsCommand());
+
+				items.add(new Item(getString(R.string.manage_black_list),R.drawable.blacklist));
+				actions.add(new OpenManageBlackListCommand());
 				
 				if (Account.getFacebookAccount(TimelineActivity.this) != null) {
 					items.add(new Item(getString(R.string.group_columns),
-							android.R.drawable.ic_menu_my_calendar));
+							R.drawable.group));
 					actions.add(new OpenFacebookGroupCommand());
 				}
 
 				if (Account.getTwitterAccount(TimelineActivity.this) != null) {
 					items.add(new Item(getString(R.string.new_search),
-							android.R.drawable.ic_menu_search));
+							R.drawable.search));
 					actions.add(new OpenSearchCommand());
 				}
-				
-				items.add(new Item(getString(R.string.manage_collumns),
-						android.R.drawable.ic_menu_agenda));
 
-				actions.add(new OpenManageCollumnCommand());
+				
 
 				if (filters.get(curentFilterPosition).isDeletable()) {
 
 					items.add(new Item(getString(R.string.remove_column),
-							android.R.drawable.ic_menu_delete));
+							R.drawable.discard));
 					actions.add(new AbstractCommand() {
 
 						@Override
 						public void execute(Activity activity) {
 
-							
 							new RemoveCollumnTask().execute();
 
 						}
 					});
 
 				}
-				
-				
-				
 
 				ArrayAdapter<Item> adapter = new ArrayAdapter<Item>(
 						TimelineActivity.this,
@@ -429,10 +608,10 @@ public class TimelineActivity extends Activity {
 						curentFilterPosition = position;
 						AbstractColumn column = filters.get(position);
 						currentTittle.setText(column.getColumnTitle());
-						currentCommand=column.getCommand();
-						if(currentCommand==null){
+						currentCommand = column.getCommand();
+						if (currentCommand == null) {
 							bt_send.setVisibility(View.INVISIBLE);
-						}else{
+						} else {
 							bt_send.setVisibility(View.VISIBLE);
 						}
 
@@ -469,12 +648,23 @@ public class TimelineActivity extends Activity {
 		new InitViewTask().execute();
 	}
 
+	@Override
+	protected void onDestroy() {
+		DataBase db = DataBase.getInstance(this);
+		if (!(db.isExecuting())) {
+			if (!reload)
+				DataBase.getInstance(this).close();
+			super.onDestroy();
+		} else {
+			onStop();
+		}
+		// AssyncTaskManager.getInstance().notifyToCancel();*/
+	}
+
 	private void loadCollumns() {
-		
-		int cont=0;
+		int cont = 0;
 		for (CollumnConfig config : Facade.getInstance(this).getAllConfig()) {
-			
-				
+
 			AbstractColumn column = null;
 			if (config.getType().equals(CollumnConfig.FACEBOOK_COLLUMN)) {
 				column = new FacebookFeedsColumn(this);
@@ -515,8 +705,10 @@ public class TimelineActivity extends Activity {
 			} else if (config.getType().equals(CollumnConfig.MARKUP)) {
 				try {
 					int id = config.getProprietes().getInt("id");
-					Marcador m = Facade.getInstance(this).getOneMarcador(id);
+					Label m = Facade.getInstance(this).getOneMarcador(id);
 
+					if (m == null)
+						continue;
 					if (m.isEnnabled() != 1)
 						continue;
 
@@ -549,12 +741,13 @@ public class TimelineActivity extends Activity {
 			column.setConfig(config);
 
 			cont++;
-			if(cont==1){
-				currentCommand=column.getCommand();
+			if (cont == 1) {
+				currentCommand = column.getCommand();
 			}
 		}
 		view_flipper.setAdapter(adapter);
-		
+		verifyMarkupCollumns();
+
 	}
 
 	@Override
@@ -727,6 +920,7 @@ public class TimelineActivity extends Activity {
 				// TODO: handle exception
 			}
 			progressDialog.dismiss();
+			isStarting = false;
 		}
 
 	}
@@ -782,29 +976,31 @@ public class TimelineActivity extends Activity {
 		}
 
 	}
-	
-	private class RemoveCollumnTask extends AsyncTask<Void, Void, Void>{
+
+	private class RemoveCollumnTask extends AsyncTask<Void, Void, Void> {
 
 		private ProgressDialog progressDialog;
-		
+
 		@Override
 		protected void onPostExecute(Void result) {
 
 			adapter.removeViewAtPosition(curentFilterPosition);
 
 			curentFilterPosition--;
-			if(curentFilterPosition<0)
-				curentFilterPosition=0;
+			if (curentFilterPosition < 0)
+				curentFilterPosition = 0;
 			view_flipper.setCurrentItem(curentFilterPosition);
-			
+
 			adapter.notifyDataSetChanged();
-			currentTittle.setText(filters.get(curentFilterPosition).getColumnTitle());
-			int i=0;
-			for(CollumnConfig config:Facade.getInstance(TimelineActivity.this).getAllConfig()){
+			currentTittle.setText(filters.get(curentFilterPosition)
+					.getColumnTitle());
+			int i = 0;
+			for (CollumnConfig config : Facade.getInstance(
+					TimelineActivity.this).getAllConfig()) {
 				filters.get(i).setConfig(config);
 				i++;
-			} 
-			
+			}
+
 			progressDialog.dismiss();
 		}
 
@@ -812,8 +1008,7 @@ public class TimelineActivity extends Activity {
 		protected void onPreExecute() {
 			progressDialog = new ProgressDialog(TimelineActivity.this);
 
-			progressDialog
-					.setMessage(getString(R.string.romoving_collumn));
+			progressDialog.setMessage(getString(R.string.romoving_collumn));
 
 			try {
 				progressDialog.show();
@@ -824,17 +1019,15 @@ public class TimelineActivity extends Activity {
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			Facade.getInstance(TimelineActivity.this)
-			.deleteCollum(curentFilterPosition);
-			
-			AbstractColumn collumn = filters
-					.get(curentFilterPosition);
+			Facade.getInstance(TimelineActivity.this).deleteCollum(
+					curentFilterPosition);
+
+			AbstractColumn collumn = filters.get(curentFilterPosition);
 			collumn.deleteColumn();
 			filters.remove(curentFilterPosition);
-	
+
 			return null;
 		}
-		
-	}
 
+	}
 }

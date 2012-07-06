@@ -141,5 +141,9 @@
     <string name="location_select">Select a location</string>
     <string name="manage_acc">Manage Accounts</string>
     <string name="manage_labels">Manage Labels</string>
+    <string name="delete">Delete</string>
+    <string name="disable">Disable</string>
+    <string name="actions">Labels actions</string>
+    <string name="change_disable_enable">Change(disable/enable)</string>
     
 </resources>

@@ -13,7 +13,7 @@ import com.dot.me.model.CollumnConfig;
 import com.dot.me.model.Draft;
 import com.dot.me.model.FacebookAccount;
 import com.dot.me.model.FacebookGroup;
-import com.dot.me.model.Marcador;
+import com.dot.me.model.Label;
 import com.dot.me.model.Mensagem;
 import com.dot.me.model.PalavraChave;
 import com.dot.me.model.TrendLocation;
@@ -113,7 +113,7 @@ public class Facade {
 		return palavraChaveBD.conectaPalavra(idPalavra, idMarcador);
 	}
 
-	public int insert(Marcador m) {
+	public int insert(Label m) {
 		return marcadorBD.insert(m);
 	}
 
@@ -121,11 +121,11 @@ public class Facade {
 		return palavraChaveBD.getByMarcador(idMarcador);
 	}
 
-	public Vector<Marcador> getAllMarcadores() {
+	public Vector<Label> getAllMarcadores() {
 		return marcadorBD.getAll();
 	}
 
-	public Marcador getOneMarcador(int id) {
+	public Label getOneMarcador(int id) {
 		return marcadorBD.getOne(id);
 	}
 
@@ -231,11 +231,11 @@ public class Facade {
 		palavraChaveBD.desconectaPalavra(idPalavra, idMarcador);
 	}
 
-	public int update(Marcador m, String[] palavras) {
+	public int update(Label m, String[] palavras) {
 		return marcadorBD.update(m, palavras);
 	}
 
-	public void manageMarkup(Marcador m) {
+	public void manageMarkup(Label m) {
 		marcadorBD.manageMarkup(m);
 	}
 

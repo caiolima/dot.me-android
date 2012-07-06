@@ -5,8 +5,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Marcador{
-	
+public class Label{
+
 	private int idMarcador;
 	private String nome;
 	private Vector<PalavraChave> palavrasChave=new Vector<PalavraChave>();
@@ -112,7 +112,14 @@ public class Marcador{
 		
 	}
 	
-	
-
+	@Override
+	public boolean equals(Object o) {
+		try{
+			Label l=(Label)o;
+			return l.idMarcador==this.idMarcador;
+		}catch (ClassCastException e) {
+			return false;
+		}
+	}
 	
 }

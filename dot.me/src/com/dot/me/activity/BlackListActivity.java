@@ -4,7 +4,7 @@ import java.util.Vector;
 
 import com.dot.me.app.R;
 import com.dot.me.model.Account;
-import com.dot.me.model.Marcador;
+import com.dot.me.model.Label;
 import com.dot.me.model.bd.Facade;
 
 import android.app.Activity;

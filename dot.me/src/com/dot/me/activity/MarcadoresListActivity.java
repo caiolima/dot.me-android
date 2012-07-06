@@ -13,7 +13,7 @@ import org.json.JSONObject;
 
 import com.dot.me.app.R;
 import com.dot.me.model.Account;
-import com.dot.me.model.Marcador;
+import com.dot.me.model.Label;
 import com.dot.me.model.UsuarioTwitter;
 import com.dot.me.model.bd.Facade;
 import com.dot.me.utils.Constants;
@@ -44,12 +44,12 @@ import android.widget.SimpleAdapter;
 
 public class MarcadoresListActivity extends Activity {
 
-	private ArrayAdapter<Marcador> adapter;
+	private ArrayAdapter<Label> adapter;
 	private ListView lst_marcadores;
 	private boolean delete = false;
 	private Button bt_delete,bt_disable;
 	private LinearLayout lt_bottom;
-	private Vector<Marcador> selecteds=new Vector<Marcador>();
+	private Vector<Label> selecteds=new Vector<Label>();
 	private boolean wasItemSelected=false;
 	private Vector<Account> users;
 
@@ -67,7 +67,7 @@ public class MarcadoresListActivity extends Activity {
 		
 		users = Account.getLoggedUsers(this);
 		if (delete){
-			adapter = new ArrayAdapter<Marcador>(this,
+			adapter = new ArrayAdapter<Label>(this,
 					android.R.layout.simple_list_item_checked,
 					Account.getMarcadores(this));
 			
@@ -89,7 +89,7 @@ public class MarcadoresListActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					if(selecteds.size()>0){
-						for(Marcador m:selecteds){
+						for(Label m:selecteds){
 							m.changeEnable();
 							Facade.getInstance(MarcadoresListActivity.this).manageMarkup(m);
 							
@@ -103,7 +103,7 @@ public class MarcadoresListActivity extends Activity {
 			
 			
 		}else{
-			adapter = new ArrayAdapter<Marcador>(this,
+			adapter = new ArrayAdapter<Label>(this,
 					android.R.layout.simple_list_item_1, Account.getMarcadores(this));
 			lt_bottom.setVisibility(View.GONE);
 		}
@@ -118,7 +118,7 @@ public class MarcadoresListActivity extends Activity {
 						public void onItemClick(AdapterView<?> ap, View view,
 								int position, long id) {
 
-							Marcador marcador = adapter.getItem(position);
+							Label marcador = adapter.getItem(position);
 
 							Intent itent = new Intent(
 									MarcadoresListActivity.this,
@@ -141,7 +141,7 @@ public class MarcadoresListActivity extends Activity {
 				public void onItemClick(AdapterView<?> ap, View view,
 						int position, long id) {
 
-					Marcador marcador = adapter.getItem(position);
+					Label marcador = adapter.getItem(position);
 					CheckedTextView chk_view=(CheckedTextView)view;
 					if(chk_view.isChecked()){
 						selecteds.remove(marcador);
@@ -183,7 +183,7 @@ public class MarcadoresListActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		if(!delete){
-			adapter=new ArrayAdapter<Marcador>(this,
+			adapter=new ArrayAdapter<Label>(this,
 					android.R.layout.simple_list_item_1, Account.getMarcadores(this));
 			lst_marcadores.setAdapter(adapter);
 		}
@@ -227,7 +227,7 @@ public class MarcadoresListActivity extends Activity {
 			
 			response = web.doPost("", params);*/
 			
-			for(Marcador m:selecteds){
+			for(Label m:selecteds){
 				Facade.getInstance(MarcadoresListActivity.this).deleteMarcador(m.getIdMarcador());
 			}
 			
