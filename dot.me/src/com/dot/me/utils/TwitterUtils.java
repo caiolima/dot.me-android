@@ -194,5 +194,9 @@ public class TwitterUtils {
 		public Vector<Mensagem> mensagens;
 		public Mensagem lastMessage;
 	}
+	
+	public static void logoutTwitter(){
+		twitter=null;
+	}
 
 }

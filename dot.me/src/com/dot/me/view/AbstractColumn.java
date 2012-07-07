@@ -96,7 +96,7 @@ public abstract class AbstractColumn {
 				@Override
 				public void onScroll(AbsListView view, int firstVisibleItem,
 						int visibleItemCount, int totalItemCount) {
-					if ((totalItemCount > 10)
+					if ((totalItemCount >=5)
 							&& (totalItemCount - visibleItemCount) == firstVisibleItem
 							&& !isLoaddingNextPage) {
 

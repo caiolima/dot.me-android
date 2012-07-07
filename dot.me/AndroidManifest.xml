@@ -21,7 +21,8 @@
 
     <application
         android:icon="@drawable/icon"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Light.NoTitleBar" >
         <activity
             android:label="@string/app_name"
             android:name=".TwitteMarkupActivity" >
@@ -195,7 +196,7 @@
         <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.ManageCollumnsActivity"></activity>
         <activity android:name="com.dot.me.activity.TwitterLoginActivity"  android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
         <activity android:name="com.dot.me.activity.TrendsLocationsActivity" android:theme="@android:style/Theme.Light.NoTitleBar" ></activity>
-        <activity android:name="com.dot.me.activity.ManageLabelsActivity"  android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
+        <activity android:name="com.dot.me.activity.ManageLabelsActivity"  ></activity>
     </application>
 
 </manifest>

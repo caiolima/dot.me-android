@@ -23,13 +23,13 @@ import com.dot.me.utils.UpdateParams;
 
 import android.content.Context;
 
-public class MarkupColunm extends AbstractColumn implements MessageObserver {
+public class LabelColunm extends AbstractColumn implements MessageObserver {
 
 	private Label marcador;
 	private int currentPage;
 	private boolean flagNextPage = false;
 
-	public MarkupColunm(Label m, Context ctx) {
+	public LabelColunm(Label m, Context ctx) {
 		super(ctx, m.getNome(), false);
 
 		marcador = m;
@@ -70,7 +70,7 @@ public class MarkupColunm extends AbstractColumn implements MessageObserver {
 
 	public static void cleanAllColumn() {
 		for (AbstractColumn a : instances)
-			if (a instanceof MarkupColunm)
+			if (a instanceof LabelColunm)
 				a.adapter.removeAll();
 	}
 
@@ -124,8 +124,8 @@ public class MarkupColunm extends AbstractColumn implements MessageObserver {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof MarkupColunm) {
-			MarkupColunm other = (MarkupColunm) o;
+		if (o instanceof LabelColunm) {
+			LabelColunm other = (LabelColunm) o;
 			if (other.getMarcador().getIdMarcador() == this.getMarcador()
 					.getIdMarcador())
 				return true;

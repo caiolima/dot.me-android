@@ -53,7 +53,7 @@ import com.dot.me.utils.SubjectMessage;
 import com.dot.me.view.AbstractColumn;
 import com.dot.me.view.FacebookFeedsColumn;
 import com.dot.me.view.FacebookGroupColumn;
-import com.dot.me.view.MarkupColunm;
+import com.dot.me.view.LabelColunm;
 import com.dot.me.view.MeCollumn;
 import com.dot.me.view.SearchColumn;
 import com.dot.me.view.TwitterFeedsCollumn;
@@ -85,7 +85,7 @@ public class TimelineActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		current = this;
-
+		//trecho de codigo para validar as colunas Label
 		if (!isStarting) {
 			boolean finish;
 			int qtdDeleted = 0;
@@ -118,6 +118,10 @@ public class TimelineActivity extends Activity {
 										config.getPos()-qtdDeleted);
 								finish = false;
 								qtdDeleted++;
+								for(int j=config.getPos();j<filters.size();j++){
+									AbstractColumn abs=filters.get(j);
+									abs.getConfig().setPos(j);
+								}
 								break;
 							}
 						} catch (JSONException e) {
@@ -129,8 +133,8 @@ public class TimelineActivity extends Activity {
 
 			List<Label> list = new ArrayList<Label>();
 			for (AbstractColumn a : filters) {
-				if (a instanceof MarkupColunm) {
-					MarkupColunm mark = (MarkupColunm) a;
+				if (a instanceof LabelColunm) {
+					LabelColunm mark = (LabelColunm) a;
 					list.add(mark.getMarcador());
 				}
 			}
@@ -142,7 +146,7 @@ public class TimelineActivity extends Activity {
 					if (m.isEnnabled() != 1)
 						continue;
 
-					column = new MarkupColunm(m, this);
+					column = new LabelColunm(m, this);
 
 					CollumnConfig config = new CollumnConfig();
 					config.setType(CollumnConfig.MARKUP);
@@ -157,7 +161,7 @@ public class TimelineActivity extends Activity {
 
 						filters.add(column);
 						adapter.addView(column.getScrollView());
-						mSubject.registerObserver((MarkupColunm) column);
+						mSubject.registerObserver((LabelColunm) column);
 					} catch (JSONException e) {
 
 					}
@@ -220,8 +224,8 @@ public class TimelineActivity extends Activity {
 
 		List<Label> list = new ArrayList<Label>();
 		for (AbstractColumn a : filters) {
-			if (a instanceof MarkupColunm) {
-				MarkupColunm mark = (MarkupColunm) a;
+			if (a instanceof LabelColunm) {
+				LabelColunm mark = (LabelColunm) a;
 				list.add(mark.getMarcador());
 			}
 		}
@@ -233,7 +237,7 @@ public class TimelineActivity extends Activity {
 				if (m.isEnnabled() != 1)
 					continue;
 
-				column = new MarkupColunm(m, this);
+				column = new LabelColunm(m, this);
 
 				CollumnConfig config = new CollumnConfig();
 				config.setType(CollumnConfig.MARKUP);
@@ -248,7 +252,7 @@ public class TimelineActivity extends Activity {
 
 					filters.add(column);
 					adapter.addView(column.getScrollView());
-					mSubject.registerObserver((MarkupColunm) column);
+					mSubject.registerObserver((LabelColunm) column);
 				} catch (JSONException e) {
 
 				}
@@ -376,7 +380,7 @@ public class TimelineActivity extends Activity {
 		super.onPause();
 
 		current = null;
-
+		
 		for (AbstractColumn collumn : filters) {
 			JSONObject obj = collumn.getConfig().getProprietes();
 			obj.remove("top");
@@ -712,8 +716,8 @@ public class TimelineActivity extends Activity {
 					if (m.isEnnabled() != 1)
 						continue;
 
-					column = new MarkupColunm(m, this);
-					mSubject.registerObserver((MarkupColunm) column);
+					column = new LabelColunm(m, this);
+					mSubject.registerObserver((LabelColunm) column);
 					filters.add(column);
 					adapter.addView(column.getScrollView());
 				} catch (JSONException e) {
@@ -777,7 +781,7 @@ public class TimelineActivity extends Activity {
 			@Override
 			public void run() {
 				for (AbstractColumn filter : filters) {
-					if (filter instanceof MarkupColunm) {
+					if (filter instanceof LabelColunm) {
 						filter.updateTwittes(currentList, top);
 						/*
 						 * Separator mainSeparator = filters.get(0).getAdapter()

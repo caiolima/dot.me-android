@@ -10,7 +10,7 @@ public class CollumnConfig {
 	private JSONObject proprietes;
 	public final static String TWITTER_COLLUMN="twitter",FACEBOOK_COLLUMN="facebook",
 				FACEBOOK_GROUPS="face_groups", TWITTER_SEARCH="twitter_search",
-				ME="face_notif", MARKUP="markup";
+				ME="me", MARKUP="markup";
 
 	public int getPos() {
 		return pos;

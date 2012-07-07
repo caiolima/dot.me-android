@@ -5,10 +5,12 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/linearLayout1"
+        android:id="@+id/lt_loading"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:gravity="center" android:padding="10dp"
-        android:background="@color/backgorung">
+        android:layout_height="wrap_content"
+        android:background="@color/backgorung"
+        android:gravity="center"
+        android:padding="10dp" >
 
         <ProgressBar
             android:id="@+id/load_progress_loading"

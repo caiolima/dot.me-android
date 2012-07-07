@@ -21,6 +21,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -52,6 +53,8 @@ public class ManageFacebookGroupsActivity extends Activity {
 
 		LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		load_view = mInflater.inflate(R.layout.loading, null);
+		LinearLayout lt_loading=(LinearLayout) load_view.findViewById(R.id.lt_loading);
+		lt_loading.setBackgroundResource(R.color.white);
 		// load_view.setLayoutParams(new
 		// LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
 		list.addHeaderView(load_view);

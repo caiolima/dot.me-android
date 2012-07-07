@@ -20,8 +20,10 @@ import com.dot.me.model.TrendLocation;
 import com.dot.me.model.TwitterAccount;
 import com.dot.me.model.User;
 import com.dot.me.utils.BlackListUtils;
+import com.dot.me.utils.FacebookUtils;
 import com.dot.me.utils.Menssage;
 import com.dot.me.utils.SubjectMessage;
+import com.dot.me.utils.TwitterUtils;
 
 public class Facade {
 
@@ -79,6 +81,7 @@ public class Facade {
 
 		configDao.deleteOfType("twitter");
 		twitterSearchBD.deleteAll();
+		TwitterUtils.logoutTwitter();
 	}
 
 	public void logoutFacebook() {
@@ -90,6 +93,7 @@ public class Facade {
 
 		facebookGroupBd.deleteAll();
 		configDao.deleteOfType("face");
+		FacebookUtils.logoutFacebook();
 
 	}
 

@@ -138,5 +138,9 @@ public class FacebookUtils {
 				"from.picture,from.name,from.id,message,likes,comments,picture,story,created_time,updated_time,type,to,object_id,link,name");
 		return params;
 	}
+	
+	public static void logoutFacebook(){
+		mFacebook=null;
+	}
 
 }

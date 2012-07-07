@@ -103,11 +103,16 @@ public class SearchActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				
+				String search=txt_search.getText().toString()
+						.toLowerCase().trim();
+				if(search.equals(""))
+					return;
+				
 				Intent intent = new Intent(SearchActivity.this,
 						SearchResultActivity.class);
 				Bundle b = new Bundle();
-				b.putString("search_value", txt_search.getText().toString()
-						.toLowerCase().trim());
+				b.putString("search_value", search);
 				intent.putExtras(b);
 
 				startActivityForResult(intent, Constants.COLUMN_SEARCH_RESULT);

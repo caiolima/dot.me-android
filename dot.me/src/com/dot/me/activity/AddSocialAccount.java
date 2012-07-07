@@ -51,6 +51,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -78,6 +79,8 @@ public class AddSocialAccount extends Activity {
 	private LinearLayout facebookPane, twitterPane;
 	private ImageView twitterImage, facebookImage;
 	private TextView twitterName, facebookName;
+	private boolean flagAccChanged = false;
+	private Handler h=new Handler(); 
 	private View.OnClickListener twitterLoggoutClick = new View.OnClickListener() {
 
 		@Override
@@ -86,6 +89,7 @@ public class AddSocialAccount extends Activity {
 			Facade.destroy();
 			DataBase.start(AddSocialAccount.this);
 
+			flagAccChanged = true;
 			Facade facade = Facade.getInstance(AddSocialAccount.this);
 			facade.logoutTwitter();
 			bt_twitter.setVisibility(View.VISIBLE);
@@ -173,8 +177,13 @@ public class AddSocialAccount extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(AddSocialAccount.this,
 						DashboardActivity.class);
+
+				Bundle b = new Bundle();
+				b.putBoolean("refresh_timeline", flagAccChanged);
+				intent.putExtras(b);
 				startActivity(intent);
 				finish();
+
 			}
 
 		});
@@ -224,7 +233,7 @@ public class AddSocialAccount extends Activity {
 
 			}
 		});
-		
+
 		updateLayout();
 
 	}
@@ -255,6 +264,8 @@ public class AddSocialAccount extends Activity {
 
 		if (fAcc == null && tAcc == null)
 			bt_ok.setVisibility(View.GONE);
+		else
+			bt_ok.setVisibility(View.VISIBLE);
 	}
 
 	private static int countNewIntent = 0;
@@ -508,7 +519,7 @@ public class AddSocialAccount extends Activity {
 				Facade.getInstance(AddSocialAccount.this).insert(collumnConfig);
 
 			updateLayout();
-			
+
 		}
 
 	}
@@ -573,6 +584,7 @@ public class AddSocialAccount extends Activity {
 			try {
 				facebook.logout(ctx);
 				logoutSuccessful = true;
+				flagAccChanged = true;
 			} catch (MalformedURLException e) {
 
 			} catch (IOException e) {
@@ -626,8 +638,16 @@ public class AddSocialAccount extends Activity {
 							collumnConfig);
 
 				loadingDialog.dismiss();
-
-				updateLayout();
+				h.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						updateLayout();
+						
+					}
+				});
+				
+				flagAccChanged = true;
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -656,7 +676,12 @@ public class AddSocialAccount extends Activity {
 				(Account.getFacebookAccount(this) != null || Account
 						.getTwitterAccount(this) != null)) {
 
-			Intent intent = new Intent(this, DashboardActivity.class);
+			Intent intent = new Intent(AddSocialAccount.this,
+					DashboardActivity.class);
+
+			Bundle b = new Bundle();
+			b.putBoolean("refresh_timeline", flagAccChanged);
+			intent.putExtras(b);
 			startActivity(intent);
 			finish();
 

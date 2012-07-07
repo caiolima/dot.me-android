@@ -78,6 +78,20 @@ public class CreateMarkupActivity extends Activity{
 
 			@Override
 			public void onClick(View v) {
+				String text=txt_nome.getText().toString();
+				text=text.trim();
+				if(text.equals(""))
+					return;
+				
+				String palavras_text=txt_palavras.getText().toString().trim();
+				if(palavras_text.equals(""))
+					return;
+				
+				String[] palavras=palavras_text.split("\n");
+				if(palavras.length<0)
+					return;
+				
+				
 				
 				new CreateMarkupTask().execute(CreateMarkupActivity.this);
 			}
@@ -132,7 +146,7 @@ public class CreateMarkupActivity extends Activity{
 			for(int i=0;i<palavras.length;i++){
 				palavras[i]=palavras[i].trim();
 				PalavraChave p=new PalavraChave();
-				p.setConteudo(palavras[i]);
+				p.setConteudo(palavras[i].trim());
 				
 				m.addPalavra(p);	
 			}
