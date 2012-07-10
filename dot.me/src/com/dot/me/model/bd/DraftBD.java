@@ -41,6 +41,8 @@ public class DraftBD extends Dao{
 			
 		}
 		
+		c.close();
+		
 		return draft;
 		
 	}
@@ -51,9 +53,11 @@ public class DraftBD extends Dao{
 				null, null, null);
 		
 		
-		if(c.getCount()>0)
+		if(c.getCount()>0){
+			c.close();
 			return true;
-		
+		}
+		c.close();
 		return false;
 	}
 	

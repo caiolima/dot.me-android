@@ -52,10 +52,12 @@ public class FacebookGroupsBD extends Dao {
 				return null;
 			}
 
+			c.close();
 			return fg;
 
 		}
 
+		c.close();
 		return null;
 	}
 
@@ -81,6 +83,8 @@ public class FacebookGroupsBD extends Dao {
 			
 			all.add(fg);
 		}
+		
+		c.close();
 		return all;
 	}
 
@@ -92,8 +96,12 @@ public class FacebookGroupsBD extends Dao {
 		Cursor c = db.getDB().query(DataBase.TB_FACEBOOK_GROUPS, null,
 				DataBase.FACEBOOK_GROUPS_ID + "=?", new String[] { id }, null,
 				null, null);
-		if (c.getCount() > 0)
+		if (c.getCount() > 0){
+			c.close();
 			return true;
+		}
+		c.close();
+		
 		return false;
 
 	}

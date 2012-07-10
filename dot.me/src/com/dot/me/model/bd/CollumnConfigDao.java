@@ -36,6 +36,7 @@ public class CollumnConfigDao extends Dao {
 		db.getDB().insert(DataBase.TB_COLUMNS_CONFIG, null, values);
 		
 		collumn.setPos(pos);
+		c.close();
 
 	}
 
@@ -68,6 +69,8 @@ public class CollumnConfigDao extends Dao {
 			
 			this.changePos(config, i);
 		}
+		
+		c.close();
 
 	}
 	
@@ -122,7 +125,7 @@ public class CollumnConfigDao extends Dao {
 			all.add(config);
 
 		}
-
+		c.close();
 		return all;
 	}
 	
@@ -143,11 +146,11 @@ public class CollumnConfigDao extends Dao {
 			} catch (JSONException e) {
 
 			}
-			
+			c.close();
 			return config;
 
 		}
-
+		c.close();
 		return null;
 		
 	}
@@ -174,9 +177,14 @@ public class CollumnConfigDao extends Dao {
 		Cursor c = db.getDB().query(DataBase.TB_COLUMNS_CONFIG, null, DataBase.COLUMNS_CONFIG_TYPE+"=?",
 				new String[]{type}, null, null,null);
 		
-		if(c.getCount()>0)
-			return true;
 		
+		
+		if(c.getCount()>0){
+			c.close();
+			return true;
+		}
+		
+		c.close();
 		return false;
 		
 	}

@@ -29,6 +29,7 @@ public class MarcadorBD extends Dao{
 		c.moveToFirst();
 		
 		int id_marcador=c.getInt(0);
+		c.close();
 		if(r==-1)
 			return Menssage.ERRO;
 		else{
@@ -67,7 +68,7 @@ public class MarcadorBD extends Dao{
 			
 			marcadores.add(m);
 		}
-		
+		c.close();
 		return marcadores;
 	}
 	
@@ -86,7 +87,7 @@ public class MarcadorBD extends Dao{
 			m.setPalavrasChave(Facade.getInstance(ctx).getByMarcador(m.getIdMarcador()));
 			
 		}
-		
+		c.close();
 		return m;
 		
 	}

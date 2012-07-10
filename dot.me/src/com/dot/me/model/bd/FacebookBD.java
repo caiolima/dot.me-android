@@ -49,10 +49,11 @@ public class FacebookBD extends Dao{
 			f.setExpires(c.getLong(3));
 			f.setName(c.getString(4));
 			
+			c.close();
 			return f;
 			
 		}
-		
+		c.close();
 		return null;
 	}
 	
@@ -79,6 +80,7 @@ public class FacebookBD extends Dao{
 			
 			all.add(f);
 		}
+		c.close();
 		
 		return all;
 		

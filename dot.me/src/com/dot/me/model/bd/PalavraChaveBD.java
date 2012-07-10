@@ -26,6 +26,7 @@ public class PalavraChaveBD extends Dao{
 		c.moveToFirst();
 		
 		int id_palavra=c.getInt(0);
+		c.close();
 		if(r==-1)
 			return Menssage.ERRO;
 		else
@@ -62,10 +63,11 @@ public class PalavraChaveBD extends Dao{
 		Cursor c=db.getDB().query(DataBase.TB_PALAVRA_CHAVE, new String[] {DataBase.PALAVRA_CHAVE_ID}, DataBase.PALAVRA_CHAVE_CONTEUDO+"=?", new String[]{palavra}, null, null,null);
 		if(c.getCount()>0){
 			c.moveToFirst();
-			
-			return c.getInt(0);
+			int out=c.getInt(0);
+			c.close();
+			return out;
 		}
-		
+		c.close();
 		return Menssage.ERRO;
 	}
 	
@@ -86,6 +88,7 @@ public class PalavraChaveBD extends Dao{
 			p.setConteudo(c.getString(1));
 			
 		}
+		c.close();
 		return p;
 		
 	}
@@ -101,7 +104,7 @@ public class PalavraChaveBD extends Dao{
 			
 		}
 		
-		
+		c.close();
 		return palavras;
 		
 	}

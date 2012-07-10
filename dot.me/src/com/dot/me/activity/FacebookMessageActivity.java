@@ -19,6 +19,7 @@ import com.dot.me.exceptions.LostUserAccessException;
 import com.dot.me.model.Account;
 import com.dot.me.model.FacebookAccount;
 import com.dot.me.model.Mensagem;
+import com.dot.me.model.bd.DataBase;
 import com.dot.me.model.bd.Facade;
 import com.dot.me.utils.BaseRequestListener;
 import com.dot.me.utils.FacebookUtils;
@@ -317,7 +318,7 @@ public class FacebookMessageActivity extends Activity {
 
 		@Override
 		protected Void doInBackground(Void... param) {
-
+			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(true);
 			if (data == null) {
 				Vector<Mensagem> cachedMenssage = facade.getMensagemOfLikeId(
 						Mensagem.TIPO_FACE_COMENTARIO,
@@ -551,6 +552,7 @@ public class FacebookMessageActivity extends Activity {
 			nextPage = "" + qtd_messages;
 
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(false);
 
 		}
 
@@ -635,7 +637,7 @@ public class FacebookMessageActivity extends Activity {
 
 		@Override
 		protected Void doInBackground(Void... v) {
-
+			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(true);
 			try {
 				m = facade.getOneMessage(id, tipo);
 				if (m == null) {
@@ -694,6 +696,7 @@ public class FacebookMessageActivity extends Activity {
 				Toast.makeText(FacebookMessageActivity.this, FacebookMessageActivity.this.getString(R.string.erro_connect), Toast.LENGTH_SHORT).show();
 				finish();
 			}
+			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(false);
 		}
 
 	}

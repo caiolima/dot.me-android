@@ -19,6 +19,7 @@ import com.dot.me.model.Mensagem;
 import com.dot.me.model.TwitterAccount;
 import com.dot.me.model.User;
 import com.dot.me.model.UsuarioTwitter;
+import com.dot.me.model.bd.DataBase;
 import com.dot.me.model.bd.Facade;
 import com.dot.me.utils.Constants;
 import com.dot.me.utils.TwitterUtils;
@@ -78,7 +79,7 @@ public class SearchResultActivity extends Activity {
 				facade.insert(search_content);
 				for (Mensagem m : sResult) {
 
-					if (!facade.exsistsStatus(m.getIdMensagem(),m.getTipo())) {
+					if (!facade.exsistsStatus(m.getIdMensagem(), m.getTipo())) {
 
 						facade.insert(m);
 
@@ -95,16 +96,17 @@ public class SearchResultActivity extends Activity {
 					b.putString("search_name", search_content);
 					intent.putExtras(b);
 					setResult(RESULT_OK, intent);
-				}else{
-					Intent intent = new Intent(SearchResultActivity.this,TimelineActivity.class);
+				} else {
+					Intent intent = new Intent(SearchResultActivity.this,
+							TimelineActivity.class);
 					Bundle b = new Bundle();
 					b.putBoolean("collumnAdded", true);
 					b.putString("search_name", search_content);
 					intent.putExtras(b);
-					
+
 					startActivity(intent);
 				}
-				
+
 				finish();
 			}
 
@@ -147,7 +149,7 @@ public class SearchResultActivity extends Activity {
 	private class SearchTask extends AsyncTask<Activity, Void, Void> {
 
 		private ProgressDialog progressDialog;
-		
+
 		@Override
 		protected void onPreExecute() {
 
@@ -158,33 +160,34 @@ public class SearchResultActivity extends Activity {
 			progressDialog.show();
 
 		}
-		
+
 		@Override
 		protected Void doInBackground(Activity... params) {
-		
-			TwitterAccount user = (TwitterAccount) Account.getTwitterAccount(params[0]); // verificar
-																	// posteriormente
+			DataBase.getInstance(SearchResultActivity.this).setExecuting(true);
+			TwitterAccount user = (TwitterAccount) Account
+					.getTwitterAccount(params[0]); // verificar
+			// posteriormente
 			Twitter twitter = TwitterUtils.getTwitter(new AccessToken(user
 					.getToken(), user.getTokenSecret()));
 			Query q = new Query(search_content);
 			try {
 				QueryResult result = twitter.search(q);
 
+				if (result == null)
+					return null;
 				for (Tweet tweet : result.getTweets()) {
-					Mensagem m = Mensagem.createFromTweet(tweet);
-					sResult.add(m);
-					
-					Facade.getInstance(SearchResultActivity.this).insert(m);
-					
+					try {
+						Mensagem m = Mensagem.createFromTweet(tweet);
+						Facade.getInstance(SearchResultActivity.this).insert(m);
+						sResult.add(m);
+
+						
+					} catch (Exception e) {
+						
+					}
 
 				}
 			} catch (TwitterException e) {
-				e.printStackTrace();
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;
@@ -196,8 +199,9 @@ public class SearchResultActivity extends Activity {
 			for (Mensagem m : sResult)
 				adapter.addItem(m);
 			bt_ok.setEnabled(true);
-					
+
 			progressDialog.dismiss();
+			DataBase.getInstance(SearchResultActivity.this).setExecuting(false);
 		}
 
 	}
@@ -208,7 +212,8 @@ public class SearchResultActivity extends Activity {
 
 		if (flagToDelete) {
 			for (Mensagem m : sResult)
-				Facade.getInstance(this).deleteMensagem(m.getIdMensagem(),m.getTipo());
+				Facade.getInstance(this).deleteMensagem(m.getIdMensagem(),
+						m.getTipo());
 		}
 	}
 

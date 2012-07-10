@@ -40,9 +40,11 @@ public class TwitterSearchBD extends Dao{
 	protected boolean wasAdded(String search){
 		Cursor c=db.getDB().query(DataBase.TB_SEARCH, null, DataBase.SEARCH_CONTENT+"=?",
 				new String[]{search.toLowerCase()}, null, null, null);
-		if(c.getCount()>0)
+		if(c.getCount()>0){
+			c.close();
 			return true;
-		
+		}
+		c.close();
 		return false;
 	}
 	
@@ -54,6 +56,7 @@ public class TwitterSearchBD extends Dao{
 			searches.add(c.getString(0));
 		}
 			
+		c.close();
 		return searches;
 	}
 	

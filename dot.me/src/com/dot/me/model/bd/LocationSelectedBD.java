@@ -38,6 +38,7 @@ public class LocationSelectedBD extends Dao{
 			
 			return l;
 		}
+		c.close();
 		return null;
 	}
 	

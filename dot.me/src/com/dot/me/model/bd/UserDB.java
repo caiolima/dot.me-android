@@ -31,8 +31,10 @@ public class UserDB extends Dao{
 				, null, null, DataBase.USER_SYS_ID+" desc");
 		
 		cursor.moveToFirst();
+		int out=cursor.getInt(0);
 		
-		return cursor.getInt(0);
+		cursor.close();
+		return out;
 	}
 	
 	protected User getOne(long id,int type){
@@ -54,10 +56,11 @@ public class UserDB extends Dao{
 			u.setNum_following(c.getInt(6));
 			u.setType(c.getInt(7));
 			u.setNick(c.getString(8));
+			c.close();
 			return u;
 			
 		}
-		
+		c.close();
 		return null;
 	}
 	
@@ -81,9 +84,12 @@ public class UserDB extends Dao{
 			u.setType(c.getInt(7));
 			u.setNick(c.getString(8));
 			
+			c.close();
+			
 			return u;
 			
 		}
+		c.close();
 		
 		return null;
 	}
@@ -108,11 +114,11 @@ public class UserDB extends Dao{
 			u.setNum_following(c.getInt(6));
 			u.setType(c.getInt(7));
 			u.setNick(c.getString(8));
-			
+			c.close();
 			return u;
 			
 		}
-		
+		c.close();
 		return null;
 	}
 

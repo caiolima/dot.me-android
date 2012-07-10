@@ -81,10 +81,11 @@ public class MensagemBD extends Dao {
 				mensagens.add(mensagem);
 
 			}
-
+			c.close();
 			Collections.sort(mensagens);
 			return mensagens;
 		} catch (Exception e) {
+			
 			return null;
 		}
 
@@ -104,7 +105,9 @@ public class MensagemBD extends Dao {
 				c.moveToFirst();
 
 				try {
-					return createMessage(c);
+					Mensagem m=createMessage(c);
+					c.close();
+					return m;
 				} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -113,7 +116,7 @@ public class MensagemBD extends Dao {
 					e.printStackTrace();
 				}
 			}
-		
+			c.close();
 
 		return null;
 	}
@@ -184,6 +187,7 @@ public class MensagemBD extends Dao {
 				mensagens.add(mensagem);
 
 			}
+			c.close();
 			Collections.sort(mensagens);
 			return mensagens;
 		} catch (Exception e) {
@@ -209,6 +213,7 @@ public class MensagemBD extends Dao {
 
 			}
 
+			c.close();
 			return mensagens;
 		} catch (Exception e) {
 			return null;
@@ -224,7 +229,9 @@ public class MensagemBD extends Dao {
 						+ "=?", new String[] { id, Integer.toString(tipo) },
 				null, null, null);
 
-		return c.getCount() > 0;
+		boolean result=c.getCount()>0;
+		c.close();
+		return result;
 	}
 
 	protected void deleteAll() {
@@ -278,7 +285,9 @@ public class MensagemBD extends Dao {
 				DataBase.MENSAGEM_TIPO + "=?",
 				new String[] { Integer.toString(type) }, null, null, null);
 
-		return c.getCount();
+		int out=c.getCount();
+		c.close();
+		return out;
 	}
 
 }

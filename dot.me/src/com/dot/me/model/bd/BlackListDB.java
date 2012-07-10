@@ -46,7 +46,7 @@ public class BlackListDB extends Dao{
 			
 			all.add(Facade.getInstance(ctx).getOnePalavra(c.getLong(0)).getConteudo());
 		}
-		
+		c.close();
 		return all;
 	}
 
