@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +42,7 @@ import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -318,7 +321,8 @@ public class FacebookMessageActivity extends Activity {
 
 		@Override
 		protected Void doInBackground(Void... param) {
-			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(true);
+			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(
+					true);
 			if (data == null) {
 				Vector<Mensagem> cachedMenssage = facade.getMensagemOfLikeId(
 						Mensagem.TIPO_FACE_COMENTARIO,
@@ -381,61 +385,110 @@ public class FacebookMessageActivity extends Activity {
 
 						if (responseComments != null) {
 							JSONArray array = new JSONArray(responseComments);
-							List<Mensagem> list = new Vector<Mensagem>();
+							
+							 List<Mensagem> list = new Vector<Mensagem>();
+							
+							 
+							
+							 int lenght = array.length();
+							 int ini = 0;
+							 if (nextPage != null)
+							 ini = Integer.parseInt(nextPage);
+							
+							 int toDownload = ini
+							 + Integer.parseInt(QTD_COMMENTS);
+							 if (toDownload > lenght)
+							 toDownload = lenght;
+							
+							 JSONArray batch_array = new JSONArray();
+							 for (int i = ini; i < toDownload; i++) {
+								 JSONObject comment = array.getJSONObject(i);
+								 String commentId = comment.getString("id");
+								
+								 if (facade.exsistsStatus(commentId,Mensagem.TIPO_FACE_COMENTARIO))
+									 continue;
+								 
+								 JSONObject comentsToGet = new JSONObject();
+								 try {
+									 comentsToGet.put("method", "GET");
+									 comentsToGet.put("relative_url", commentId+"?fields=from.picture,from.id,from.name,id,message,created_time,likes");
+									 
+									 batch_array.put(comentsToGet);
+								 } catch (JSONException e) {
+								     
+								    
+								 }
+								 
+								 
+							 }
+							 
+							 List<NameValuePair> args = new ArrayList<NameValuePair>();
+							 args.add(new BasicNameValuePair("access_token",  acc.getToken()));
+							 args.add(new BasicNameValuePair("batch", batch_array.toString()));
+							 
+							 WebService web=new WebService("https://graph.facebook.com/");
+							 String responseBactch=web.doPost("", args);
+							 JSONArray commentsArray=new JSONArray(responseBactch);
+							 
+							 if(commentsArray==null)
+								 return null;
+							 
+							 for(int i=0;i<commentsArray.length();i++){
+								 JSONObject obj=commentsArray.getJSONObject(i);
+								 
+								 JSONObject body=new JSONObject(obj.getString("body"));
+								 
+								Mensagem m = Mensagem
+										.createFromFacebookFeed(body);
+								if (m == null)
+									continue;
 
-							try {
+								m.setTipo(Mensagem.TIPO_FACE_COMENTARIO);
 
-								int lenght = array.length();
-								int ini = 0;
-								if (nextPage != null)
-									ini = Integer.parseInt(nextPage);
-
-								int toDownload = ini
-										+ Integer.parseInt(QTD_COMMENTS);
-								if (toDownload > lenght)
-									toDownload = lenght;
-
-								for (int i = ini; i < toDownload; i++) {
-									JSONObject comment = array.getJSONObject(i);
-									String commentId = comment.getString("id");
-
-									if (facade.exsistsStatus(commentId,
-											Mensagem.TIPO_FACE_COMENTARIO))
-										continue;
-
-									Bundle b = new Bundle();
-									b.putString("fields",
-											"message,likes,from.picture,from.name,from.id");
-									String response2 = facebook.request(
-											commentId, b);
-									JSONObject commentMessage = new JSONObject(
-											response2);
-
-									Mensagem m = Mensagem
-											.createFromFacebookFeed(commentMessage);
-									if (m == null)
-										continue;
-
-									m.setTipo(Mensagem.TIPO_FACE_COMENTARIO);
-
-									if (wasAddedOn(m, list))
-										break;
-
-									facade.insert(m);
-									list.add(m);
-
-								}
-							} catch (JSONException e) {
-							}
-
-							for (Mensagem m : list) {
-								if (wasAddedOn(m, comments))
+								if (wasAddedOn(m, list))
 									break;
+
 								facade.insert(m);
-							}
-
-							comments.addAll(list);
-
+								list.add(m);
+								 
+							 }
+							 
+							 comments.addAll(list);
+							 
+							//
+							// Bundle b = new Bundle();
+							// b.putString("fields",
+							// "message,likes,from.picture,from.name,from.id");
+							// String response2 = facebook.request(
+							// commentId, b);
+							// JSONObject commentMessage = new JSONObject(
+							// response2);
+							//
+							// Mensagem m = Mensagem
+							// .createFromFacebookFeed(commentMessage);
+							// if (m == null)
+							// continue;
+							//
+							// m.setTipo(Mensagem.TIPO_FACE_COMENTARIO);
+							//
+							// if (wasAddedOn(m, list))
+							// break;
+							//
+							// facade.insert(m);
+							// list.add(m);
+							//
+							// }
+							// } catch (JSONException e) {
+							// }
+							//
+							// for (Mensagem m : list) {
+							// if (wasAddedOn(m, comments))
+							// break;
+							// facade.insert(m);
+							// }
+							//
+							// comments.addAll(list);
+							//
 						}
 					}
 				} catch (MalformedURLException e) {
@@ -552,7 +605,8 @@ public class FacebookMessageActivity extends Activity {
 			nextPage = "" + qtd_messages;
 
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(false);
+			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(
+					false);
 
 		}
 
@@ -637,7 +691,8 @@ public class FacebookMessageActivity extends Activity {
 
 		@Override
 		protected Void doInBackground(Void... v) {
-			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(true);
+			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(
+					true);
 			try {
 				m = facade.getOneMessage(id, tipo);
 				if (m == null) {
@@ -665,7 +720,7 @@ public class FacebookMessageActivity extends Activity {
 								// TODO: handle exception
 							}
 						}
-						
+
 					} catch (JSONException e) {
 						// TODO: handle exception
 					}
@@ -692,11 +747,16 @@ public class FacebookMessageActivity extends Activity {
 				facade.insert(m);
 				fillValues(m);
 
-			} else{
-				Toast.makeText(FacebookMessageActivity.this, FacebookMessageActivity.this.getString(R.string.erro_connect), Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(
+						FacebookMessageActivity.this,
+						FacebookMessageActivity.this
+								.getString(R.string.erro_connect),
+						Toast.LENGTH_SHORT).show();
 				finish();
 			}
-			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(false);
+			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(
+					false);
 		}
 
 	}

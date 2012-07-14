@@ -24,8 +24,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore.Images.Thumbnails;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +74,7 @@ public class FeddAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		
 		Log.w("dot.me", "Getting view at position " + position);
 		Mensagem m = (Mensagem) getItem(position);
 		selection = position;

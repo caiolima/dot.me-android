@@ -16,8 +16,6 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 import twitter4j.auth.AccessToken;
 
-import com.dot.me.activity.LoginActivity.ConnectTask;
-import com.dot.me.activity.LoginActivity.GetBasicInformationsTask;
 import com.dot.me.app.R;
 import com.dot.me.assynctask.TwitterImageDownloadTask;
 import com.dot.me.exceptions.LostUserAccessException;

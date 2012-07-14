@@ -87,7 +87,12 @@ public class TwitterFeedsCollumn extends AbstractColumn {
 		
 		if(list.isEmpty())
 			return;
-		Mensagem m=list.firstElement();
+		Mensagem m=null;
+		try{
+		m=list.firstElement();
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
 		if(m!=null){
 			if(System.currentTimeMillis()-m.getData().getTime()>Constants.QTD_MINUTES){
 				currentPage=0;

@@ -2,7 +2,6 @@ package com.dot.me.assynctask;
 
 import java.util.Vector;
 
-import com.dot.me.activity.LoginActivity;
 import com.dot.me.app.R;
 import com.dot.me.model.Account;
 import com.dot.me.model.TwitterAccount;

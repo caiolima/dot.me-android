@@ -15,6 +15,7 @@ import twitter4j.HashtagEntity;
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.Tweet;
+import twitter4j.URLEntity;
 import twitter4j.UserMentionEntity;
 
 import com.dot.me.command.IMessageAction;
@@ -159,7 +160,9 @@ public class Mensagem implements Comparable<Mensagem> {
 				metions.add(metion.getName());
 			}
 		}
-
+		
+		URLEntity[] urls=s.getURLEntities();
+		
 		Vector<String> image_files = new Vector<String>();
 		MediaEntity[] in_medias = s.getMediaEntities();
 		if (in_medias != null) {

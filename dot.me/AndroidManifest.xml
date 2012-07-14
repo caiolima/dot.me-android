@@ -75,18 +75,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.dot.me.activity.TwitteActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" >
-                </action>
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.dot.me.activity.RegisterActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar" >
-        </activity>
-        <activity
             android:name="com.dot.me.activity.DashboardActivity"
             android:screenOrientation="nosensor"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
@@ -99,10 +87,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.dot.me.activity.MarcadoresListActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar" >
-        </activity>
-        <activity
             android:name="com.dot.me.activity.SendTweetActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter >
@@ -110,41 +94,6 @@
                 </action>
             </intent-filter>
         </activity>
-        <activity android:name="com.dot.me.activity.FriendListActivity" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" >
-                </action>
-            </intent-filter>
-        </activity>
-
-        <service android:name="com.dot.me.service.UpdateTimelineService" >
-            <intent-filter >
-                <category android:name="android.intent.category.DEFAULT" >
-                </category>
-
-                <action android:name="com.dot.me.status.update" >
-                </action>
-            </intent-filter>
-        </service>
-        <service android:name="com.dot.me.utils.ImageUtils$LoadImageService" >
-            <intent-filter >
-                <category android:name="android.intent.category.DEFAULT" >
-                </category>
-
-                <action android:name="com.dot.me.download.images" >
-                </action>
-            </intent-filter>
-        </service>
-
-        <receiver android:name="com.dot.me.activity.TimelineActivity$UpdateMensagesBroadcastReciever" >
-            <intent-filter >
-                <action android:name="com.dot.me.reciever.UPDATE_MSG" >
-                </action>
-
-                <category android:name="android.intent.category.DEFAULT" >
-                </category>
-            </intent-filter>
-        </receiver>
 
         <activity
             android:name="com.dot.me.activity.SearchActivity"

@@ -15,12 +15,7 @@
      	<item name="android:textColor">@color/white</item>   	
      	  <item name="android:textSize">13dp</item>
     </style>
-     <style name="TwitButton">
-     	<item name="android:background">@drawable/twit_button_selector</item>
-     	<item name="android:gravity">center_horizontal|center_vertical</item>
-     	
-		
-    </style>
+     
       <style name="SearchButton">
      	<item name="android:background">@drawable/lupa</item>
      	<item name="android:gravity">center_horizontal|center_vertical</item>

@@ -13,6 +13,7 @@ public class OpenManageCollumnCommand implements AbstractCommand{
 		Intent intent=new Intent(activity,ManageCollumnsActivity.class);
 		
 		activity.startActivity(intent);
+	
 		
 	}
 

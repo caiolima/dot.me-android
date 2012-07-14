@@ -212,8 +212,12 @@ public class FacebookGroupColumn extends AbstractColumn {
 			}
 		});
 		firstPut = false;
-		
-		Mensagem m=toAdd.firstElement();
+		Mensagem m=null;
+		try{
+		m=toAdd.firstElement();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		if(m!=null){
 			if(System.currentTimeMillis()-m.getData().getTime()>Constants.QTD_MINUTES){
 				nextPage=null;
