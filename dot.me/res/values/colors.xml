@@ -9,6 +9,7 @@
     <color name="round_stroke">#7a7b7d</color>
     <color name="rect_stroke">#a7b4ce</color>
     <color name="label_selected">#CAE1FF</color>
+    <color name="link_datails">#F7F7F7</color>
     
     
 </resources>

@@ -352,25 +352,25 @@ public class FacebookMessageActivity extends Activity {
 				params.putString("fields", "likes");
 
 				try {
-					String response = null;
-					response = facebook.request(
-							current_message.getIdMensagem(), params);
+					String response = "";
+//					response = facebook.request(
+//							current_message.getIdMensagem(), params);
 
 					if (response != null) {
-						JSONObject responseJSON = new JSONObject(response);
-
-						JSONObject likesJSON = null;
-						try {
-							likesJSON = responseJSON.getJSONObject("likes");
-						} catch (JSONException e) {
-							// TODO: handle exception
-						}
-
-						if (likesJSON != null) {
-							current_message.getAddtions().remove("likes");
-							current_message.getAddtions().put("likes",
-									likesJSON);
-						}
+//						JSONObject responseJSON = new JSONObject(response);
+//
+//						JSONObject likesJSON = null;
+//						try {
+//							likesJSON = responseJSON.getJSONObject("likes");
+//						} catch (JSONException e) {
+//							// TODO: handle exception
+//						}
+//
+//						if (likesJSON != null) {
+//							current_message.getAddtions().remove("likes");
+//							current_message.getAddtions().put("likes",
+//									likesJSON);
+//						}
 
 						String responseComments = null;
 
@@ -436,7 +436,8 @@ public class FacebookMessageActivity extends Activity {
 							 for(int i=0;i<commentsArray.length();i++){
 								 JSONObject obj=commentsArray.getJSONObject(i);
 								 
-								 JSONObject body=new JSONObject(obj.getString("body"));
+								JSONObject body = new JSONObject(
+										obj.getString("body"));
 								 
 								Mensagem m = Mensagem
 										.createFromFacebookFeed(body);

@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +21,7 @@ import android.os.Bundle;
 
 import com.dot.me.app.R;
 import com.dot.me.exceptions.LostUserAccessException;
+import com.dot.me.model.Account;
 import com.dot.me.model.FacebookAccount;
 import com.dot.me.model.Mensagem;
 import com.dot.me.model.bd.Facade;
@@ -61,19 +64,21 @@ public class FacebookUtils {
 	public static List<Mensagem> createListOfFeeds(Facade facade,
 			Facebook facebook, JSONObject response, int tipo) {
 		ArrayList<Mensagem> all = new ArrayList<Mensagem>();
+
 		try {
 			JSONArray array = response.getJSONArray("data");
+			JSONArray batch_array = new JSONArray();
+
+			List<Mensagem> photoMessages = new ArrayList<Mensagem>();
+
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject object = array.getJSONObject(i);
-				Mensagem cachedM = facade.getOneMessage(object.getString("id"),
-						tipo);
 
 				Mensagem m = Mensagem.createFromFacebookFeed(object);
 
 				if (m == null)
 					continue;
 
-				
 				m.setTipo(tipo);
 
 				String obString = null;
@@ -82,20 +87,67 @@ public class FacebookUtils {
 
 						obString = object.getString("object_id");
 
-						Bundle params = new Bundle();
-						params.putString("fields",
-								"picture,source,id,width,height,from.name,name");
-						String response2 = facebook.request(obString, params);
-						try {
-							JSONObject pic_info = new JSONObject(response2);
-							m.getAddtions().put("pic_info", pic_info);
-						} catch (JSONException e) {
-							// TODO: handle exception
-						}
+						JSONObject picturesToGet = new JSONObject();
+
+						picturesToGet.put("method", "GET");
+						picturesToGet
+								.put("relative_url",
+										obString
+												+ "?fields=picture,source,id,width,height,from.name,name");
+
+						batch_array.put(picturesToGet);
+						photoMessages.add(m);
+						// Bundle params = new Bundle();
+						// params.putString("fields",
+						// "picture,source,id,width,height,from.name,name");
+						// String response2 = facebook.request(obString,
+						// params);
+						// try {
+						// JSONObject pic_info = new JSONObject(response2);
+						// m.getAddtions().put("pic_info", pic_info);
+						// } catch (JSONException e) {
+						// // TODO: handle exception
+						// }
 					}
 				} catch (JSONException e) {
 					// TODO: handle exception
 				}
+
+				all.add(m);
+
+			}
+
+			// carregando imagens
+			List<NameValuePair> args = new ArrayList<NameValuePair>();
+			args.add(new BasicNameValuePair("access_token", facebook
+					.getAccessToken()));
+			args.add(new BasicNameValuePair("batch", batch_array.toString()));
+
+			WebService web = new WebService("https://graph.facebook.com/");
+			String responseBactch = web.doPost("", args);
+			JSONArray commentsArray = new JSONArray(responseBactch);
+
+			if (commentsArray != null) {
+
+				for (int j = 0; j < commentsArray.length(); j++) {
+					JSONObject obj = commentsArray.getJSONObject(j);
+					Mensagem pMessage = photoMessages.get(j);
+
+					try {
+						JSONObject body = new JSONObject(obj.getString("body"));
+
+						pMessage.getAddtions().put("pic_info", body);
+					} catch (JSONException e) {
+						// TODO: handle exception
+					}
+
+				}
+
+			}
+
+			for (Mensagem m : all) {
+				Mensagem cachedM = facade
+						.getOneMessage(m.getIdMensagem(), tipo);
 
 				if (cachedM != null) {
 					/*
@@ -115,14 +167,7 @@ public class FacebookUtils {
 
 					facade.insert(m);
 				}
-
-				all.add(m);
-
 			}
-		} catch (MalformedURLException e) {
-
-		} catch (IOException e) {
-
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -138,9 +183,9 @@ public class FacebookUtils {
 				"from.picture,from.name,from.id,message,likes,comments,picture,story,created_time,updated_time,type,to,object_id,link,name");
 		return params;
 	}
-	
-	public static void logoutFacebook(){
-		mFacebook=null;
+
+	public static void logoutFacebook() {
+		mFacebook = null;
 	}
 
 }
