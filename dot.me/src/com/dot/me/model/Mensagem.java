@@ -373,16 +373,17 @@ public class Mensagem implements Comparable<Mensagem> {
 			try {
 				type = object.getString("type");
 				if (type.equals("video") || type.equals("link")) {
-					String message = m.getMensagem();
-
-					String link = object.getString("link");
-					message = message.replace(link, "");
-
-					if (!message.equals(""))
-						message += "\n\n";
-
-					message += object.getString("name") + ":\n" + link;
-					m.setMensagem(message);
+//					String message = m.getMensagem();
+//
+//					String link = object.getString("link");
+//					message = message.replace(link, "");
+//
+//					if (!message.equals(""))
+//						message += "\n\n";
+//
+//					message += object.getString("name") + ":\n" + link;
+//					m.setMensagem(message);
+					addtions.put("link_details", object);
 				}
 
 			} catch (JSONException e) {

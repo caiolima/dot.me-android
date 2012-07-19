@@ -180,7 +180,7 @@ public class FacebookUtils {
 		Bundle params = new Bundle();
 		params.putString(
 				"fields",
-				"from.picture,from.name,from.id,message,likes,comments,picture,story,created_time,updated_time,type,to,object_id,link,name");
+				"from.picture,from.name,from.id,message,likes,comments,picture,story,created_time,updated_time,type,to,object_id,link,name,caption,description");
 		return params;
 	}
 

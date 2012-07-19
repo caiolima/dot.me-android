@@ -1,8 +1,13 @@
 package com.dot.me.adapter;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Vector;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.dot.me.activity.FacebookMessageActivity;
 import com.dot.me.activity.MessageInfoActivity;
@@ -74,7 +79,7 @@ public class FeddAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		
+
 		Log.w("dot.me", "Getting view at position " + position);
 		Mensagem m = (Mensagem) getItem(position);
 		selection = position;
@@ -216,7 +221,9 @@ public class FeddAdapter extends BaseAdapter {
 		public TextView txt_like_count;
 		public TextView txt_comments_count;
 		public TextView txt_caption;
-		public ImageView img_preview;
+		public ImageView img_preview, img_thumbnails;
+		public TextView txt_link_details;
+
 		public LinearLayout lt_img_preview, lt_like, lt_comments, lt_caption;
 		private Handler h = new Handler();
 
@@ -266,6 +273,73 @@ public class FeddAdapter extends BaseAdapter {
 					txt_caption.setText(capition);
 					lt_caption.setVisibility(View.VISIBLE);
 				}
+
+			}
+
+			if (m.getTypeMessage().equals("link")
+					|| m.getTypeMessage().equals("video")) {
+
+				LinearLayout lt_link_detais = (LinearLayout) convertView
+						.findViewById(R.id.lt_link_details);
+				txt_link_details = (TextView) convertView
+						.findViewById(R.id.txt_link_datails);
+				img_thumbnails = (ImageView) convertView
+						.findViewById(R.id.img_thumbnail);
+				TextView txt_link_details_extra=(TextView) convertView.findViewById(R.id.txt_link_detais_extra);
+				LinearLayout lt_vertical_line=(LinearLayout) convertView.findViewById(R.id.lt_vertical_line);
+				JSONObject linkDetais=null;
+				try {
+					 linkDetais = new JSONObject(m.getAddtions()
+							.getString("link_details"));
+					
+				} catch (JSONException e) {
+					// TODO: handle exception
+				}
+				
+				String pictureURL = null;
+				try {
+					pictureURL = linkDetais.getString("picture");
+				} catch (JSONException e) {
+
+				}
+
+				if (pictureURL != null) {
+					URL url;
+					try {
+						url = new URL(pictureURL);
+						TwitterImageDownloadTask.executeDownload(ctx,
+								img_thumbnails, url);
+					} catch (MalformedURLException e) {
+					}
+
+				}else{
+					lt_vertical_line.setVisibility(View.GONE);
+					img_thumbnails.setVisibility(View.GONE);
+				}
+
+				
+				try {
+					txt_link_details.setText(linkDetais.getString("name"));
+					String text_link="";
+					try{
+						text_link+=linkDetais.getString("caption")+"\n";
+					}catch (Exception e) {
+						
+					}
+					try{
+						text_link+=linkDetais.getString("description");
+					}catch (Exception e) {
+						// TODO: handle exception
+					}
+					if(text_link.length()>100)
+						text_link=text_link.substring(0, 100)+"...";
+					txt_link_details_extra.setText(text_link);
+					lt_link_detais.setVisibility(View.VISIBLE);
+				} catch (JSONException e) {
+				
+				}
+				
+				
 
 			}
 
@@ -336,9 +410,9 @@ public class FeddAdapter extends BaseAdapter {
 
 	@Override
 	public void unregisterDataSetObserver(DataSetObserver observer) {
-	    if (observer != null) {
-	        super.unregisterDataSetObserver(observer);
-	    }
+		if (observer != null) {
+			super.unregisterDataSetObserver(observer);
+		}
 	}
-	
+
 }
