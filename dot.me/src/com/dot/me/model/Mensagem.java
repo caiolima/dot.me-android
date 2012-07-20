@@ -606,7 +606,7 @@ public class Mensagem implements Comparable<Mensagem> {
 			}
 		}
 
-		return mensagem;
+		return out;
 	}
 
 }

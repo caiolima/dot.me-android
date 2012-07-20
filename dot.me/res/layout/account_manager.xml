@@ -40,38 +40,36 @@
 
     <Button
         android:id="@+id/singin_bt_twitter"
+        style="@style/Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/rounded_login_rect"
         android:gravity="center"
-        android:padding="5dp" 
+        android:padding="5dp"
         android:text="@string/add_twitter_acc"
         android:textColor="@color/white"
-        android:textSize="18dp">
-
-        
+        android:textSize="18dp" >
 
     </Button>
 
     <Button
         android:id="@+id/singin_bt_facebook"
+        style="@style/Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_login_rect"
         android:gravity="center"
         android:orientation="horizontal"
-         android:text="@string/add_facebbok_account"
-        android:padding="5dp" 
+        android:padding="5dp"
+        android:text="@string/add_facebbok_account"
         android:textColor="@color/white"
-        android:textSize="18dp">
+        android:textSize="18dp" >
 
     </Button>
 

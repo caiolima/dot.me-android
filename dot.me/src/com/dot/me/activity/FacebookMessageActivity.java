@@ -215,8 +215,7 @@ public class FacebookMessageActivity extends Activity {
 		txt_username.setText(current_message.getNome_usuario());
 
 		try {
-			txt_message.setText(Html.fromHtml(current_message.getAddtions()
-					.getString("message_link")));
+			txt_message.setText(TwitterUtils.createMessage(current_message.getMensagem()));
 		} catch (Exception e) {
 			txt_message.setText(current_message.getMensagem());
 		}
@@ -773,6 +772,7 @@ public class FacebookMessageActivity extends Activity {
 		protected void onPreExecute() {
 			progressDialog = new ProgressDialog(FacebookMessageActivity.this);
 
+			progressDialog.setCancelable(false);
 			progressDialog.setMessage(getString(R.string.getting_information));
 
 			progressDialog.show();

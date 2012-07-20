@@ -28,7 +28,7 @@
                 android:layout_weight="0"
                 android:background="@null"
                 android:gravity="center"
-                android:src="@drawable/navigation_expand" />
+                android:src="@drawable/expand_selector" />
 
         </LinearLayout>
 
@@ -62,7 +62,7 @@
                 android:layout_weight="0"
                 android:background="@null"
                 android:gravity="right|center"
-                android:src="@drawable/content_edit" />
+                android:src="@drawable/edit_selector" />
 
         </LinearLayout>
 

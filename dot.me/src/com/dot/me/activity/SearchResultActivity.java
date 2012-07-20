@@ -154,6 +154,8 @@ public class SearchResultActivity extends Activity {
 		protected void onPreExecute() {
 
 			progressDialog = new ProgressDialog(SearchResultActivity.this);
+			
+			progressDialog.setCancelable(false);
 
 			progressDialog.setMessage(getString(R.string.searching));
 

@@ -217,14 +217,17 @@ public class AddSocialAccount extends Activity {
 
 							@Override
 							public void onFacebookError(FacebookError error) {
+								error.getCause().printStackTrace();
 							}
 
 							@Override
 							public void onError(DialogError e) {
+								e.getCause().printStackTrace();
 							}
 
 							@Override
 							public void onCancel() {
+								Log.d("error", "error");
 							}
 
 						});
@@ -352,6 +355,7 @@ public class AddSocialAccount extends Activity {
 
 			progressDialog = new ProgressDialog(AddSocialAccount.this);
 
+			progressDialog.setCancelable(false);
 			progressDialog.setMessage(getString(R.string.twitter_connecting));
 
 			progressDialog.show();
@@ -421,6 +425,7 @@ public class AddSocialAccount extends Activity {
 
 			progressDialog = new ProgressDialog(AddSocialAccount.this);
 
+			progressDialog.setCancelable(false);
 			progressDialog
 					.setMessage(getString(R.string.get_basic_information));
 

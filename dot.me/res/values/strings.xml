@@ -145,5 +145,10 @@
     <string name="disable">Disable</string>
     <string name="actions">Labels actions</string>
     <string name="change_disable_enable">Change(disable/enable)</string>
+    <string name="reset_collumns">Reset Collumns</string>
+     <string name="warning">Warning!</string>
+    <string name="reset_collumns_message">This operation will reset your collumn config. It is irreversible. Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     
 </resources>

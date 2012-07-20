@@ -747,6 +747,9 @@ public class TimelineActivity extends Activity {
 			cont++;
 			if (cont == 1) {
 				currentCommand = column.getCommand();
+				if(currentCommand==null){
+					bt_send.setVisibility(View.INVISIBLE);
+				}
 			}
 		}
 		view_flipper.setAdapter(adapter);
@@ -879,6 +882,7 @@ public class TimelineActivity extends Activity {
 
 			progressDialog = new ProgressDialog(TimelineActivity.this);
 
+			progressDialog.setCancelable(false);
 			progressDialog
 					.setMessage(getString(R.string.loading_cached_messages));
 

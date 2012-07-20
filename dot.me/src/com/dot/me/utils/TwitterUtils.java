@@ -116,6 +116,13 @@ public class TwitterUtils {
 		
 		
 		for (String word : words) {
+			String complete="";
+			if(word.contains("\n")){
+				String aux=word;
+				int pos=word.indexOf("\n");
+				word=word.substring(0, word.indexOf("\n"));
+				complete=aux.substring(pos-1);
+			}
 			
 			if (word.contains("http://") || (word.contains("https://"))) {
 				int initPos=word.indexOf("http");
@@ -124,7 +131,7 @@ public class TwitterUtils {
 				word = preText+"<a href=\"" + link + "\">" + link + "</a>";
 			}
 
-			out += word + " ";
+			out += word+complete + " ";
 		}
 		out = out.substring(0, out.length() - 1);
 		out = out.replace("\n", "<br/>");

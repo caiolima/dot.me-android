@@ -288,6 +288,7 @@ public class TwitterUserProfileActivity extends Activity {
 
 			progressDialog = new ProgressDialog(TwitterUserProfileActivity.this);
 
+			progressDialog.setCancelable(false);
 			progressDialog
 					.setMessage(getString(R.string.downloading_user_info));
 
