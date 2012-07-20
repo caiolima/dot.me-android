@@ -113,6 +113,8 @@ public class TwitterUtils {
 			}
 		}*/
 		
+		
+		
 		for (String word : words) {
 			
 			if (word.contains("http://") || (word.contains("https://"))) {

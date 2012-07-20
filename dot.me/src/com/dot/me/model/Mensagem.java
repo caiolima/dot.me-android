@@ -93,12 +93,12 @@ public class Mensagem implements Comparable<Mensagem> {
 		this.tipo = tipo;
 	}
 
-	public static Mensagem createFromDirectMensagem(DirectMessage dm){
+	public static Mensagem createFromDirectMensagem(DirectMessage dm) {
 		try {
 			Mensagem mensagem = new Mensagem();
 
 			mensagem.setAction(OpenTwitterStatusAction.getInstance());
-			
+
 			mensagem.idMensagem = Long.toString(dm.getId());
 			mensagem.nome_usuario = dm.getSender().getName();
 			mensagem.mensagem = dm.getText();
@@ -112,27 +112,32 @@ public class Mensagem implements Comparable<Mensagem> {
 			return null;
 		}
 	}
-	
+
 	public static Mensagem creteFromTwitterStatus(Status s) {
 		try {
 			Mensagem mensagem = new Mensagem();
-			
-			String text=s.getText();
-			
-			for(HashtagEntity h:s.getHashtagEntities()){
-				
-				String subText="<a href=\"twitter_search://do_search?search="+h.getText()+"\">#"+h.getText()+"</a>";
-				text=text.replace("#"+h.getText(), subText);
-				
+
+			String text = s.getText();
+
+			for (HashtagEntity h : s.getHashtagEntities()) {
+
+				String subText = "<a href=\"twitter_search://do_search?search="
+						+ h.getText() + "\">#" + h.getText() + "</a>";
+				text = text.replace("#" + h.getText(), subText);
+
 			}
-			
-			for(UserMentionEntity u:s.getUserMentionEntities()){
-				
-				String subText="<a href=\"twitter_search_user://find_user?username="+u.getScreenName()+"\">@"+u.getScreenName()+"</a>";
-				text=text.replace("@"+u.getScreenName(), subText);
-				
+
+			for (UserMentionEntity u : s.getUserMentionEntities()) {
+
+				String subText = "<a href=\"twitter_search_user://find_user?username="
+						+ u.getScreenName()
+						+ "\">@"
+						+ u.getScreenName()
+						+ "</a>";
+				text = text.replace("@" + u.getScreenName(), subText);
+
 			}
-			
+
 			mensagem.setAction(OpenTwitterStatusAction.getInstance());
 			mensagem.addtions = createAddtions(s);
 			mensagem.addtions.put("htmlText", text);
@@ -160,9 +165,9 @@ public class Mensagem implements Comparable<Mensagem> {
 				metions.add(metion.getName());
 			}
 		}
-		
-		URLEntity[] urls=s.getURLEntities();
-		
+
+		URLEntity[] urls = s.getURLEntities();
+
 		Vector<String> image_files = new Vector<String>();
 		MediaEntity[] in_medias = s.getMediaEntities();
 		if (in_medias != null) {
@@ -183,23 +188,23 @@ public class Mensagem implements Comparable<Mensagem> {
 			throws MalformedURLException, JSONException {
 		Mensagem m = new Mensagem();
 
-		
-		
 		JSONObject json = new JSONObject();
-		String text=t.getText();
-		
-		for(HashtagEntity h:t.getHashtagEntities()){
-			
-			String subText="<a href=\"twitter_search://do_search?search="+h.getText()+"\">#"+h.getText()+"</a>";
-			text=text.replace("#"+h.getText(), subText);
-			
+		String text = t.getText();
+
+		for (HashtagEntity h : t.getHashtagEntities()) {
+
+			String subText = "<a href=\"twitter_search://do_search?search="
+					+ h.getText() + "\">#" + h.getText() + "</a>";
+			text = text.replace("#" + h.getText(), subText);
+
 		}
-		
-		for(UserMentionEntity u:t.getUserMentionEntities()){
-			
-			String subText="<a href=\"twitter_search_user://find_user?username="+u.getScreenName()+"\">@"+u.getScreenName()+"</a>";
-			text=text.replace("@"+u.getScreenName(), subText);
-			
+
+		for (UserMentionEntity u : t.getUserMentionEntities()) {
+
+			String subText = "<a href=\"twitter_search_user://find_user?username="
+					+ u.getScreenName() + "\">@" + u.getScreenName() + "</a>";
+			text = text.replace("@" + u.getScreenName(), subText);
+
 		}
 		json.put("inReplyId", -1);
 		json.put("htmlText", text);
@@ -373,16 +378,18 @@ public class Mensagem implements Comparable<Mensagem> {
 			try {
 				type = object.getString("type");
 				if (type.equals("video") || type.equals("link")) {
-//					String message = m.getMensagem();
-//
-//					String link = object.getString("link");
-//					message = message.replace(link, "");
-//
-//					if (!message.equals(""))
-//						message += "\n\n";
-//
-//					message += object.getString("name") + ":\n" + link;
-//					m.setMensagem(message);
+					String message = m.getMensagem();
+
+					String link = object.getString("link");
+					message = message.replace(link, "<a href=\"" + link + "\">"
+							+ link + "</a>");
+					//
+					// if (!message.equals(""))
+					// message += "\n\n";
+					//
+					// message += object.getString("name") + ":\n" + link;
+					// m.setMensagem(message);
+					addtions.put("message_link", message);
 					addtions.put("link_details", object);
 				}
 
@@ -418,7 +425,8 @@ public class Mensagem implements Comparable<Mensagem> {
 	public boolean equals(Object o) {
 		try {
 			Mensagem other = (Mensagem) o;
-			return other.getIdMensagem().equals(idMensagem)&&tipo==other.tipo;
+			return other.getIdMensagem().equals(idMensagem)
+					&& tipo == other.tipo;
 		} catch (ClassCastException e) {
 			return false;
 		}
@@ -563,13 +571,42 @@ public class Mensagem implements Comparable<Mensagem> {
 
 		return false;
 	}
-	
-	public String getHtmlText(){
-		try{
+
+	public String getHtmlText() {
+		try {
 			return addtions.getString("htmlText");
-		}catch (JSONException e) {
+		} catch (JSONException e) {
 			return mensagem;
 		}
+	}
+
+	public String getAnalyzableText() {
+
+		String out = "";
+		out += mensagem;
+		JSONObject link = null;
+		try {
+			link = new JSONObject(addtions.getString("link_details"));
+			out += " " + link.getString("name");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		if (link != null) {
+			try {
+				out += " " + link.getString("caption");
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
+			try {
+				out += " " + link.getString("description");
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+
+		return mensagem;
 	}
 
 }

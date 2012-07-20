@@ -153,7 +153,7 @@ public class FacebookFeedsColumn extends AbstractColumn {
 			for (Mensagem m : messages) {
 				adapter.addItem(m);
 			}
-			adapter.sort();
+			//adapter.sort();
 
 			if (flagNextPage) {
 				notifyNextPageFinish();

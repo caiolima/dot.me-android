@@ -9,7 +9,7 @@ public class BlackListUtils {
 
 	public static boolean validateMessage(Vector<String> blacklist, Mensagem m) {
 
-		Vector<String> parts = new Vector<String>(Arrays.asList(m.getMensagem()
+		Vector<String> parts = new Vector<String>(Arrays.asList(m.getAnalyzableText()
 				.toLowerCase().split(" ")));
 
 		for (String blackword : blacklist) {
