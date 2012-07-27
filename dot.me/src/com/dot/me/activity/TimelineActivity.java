@@ -33,7 +33,6 @@ import com.dot.me.adapter.TimelinePagerAdapter;
 import com.dot.me.app.R;
 import com.dot.me.assynctask.UpdateAction;
 import com.dot.me.command.AbstractCommand;
-import com.dot.me.command.OpenCreateMarkupCommand;
 import com.dot.me.command.OpenFacebookGroupCommand;
 import com.dot.me.command.OpenManageBlackListCommand;
 import com.dot.me.command.OpenManageCollumnCommand;
@@ -481,7 +480,32 @@ public class TimelineActivity extends Activity {
 						@Override
 						public void execute(Activity activity) {
 
-							new RemoveCollumnTask().execute();
+							AlertDialog dialog = new AlertDialog.Builder(
+									activity)
+									.setTitle(getString(R.string.warning)).setMessage(getString(R.string.remove_collumns_message))
+									.create();
+
+							dialog.setButton(DialogInterface.BUTTON_POSITIVE,
+									getString(R.string.yes),
+									new DialogInterface.OnClickListener() {
+
+										@Override
+										public void onClick(DialogInterface dialog, int which) {
+											new RemoveCollumnTask().execute();
+
+										}
+									});
+							dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.no), new DialogInterface.OnClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									
+									
+								}
+							});
+							dialog.show();
+							
+							
 
 						}
 					});
@@ -989,6 +1013,8 @@ public class TimelineActivity extends Activity {
 
 		private ProgressDialog progressDialog;
 
+		
+		
 		@Override
 		protected void onPostExecute(Void result) {
 
@@ -1018,6 +1044,7 @@ public class TimelineActivity extends Activity {
 
 			progressDialog.setMessage(getString(R.string.romoving_collumn));
 
+			progressDialog.setCancelable(false);
 			try {
 				progressDialog.show();
 			} catch (Exception e) {

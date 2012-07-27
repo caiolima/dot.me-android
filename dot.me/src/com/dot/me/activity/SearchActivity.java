@@ -133,7 +133,12 @@ public class SearchActivity extends Activity {
 		
 		TrendLocation t = Facade.getInstance(this).getSavedTrend();
 
-		txt_trends.setText(getString(R.string.trends) + " > " + t.getName());
+		String name=t.getName();
+		if(name.length()>15){
+			name=name.substring(0,15)+"...";
+		}
+		txt_trends
+				.setText(getString(R.string.trends) + " > " + name);
 
 		new TrendTopicsGetterTask(this, t.getWoeid()).execute();
 
@@ -146,8 +151,12 @@ public class SearchActivity extends Activity {
 				&& uri.getHost().equals("refresh_trends")) {
 			TrendLocation t = Facade.getInstance(this).getSavedTrend();
 
+			String name=t.getName();
+			if(name.length()>15){
+				name=name.substring(0,15)+"...";
+			}
 			txt_trends
-					.setText(getString(R.string.trends) + " > " + t.getName());
+					.setText(getString(R.string.trends) + " > " + name);
 
 			adapter.clear();
 			adapter.notifyDataSetChanged();

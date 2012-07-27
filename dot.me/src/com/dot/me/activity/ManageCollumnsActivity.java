@@ -182,6 +182,8 @@ public class ManageCollumnsActivity extends Activity {
 		Facade facade = Facade.getInstance(ctx);
 
 		facade.deleteAllCollumnConfig();
+		facade.deleteAllGroups();
+		facade.deleteAllSearch();
 		if (Account.getFacebookAccount(ctx) != null) {
 
 			CollumnConfig collumnConfig = new CollumnConfig();

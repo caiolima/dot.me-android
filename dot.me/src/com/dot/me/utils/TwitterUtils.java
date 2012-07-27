@@ -3,6 +3,7 @@ package com.dot.me.utils;
 import java.util.Date;
 import java.util.Vector;
 
+import com.dot.me.app.R;
 import com.dot.me.model.Mensagem;
 import com.dot.me.model.User;
 import com.dot.me.model.bd.Facade;
@@ -49,7 +50,7 @@ public class TwitterUtils {
 		return twitter;
 	}
 
-	public static String friendlyFormat(Date created) {
+	public static String friendlyFormat(Date created, Context ctx) {
 
 		// today
 		Date today = new Date();
@@ -63,40 +64,40 @@ public class TwitterUtils {
 		int day = hour * 24;
 
 		if (duration < second * 7) {
-			return "right now";
+			return ctx.getString(R.string.right_now);
 		}
 
 		if (duration < minute) {
 			int n = (int) Math.floor(duration / second);
-			return n + " seconds ago";
+			return n + " "+ctx.getString(R.string.seconds_ago);
 		}
 
 		if (duration < minute * 2) {
-			return "about 1 minute ago";
+			return ctx.getString(R.string.about_one_minute_ago);
 		}
 
 		if (duration < hour) {
 			int n = (int) Math.floor(duration / minute);
-			return n + " minutes ago";
+			return n + " "+ctx.getString(R.string.minutes_ago);
 		}
 
 		if (duration < hour * 2) {
-			return "about 1 hour ago";
+			return ctx.getString(R.string.about_one_hour);
 		}
 
 		if (duration < day) {
 			int n = (int) Math.floor(duration / hour);
-			return n + " hours ago";
+			return n + " "+ctx.getString(R.string.hours_ago);
 		}
 		if (duration > day && duration < day * 2) {
-			return "yesterday";
+			return ctx.getString(R.string.yesterday);
 		}
 
 		if (duration < day * 365) {
 			int n = (int) Math.floor(duration / day);
-			return n + " days ago";
+			return n + " "+ctx.getString(R.string.days_ago);
 		} else {
-			return "over a year ago";
+			return ctx.getString(R.string.over_a_year);
 		}
 	}
 

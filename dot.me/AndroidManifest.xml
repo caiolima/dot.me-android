@@ -22,16 +22,11 @@
     <application
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Light.NoTitleBar" >
-        <activity
-            android:label="@string/app_name"
-            android:name=".TwitteMarkupActivity" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+        android:theme="@android:style/Theme.Light.NoTitleBar"
+         >
         <activity
             android:name="com.dot.me.activity.CreateMarkupActivity"
+            android:screenOrientation="nosensor"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" >
@@ -42,7 +37,8 @@
         <activity
             android:launchMode="singleTask"
             android:name="com.dot.me.activity.AddSocialAccount"
-            android:theme="@android:style/Theme.Black.NoTitleBar" android:screenOrientation="nosensor">
+            android:screenOrientation="nosensor"
+            android:theme="@android:style/Theme.Black.NoTitleBar">
             <intent-filter >
                 <action android:name="android.intent.action.VIEW" >
                 </action>
@@ -88,6 +84,7 @@
         </activity>
         <activity
             android:name="com.dot.me.activity.SendTweetActivity"
+            android:screenOrientation="nosensor"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" >
@@ -97,6 +94,7 @@
 
         <activity
             android:name="com.dot.me.activity.SearchActivity"
+            android:screenOrientation="nosensor"
             android:theme="@android:style/Theme.Light.NoTitleBar" android:launchMode="singleTask">
             <intent-filter>
                 <data android:scheme="dotme" android:host="refresh_trends"/>
@@ -121,11 +119,12 @@
         </activity>
         <activity
             android:name="com.dot.me.activity.MessageInfoActivity"
+            android:screenOrientation="nosensor"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
         <activity
             android:name="com.dot.me.activity.TwitterUserProfileActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor">
             <intent-filter >
                 <data
                     android:host="find_user"
@@ -137,15 +136,15 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.BlackListActivity"></activity>
-        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.FacebookMessageActivity">
+        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.BlackListActivity" android:screenOrientation="nosensor"></activity>
+        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.FacebookMessageActivity" android:screenOrientation="nosensor">
         </activity>
-        <activity android:name="com.dot.me.activity.ManageFacebookGroupsActivity" android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
+        <activity android:name="com.dot.me.activity.ManageFacebookGroupsActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor"></activity>
         <activity android:name="com.dot.me.activity.FacebookCommentActivity" android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
-        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.ManageCollumnsActivity"></activity>
-        <activity android:name="com.dot.me.activity.TwitterLoginActivity"  android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
-        <activity android:name="com.dot.me.activity.TrendsLocationsActivity" android:theme="@android:style/Theme.Light.NoTitleBar" ></activity>
-        <activity android:name="com.dot.me.activity.ManageLabelsActivity"  ></activity>
+        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.ManageCollumnsActivity" android:screenOrientation="nosensor"></activity>
+        <activity android:name="com.dot.me.activity.TwitterLoginActivity"  android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor"></activity>
+        <activity android:name="com.dot.me.activity.TrendsLocationsActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor"></activity>
+        <activity android:name="com.dot.me.activity.ManageLabelsActivity"  android:screenOrientation="nosensor"></activity>
     </application>
 
 </manifest>

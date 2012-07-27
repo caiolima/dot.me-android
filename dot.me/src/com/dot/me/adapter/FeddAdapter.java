@@ -247,7 +247,7 @@ public class FeddAdapter extends BaseAdapter {
 				img_avatar.setImageBitmap(bMap);
 			}
 
-			data.setText(TwitterUtils.friendlyFormat(m.getData()));
+			data.setText(TwitterUtils.friendlyFormat(m.getData(),ctx));
 			txt_texto.setText(mensagem);
 		}
 

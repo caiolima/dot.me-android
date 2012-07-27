@@ -197,7 +197,7 @@ public class TwitterUserProfileActivity extends Activity {
 				TextView tweetText = (TextView) row.findViewById(R.id.twitte);
 
 				screenName.setText(m.getNome_usuario());
-				time.setText(TwitterUtils.friendlyFormat(m.getData()));
+				time.setText(TwitterUtils.friendlyFormat(m.getData(),TwitterUserProfileActivity.this));
 				tweetText.setText(m.getMensagem());
 
 				tweetText.setOnClickListener(new View.OnClickListener() {

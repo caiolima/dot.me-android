@@ -118,7 +118,6 @@ public class FacebookMessageActivity extends Activity {
 
 		setContentView(R.layout.facebook_message);
 
-		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		list_comments = (LinearLayout) findViewById(R.id.facebook_list_comments);
 		lt_load = (LinearLayout) findViewById(R.id.lt_loading);
 		lt_more_comments = (LinearLayout) findViewById(R.id.lt_facebook_more_comments);
@@ -364,7 +363,7 @@ public class FacebookMessageActivity extends Activity {
 					txt_qtd_likesTextView.setText(Integer.toString(qtd_likes));
 				}
 				screenName.setText(m.getNome_usuario());
-				time.setText(TwitterUtils.friendlyFormat(m.getData()));
+				time.setText(TwitterUtils.friendlyFormat(m.getData(),FacebookMessageActivity.this));
 				tweetText.setText(TwitterUtils.createMessage(m.getMensagem()));
 				tweetText.setMovementMethod(LinkMovementMethod.getInstance());
 				TwitterUtils.stripUnderlines(tweetText);
@@ -652,7 +651,7 @@ public class FacebookMessageActivity extends Activity {
 					txt_qtd_likesTextView.setText(Integer.toString(qtd_likes));
 				}
 				screenName.setText(m.getNome_usuario());
-				time.setText(TwitterUtils.friendlyFormat(m.getData()));
+				time.setText(TwitterUtils.friendlyFormat(m.getData(),FacebookMessageActivity.this));
 				tweetText.setText(TwitterUtils.createMessage(m.getMensagem()));
 				tweetText.setMovementMethod(LinkMovementMethod.getInstance());
 				TwitterUtils.stripUnderlines(tweetText);
@@ -692,7 +691,7 @@ public class FacebookMessageActivity extends Activity {
 
 			nextPage = "" + qtd_messages;
 
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+			
 			DataBase.getInstance(FacebookMessageActivity.this).setExecuting(
 					false);
 

@@ -145,5 +145,20 @@
     <string name="disable">Desativar</string>
     <string name="actions">Ações</string>
     <string name="change_disable_enable">Mudar(Desabilitar/Habilitar)</string>
+    <string name="reset_collumns">Resetar colunas</string>
+     <string name="warning">Atenção!</string>
+    <string name="reset_collumns_message">Esta operação irá resetar suas configurações das colunas. Deseja realmente fazer isto?</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="right_now">agora</string>
+    <string name="seconds_ago">segundos atrás</string>
+    <string name="minutes_ago">minutos atrás</string>
+    <string name="hours_ago">horas atrás</string>
+    <string name="yesterday">ontem</string>
+    <string name="about_one_hour">por volta de 1 hora</string>
+    <string name="days_ago">dias atrás</string>
+    <string name="over_a_year">a muito tempo</string>
+    <string name="about_one_minute_ago">por volta de 1 munito</string>
+    <string name="remove_collumns_message">Tem certeza que deseja remover esta coluna? Esta operação é irreversível!</string>
     
 </resources>

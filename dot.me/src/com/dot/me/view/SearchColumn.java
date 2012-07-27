@@ -100,13 +100,13 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 
 			}
 
-			listView.post(new Runnable() {
+			if(TimelineActivity.h==null)
+				return;
+			
+			TimelineActivity.h.post(new Runnable() {
 
 				@Override
 				public void run() {
-
-					for (Mensagem m : mensagens)
-						adapter.addItem(m);
 
 					if (currentpage == 1) {
 						((PullToRefreshListView) listView).onRefreshComplete();
@@ -117,11 +117,15 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 										m.getTipo());
 
 						}
-					} else if (currentpage > 1) {
-						notifyNextPageFinish();
-						adapter.sort();
-					}
+					} 
+					
+					for (Mensagem m : mensagens)
+						adapter.addItem(m);
 
+					if (currentpage > 1) {
+						notifyNextPageFinish();
+						
+					}
 				}
 			});
 
@@ -133,6 +137,8 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}catch(Exception e){
+			
 		}
 
 	}

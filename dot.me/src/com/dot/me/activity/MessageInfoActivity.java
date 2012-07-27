@@ -98,7 +98,7 @@ public class MessageInfoActivity extends Activity {
 			txt_content.setMovementMethod(LinkMovementMethod.getInstance());
 			TwitterUtils.stripUnderlines(txt_content);
 			txt_name.setText(m.getNome_usuario());
-			txt_nick.setText(TwitterUtils.friendlyFormat(m.getData()));
+			txt_nick.setText(TwitterUtils.friendlyFormat(m.getData(),MessageInfoActivity.this));
 			URL url = m.getImagePath();
 			Bitmap b = ImageUtils.imageCache.get(url);
 			if (b == null) {
@@ -199,7 +199,7 @@ public class MessageInfoActivity extends Activity {
 				TextView tweetText = (TextView) row.findViewById(R.id.twitte);
 
 				screenName.setText(m.getNome_usuario());
-				time.setText(TwitterUtils.friendlyFormat(m.getData()));
+				time.setText(TwitterUtils.friendlyFormat(m.getData(),MessageInfoActivity.this));
 				tweetText.setText(TwitterUtils.createMessage(m.getMensagem()));
 				tweetText.setMovementMethod(LinkMovementMethod.getInstance());
 				TwitterUtils.stripUnderlines(tweetText);
