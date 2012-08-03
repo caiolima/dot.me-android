@@ -13,5 +13,6 @@ public interface ISendAction {
 	public Account getAccount(Context c);
 	public String getDraftId();
 	public boolean messageSent();
+	public void initAction(Bundle b);
 	
 }

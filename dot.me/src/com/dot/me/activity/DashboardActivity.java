@@ -19,6 +19,7 @@ import com.dot.me.assynctask.AssyncTaskManager;
 import com.dot.me.model.Account;
 import com.dot.me.model.bd.DataBase;
 import com.dot.me.model.bd.Facade;
+import com.dot.me.service.MeGetterServices;
 import com.dot.me.utils.Item;
 
 public class DashboardActivity extends Activity {
@@ -59,10 +60,15 @@ public class DashboardActivity extends Activity {
 				
 				startActivity(intent);
 				
+				
 				finish();
 			}
-			return;
+			
 		}
+		startService(new Intent(this,MeGetterServices.class));
+		
+		
+		
 		// setContentView(R.layout.dashboard);
 		//
 		// bt_timeline = (Button) findViewById(R.id.dashboard_bt_timeline);
@@ -214,6 +220,7 @@ public class DashboardActivity extends Activity {
 		//
 		// }
 		// });
+		
 	}
 
 }

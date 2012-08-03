@@ -96,7 +96,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="8dp"
-                                android:text="Large Text"
                                 android:textColor="@color/font_color"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -123,8 +122,7 @@
                         android:id="@+id/facebook_txt_message"
                         style="@style/FontStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="TextView" />
+                        android:layout_height="wrap_content" />
 
                     <LinearLayout
                         android:id="@+id/lt_link_details"

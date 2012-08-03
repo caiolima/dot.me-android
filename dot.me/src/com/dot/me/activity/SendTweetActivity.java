@@ -65,6 +65,8 @@ public class SendTweetActivity extends Activity {
 					action = (ISendAction) constructor
 							.newInstance();
 					
+					action.initAction(sendParams);
+					
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -265,15 +267,15 @@ public class SendTweetActivity extends Activity {
 	protected void onPause() {
 		super.onPause();
 		
+		Facade.getInstance(this).deleteDraft(action.getDraftId());
 		if(isToSaveDraft&&!txt_text.getText().toString().equals("")){
 			Draft d=new Draft();
 			d.setId(action.getDraftId());
 			d.setText(txt_text.getText().toString());
 			
+			
 			Facade.getInstance(this).insert(d);
 			
-		}else if(Facade.getInstance(this).existsDraft(action.getDraftId())){
-			Facade.getInstance(this).deleteDraft(action.getDraftId());
 		}
 			
 	}

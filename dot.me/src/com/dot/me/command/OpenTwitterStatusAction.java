@@ -1,5 +1,7 @@
 package com.dot.me.command;
 
+import org.json.JSONException;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,15 +25,29 @@ public class OpenTwitterStatusAction implements IMessageAction {
 	@Override
 	public void execute(Mensagem m, Context ctx) {
 		
+
+		try {
+			ctx.startActivity(createIntent(m, ctx));
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public Intent createIntent(Mensagem m, Context ctx) throws JSONException {
+
 		Intent intent = new Intent(ctx,
 				MessageInfoActivity.class);
 		Bundle b = new Bundle();
 		b.putString("idMessage", m.getIdMensagem());
 		b.putInt("type", m.getTipo());
 		intent.putExtras(b);
-
-		ctx.startActivity(intent);
 		
+		return intent;
 	}
+	
+	
 
 }

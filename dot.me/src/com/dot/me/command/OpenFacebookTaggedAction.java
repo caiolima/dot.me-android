@@ -25,26 +25,34 @@ public class OpenFacebookTaggedAction implements IMessageAction{
 	@Override
 	public void execute(Mensagem m, Context ctx) {
 		
-		String link;
+		
 		try {
-			link = m.getAddtions().getString("link");
-			link=link.replace("http://www.facebook.com/permalink.php?story_fbid=", "");
-			String[] parts=link.split("&id=");
-			String id=parts[1]+"_"+parts[0];
 			
-			Intent intent=new Intent(ctx,FacebookMessageActivity.class);
-			Bundle b=new Bundle();
-			b.putString("idMessage", id);
-			b.putInt("type", Mensagem.TIPO_NEWS_FEEDS);
-			intent.putExtras(b);
 			
-			ctx.startActivity(intent);
+			ctx.startActivity(createIntent(m, ctx));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		
+	}
+
+	@Override
+	public Intent createIntent(Mensagem m, Context ctx) throws JSONException {
+		String link = m.getAddtions().getString("link");
+		link=link.replace("http://www.facebook.com/permalink.php?story_fbid=", "");
+		String[] parts=link.split("&id=");
+		String id=parts[1]+"_"+parts[0];
+		
+		Intent intent=new Intent(ctx,FacebookMessageActivity.class);
+		Bundle b=new Bundle();
+		b.putString("idMessage", id);
+		b.putInt("type", Mensagem.TIPO_NEWS_FEEDS);
+		b.putString("notify_id", m.getIdMensagem());
+		intent.putExtras(b);
+		
+		return intent;
 	}
 
 }

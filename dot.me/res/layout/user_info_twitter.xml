@@ -43,16 +43,14 @@
                     android:id="@+id/user_info_lbl_user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Large Text"
-                    android:textStyle="bold"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/user_info_lbl_about"
+                    style="@style/FontStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Medium Text" 
-                    style="@style/FontStyle"/>
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
@@ -86,16 +84,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="TextView" />
+                    android:gravity="center" />
 
                 <TextView
                     android:id="@+id/user_info_lbl_num_following"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="TextView" />
+                    android:gravity="center" />
+
             </TableRow>
         </TableLayout>
 

@@ -26,24 +26,32 @@ public class OpenFriendPostAction implements IMessageAction {
 	public void execute(Mensagem m, Context ctx) {
 		
 		try {
-			String link=m.getAddtions().getString("link");
-			String[] parts = link.split("/");
 			
-			String id=m.getAddtions().getString("id")+"_"+parts[parts.length-1];
-			if(id.contains("?comment_id=")){
-				id=id.substring(0, id.indexOf("?comment_id="));
-			}
 			
-			Intent intent=new Intent(ctx,FacebookMessageActivity.class);
-			Bundle b=new Bundle();
-			b.putString("idMessage", id);
-			b.putInt("type", Mensagem.TIPO_FACEBOOK_GROUP);
-			intent.putExtras(b);
-			
-			ctx.startActivity(intent);
+			ctx.startActivity(createIntent(m, ctx));
 		} catch (JSONException e) {
 		}
 		
+	}
+
+	@Override
+	public Intent createIntent(Mensagem m, Context ctx) throws JSONException {
+		String link=m.getAddtions().getString("link");
+		String[] parts = link.split("/");
+		
+		String id=m.getAddtions().getString("id")+"_"+parts[parts.length-1];
+		if(id.contains("?comment_id=")){
+			id=id.substring(0, id.indexOf("?comment_id="));
+		}
+		
+		Intent intent=new Intent(ctx,FacebookMessageActivity.class);
+		Bundle b=new Bundle();
+		b.putString("idMessage", id);
+		b.putInt("type", Mensagem.TIPO_FACEBOOK_GROUP);
+		b.putString("notify_id", m.getIdMensagem());
+		intent.putExtras(b);
+		
+		return intent;
 	}
 
 }

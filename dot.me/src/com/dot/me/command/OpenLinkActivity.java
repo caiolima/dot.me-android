@@ -23,12 +23,19 @@ public class OpenLinkActivity implements IMessageAction {
 	@Override
 	public void execute(Mensagem m, Context ctx) {
 		try {
-			String link=m.getAddtions().getString("link");
-			Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-			ctx.startActivity(intent);
+			
+			ctx.startActivity(createIntent(m, ctx));
 		} catch (JSONException e) {
 			
 		}
+	}
+
+	@Override
+	public Intent createIntent(Mensagem m, Context ctx) throws JSONException {
+		String link=m.getAddtions().getString("link");
+		Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+		
+		return intent;
 	}
 
 }

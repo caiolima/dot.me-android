@@ -69,7 +69,7 @@ public class TwitterUtils {
 
 		if (duration < minute) {
 			int n = (int) Math.floor(duration / second);
-			return n + " "+ctx.getString(R.string.seconds_ago);
+			return n + " " + ctx.getString(R.string.seconds_ago);
 		}
 
 		if (duration < minute * 2) {
@@ -78,7 +78,7 @@ public class TwitterUtils {
 
 		if (duration < hour) {
 			int n = (int) Math.floor(duration / minute);
-			return n + " "+ctx.getString(R.string.minutes_ago);
+			return n + " " + ctx.getString(R.string.minutes_ago);
 		}
 
 		if (duration < hour * 2) {
@@ -87,7 +87,7 @@ public class TwitterUtils {
 
 		if (duration < day) {
 			int n = (int) Math.floor(duration / hour);
-			return n + " "+ctx.getString(R.string.hours_ago);
+			return n + " " + ctx.getString(R.string.hours_ago);
 		}
 		if (duration > day && duration < day * 2) {
 			return ctx.getString(R.string.yesterday);
@@ -95,7 +95,7 @@ public class TwitterUtils {
 
 		if (duration < day * 365) {
 			int n = (int) Math.floor(duration / day);
-			return n + " "+ctx.getString(R.string.days_ago);
+			return n + " " + ctx.getString(R.string.days_ago);
 		} else {
 			return ctx.getString(R.string.over_a_year);
 		}
@@ -104,39 +104,39 @@ public class TwitterUtils {
 	public static Spanned createMessage(String content) {
 		String out = "";
 		String[] words = content.split(" ");
-		//Vector<String> allWords = new Vector<String>();
+		// Vector<String> allWords = new Vector<String>();
 
-		/*for (String word : words) {
-			String[] gets = word.split("\\n");
-			
-			for (String get : gets) {
-				allWords.add(get);
-			}
-		}*/
-		
-		
-		
+		/*
+		 * for (String word : words) { String[] gets = word.split("\\n");
+		 * 
+		 * for (String get : gets) { allWords.add(get); } }
+		 */
+
 		for (String word : words) {
-			String complete="";
-			if(word.contains("\n")){
-				String aux=word;
-				int pos=word.indexOf("\n");
-				word=word.substring(0, word.indexOf("\n"));
-				complete=aux.substring(pos-1);
-			}
-			
-			if (word.contains("http://") || (word.contains("https://"))) {
-				int initPos=word.indexOf("http");
-				String link=word.substring(initPos);
-				String preText=word.substring(0, initPos);
-				word = preText+"<a href=\"" + link + "\">" + link + "</a>";
+			String complete = "";
+			if (word.contains("\n")) {
+				String aux = word;
+				int pos = word.indexOf("\n");
+				word = word.substring(0, word.indexOf("\n"));
+				try {
+					complete = aux.substring(pos - 1);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
 			}
 
-			out += word+complete + " ";
+			if (word.contains("http://") || (word.contains("https://"))) {
+				int initPos = word.indexOf("http");
+				String link = word.substring(initPos);
+				String preText = word.substring(0, initPos);
+				word = preText + "<a href=\"" + link + "\">" + link + "</a>";
+			}
+
+			out += word + complete + " ";
 		}
 		out = out.substring(0, out.length() - 1);
 		out = out.replace("\n", "<br/>");
-		
+
 		return Html.fromHtml(out);
 	}
 
@@ -172,8 +172,9 @@ public class TwitterUtils {
 		}
 		textView.setText(s);
 	}
-	
-	public static ResponseUpdate updateTweets(Context ctx,ResponseList<twitter4j.Status> list,int type) {
+
+	public static ResponseUpdate updateTweets(Context ctx,
+			ResponseList<twitter4j.Status> list, int type) {
 		// ImageUtils.loadImages(list);
 		Mensagem lastMessage = null;
 		Vector<Mensagem> mensagens = new Vector<Mensagem>();
@@ -193,20 +194,20 @@ public class TwitterUtils {
 			mensagens.add(m);
 			lastMessage = m;
 		}
-		
+
 		ResponseUpdate response = new ResponseUpdate();
 		response.lastMessage = lastMessage;
 		response.mensagens = mensagens;
 		return response;
 	}
-	
+
 	public static class ResponseUpdate {
 		public Vector<Mensagem> mensagens;
 		public Mensagem lastMessage;
 	}
-	
-	public static void logoutTwitter(){
-		twitter=null;
+
+	public static void logoutTwitter() {
+		twitter = null;
 	}
 
 }

@@ -113,6 +113,8 @@ public class ManageFacebookGroupsActivity extends Activity {
 
 		list.setAdapter(adapter);
 
+		
+		
 		FacebookAccount account = Account.getFacebookAccount(this);
 		if (account != null) {
 			try {

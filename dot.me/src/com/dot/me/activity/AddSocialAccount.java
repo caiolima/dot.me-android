@@ -70,7 +70,7 @@ public class AddSocialAccount extends Activity {
 	private ProgressDialog loadingDialog;
 	private String[] permissions = { "manage_notifications", "user_groups",
 			"user_status", "offline_access", "read_stream", "photo_upload",
-			"video_upload", "share_item", "status_update", "read_friendlists" };
+			"share_item", "status_update", "read_friendlists" };
 
 	private Button bt_logoutTwitter, bt_logoutFacebook, bt_twitter,
 			bt_facebook, bt_ok;

@@ -176,5 +176,13 @@ public class DataBase {
 	public void setExecuting(boolean isExeciting) {
 		this.isExecuting = isExeciting;
 	}
+	
+	public static boolean isOppened(){
+		if(DataBase.singleton==null)
+			return false;
+		
+		return true;
+	}
+	
 
 }

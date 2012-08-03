@@ -21,6 +21,7 @@ public class TwitterImageDownloadTask extends AsyncTask<Void, Void, Void>{
 	private Bitmap imgBit;
 	private Context ctx;
 	private static int count=0;
+	private IOnImageLoaded onImageLoad;
 	
 	
 	public static void executeDownload(Context ctx,ImageView iView,URL url){
@@ -33,6 +34,13 @@ public class TwitterImageDownloadTask extends AsyncTask<Void, Void, Void>{
 		}
 		
 		//}
+		
+	}
+	
+	public TwitterImageDownloadTask(Context ctx,ImageView iView,URL url,IOnImageLoaded imageLoaded){
+		this(ctx,iView,url);
+		this.onImageLoad=imageLoaded;
+		
 		
 	}
 	
@@ -69,10 +77,19 @@ public class TwitterImageDownloadTask extends AsyncTask<Void, Void, Void>{
 		super.onPostExecute(result);
 		
 		iView.setImageBitmap(imgBit);
+		
+		if(onImageLoad!=null){
+			onImageLoad.onImageLoaded(iView);
+		}
+		
 		count--;
 		
 	}
 	
+	
+	public interface IOnImageLoaded{
+		public void onImageLoaded(ImageView img);
+	}
 	
 
 }

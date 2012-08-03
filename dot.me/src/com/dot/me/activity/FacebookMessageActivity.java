@@ -1,5 +1,6 @@
 package com.dot.me.activity;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -30,7 +31,9 @@ import com.dot.me.utils.PictureInfo;
 import com.dot.me.utils.TwitterUtils;
 import com.dot.me.utils.WebService;
 import com.facebook.android.AsyncFacebookRunner;
+import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.Facebook;
+import com.facebook.android.FacebookError;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -75,6 +78,8 @@ public class FacebookMessageActivity extends Activity {
 	private String nextPage;
 	private boolean commentsLoaded = false;
 
+	
+	
 	private OnClickListener refreshClick = new OnClickListener() {
 
 		@Override
@@ -98,6 +103,7 @@ public class FacebookMessageActivity extends Activity {
 
 		}
 	};
+	
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
@@ -114,8 +120,15 @@ public class FacebookMessageActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		if (!DataBase.isOppened()) {
+			Facade.destroy();
+			DataBase.start(this);
+		}
+		
 		facade = Facade.getInstance(this);
 
+		
+		
 		setContentView(R.layout.facebook_message);
 
 		list_comments = (LinearLayout) findViewById(R.id.facebook_list_comments);
@@ -124,8 +137,6 @@ public class FacebookMessageActivity extends Activity {
 		bt_comment = (Button) findViewById(R.id.bt_comment);
 		bt_like = (Button) findViewById(R.id.bt_like);
 		txt_qtd_likes = (TextView) findViewById(R.id.facebook_lbl_qtd_likes);
-		// txt_qtd_comments = (TextView)
-		// findViewById(R.id.facebook_lbl_qtd_comments);
 		txt_message = (TextView) findViewById(R.id.facebook_txt_message);
 		txt_username = (TextView) findViewById(R.id.facebook_txt_username);
 		img_load = (ImageView) findViewById(R.id.facebook_img_loading);
@@ -143,19 +154,59 @@ public class FacebookMessageActivity extends Activity {
 
 		Intent intent = getIntent();
 		String id = null;
+		String notifyID=null;
 		if (intent != null) {
 			Bundle b = intent.getExtras();
 			if (b != null) {
 				id = b.getString("idMessage");
 				tipo = b.getInt("type");
 				current_message = facade.getOneMessage(id, tipo);
-
+				try{
+					notifyID=b.getString("notify_id");
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
 			}
 		}
 
 		try {
 			acc = Account.getFacebookAccount(this);
 			facebook = FacebookUtils.getFacebook(this, acc);
+			if(notifyID!=null){
+				AsyncFacebookRunner runner=new AsyncFacebookRunner(facebook);
+				runner.request(notifyID+"?unread=0", new Bundle(), "POST", new RequestListener() {
+					
+					@Override
+					public void onMalformedURLException(MalformedURLException e, Object state) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void onIOException(IOException e, Object state) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void onFileNotFoundException(FileNotFoundException e, Object state) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void onFacebookError(FacebookError e, Object state) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void onComplete(String response, Object state) {
+						// TODO Auto-generated method stub
+						
+					}
+				}, null);
+			}
 
 		} catch (LostUserAccessException e) {
 
@@ -229,7 +280,7 @@ public class FacebookMessageActivity extends Activity {
 				.setText(Integer.toString(current_message.getLikesCount()));
 		TwitterImageDownloadTask.executeDownload(this, img_avatar,
 				current_message.getImagePath());
-		PictureInfo info = current_message.getPictureUrl();
+		final PictureInfo info = current_message.getPictureUrl();
 		if (info != null) {
 			img_picture.setVisibility(View.VISIBLE);
 			/*
@@ -237,8 +288,23 @@ public class FacebookMessageActivity extends Activity {
 			 * (info.getHeight()*0.4); img_picture.setLayoutParams(new
 			 * LayoutParams(width,height));
 			 */
+		
 			TwitterImageDownloadTask.executeDownload(this, img_picture,
 					info.getSURL());
+			img_picture.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(FacebookMessageActivity.this,ImageZoomActivity.class);
+					Bundle extras=new Bundle();
+					extras.putString("image_url", info.getNormalURL().toString());
+					
+					intent.putExtras(extras);
+					startActivity(intent);
+					
+					
+				}
+			});
 		}
 
 		if (current_message.getTypeMessage().equals("link")
@@ -383,7 +449,7 @@ public class FacebookMessageActivity extends Activity {
 
 		private Facebook facebook;
 		private Vector<Mensagem> comments = new Vector<Mensagem>();
-		private final static String QTD_COMMENTS = "15";
+		private final static String QTD_COMMENTS = "20";
 		private boolean nextPageFlag = false, isRefreshig = false;
 		private CommentsCache data;
 

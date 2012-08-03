@@ -178,6 +178,8 @@ public class MeCollumn extends AbstractColumn {
 									}
 								}
 
+								m.setIdMensagem(m.getIdMensagem().replace("__", "_"+faceAcc.getId()+"_"));
+								
 								mensagemAdded.add(m);
 							}
 						}

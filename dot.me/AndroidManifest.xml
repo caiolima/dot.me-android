@@ -145,6 +145,9 @@
         <activity android:name="com.dot.me.activity.TwitterLoginActivity"  android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor"></activity>
         <activity android:name="com.dot.me.activity.TrendsLocationsActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor"></activity>
         <activity android:name="com.dot.me.activity.ManageLabelsActivity"  android:screenOrientation="nosensor"></activity>
+        <service android:name="com.dot.me.service.MeGetterServices">
+        </service>
+        <activity android:name="com.dot.me.activity.ImageZoomActivity" android:theme="@android:style/Theme.Black.NoTitleBar"></activity>
     </application>
 
 </manifest>

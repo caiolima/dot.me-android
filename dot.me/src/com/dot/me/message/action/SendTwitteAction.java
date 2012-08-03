@@ -84,4 +84,10 @@ public class SendTwitteAction implements ISendAction {
 		return messageSent;
 	}
 
+	@Override
+	public void initAction(Bundle b) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

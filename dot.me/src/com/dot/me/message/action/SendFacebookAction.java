@@ -99,4 +99,16 @@ public class SendFacebookAction implements ISendAction {
 			return false;
 	}
 
+	@Override
+	public void initAction(Bundle b) {
+		
+		toUser = "me";
+		if (b != null) {
+			String to = b.getString("toID");
+			if (to != null)
+				toUser = to;
+		}
+		
+	}
+
 }
