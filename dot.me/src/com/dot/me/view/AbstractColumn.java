@@ -42,6 +42,7 @@ public abstract class AbstractColumn {
 	protected Facade facade;
 	private View loading;
 	protected boolean isLoaddingNextPage = false;
+	protected boolean isLoading=false;
 	protected CollumnConfig config;
 	protected AbstractCommand command;
 
@@ -80,7 +81,12 @@ public abstract class AbstractColumn {
 
 						@Override
 						public void onRefresh() {
+							if(isLoading){
+								((PullToRefreshListView)listView).onRefreshComplete();
+								return;
+							}
 							DataBase.getInstance(AbstractColumn.this.ctx).setExecuting(true);
+							isLoading=true;
 							updateList();
 						}
 					});
@@ -96,10 +102,14 @@ public abstract class AbstractColumn {
 				@Override
 				public void onScroll(AbsListView view, int firstVisibleItem,
 						int visibleItemCount, int totalItemCount) {
+					if(isLoading)
+						return;
+						
 					if ((totalItemCount >=5)
 							&& (totalItemCount - visibleItemCount) == firstVisibleItem
 							&& !isLoaddingNextPage) {
 
+						isLoading=true;
 						onGetNextPage();
 					}
 
@@ -287,6 +297,7 @@ public abstract class AbstractColumn {
 	public void notifyNextPageFinish() {
 		listView.removeFooterView(loading);
 		isLoaddingNextPage = false;
+		isLoading=false;
 		DataBase.getInstance(ctx).setExecuting(false);
 	}
 	

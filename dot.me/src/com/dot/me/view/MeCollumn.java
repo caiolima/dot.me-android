@@ -238,6 +238,8 @@ public class MeCollumn extends AbstractColumn {
 				notifyNextPageFinish();
 
 			AssyncTaskManager.getInstance().removeProcess(this);
+			
+			isLoading=false;
 		}
 
 	}

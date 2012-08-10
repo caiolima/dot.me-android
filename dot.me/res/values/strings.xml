@@ -161,4 +161,6 @@
     <string name="about_one_minute_ago">about 1 minute ago</string>
     <string name="remove_collumns_message">This operation will remove this collumn. It is irreversible. Are you sure?</string>
     <string name="image_view">Image View</string>
+    <string name="admob_id">a150245438b7401</string>
+    <string name="site">site</string>
 </resources>

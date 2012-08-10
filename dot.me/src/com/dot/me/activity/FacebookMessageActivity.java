@@ -2,6 +2,7 @@ package com.dot.me.activity;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -29,6 +30,7 @@ import com.dot.me.utils.BaseRequestListener;
 import com.dot.me.utils.FacebookUtils;
 import com.dot.me.utils.PictureInfo;
 import com.dot.me.utils.TwitterUtils;
+import com.dot.me.utils.Utils;
 import com.dot.me.utils.WebService;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
@@ -96,10 +98,16 @@ public class FacebookMessageActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 
-			Intent intent = new Intent(Intent.ACTION_VIEW,
-					Uri.parse("http://www.facebook.com/"
-							+ current_message.getIdUser()));
-			startActivity(intent);
+			Intent intent;
+			try {
+				intent = new Intent(Intent.ACTION_VIEW,
+						Utils.createURIToLink("http://m.facebook.com/"
+								+ current_message.getIdUser()));
+				startActivity(intent);
+			} catch (UnsupportedEncodingException e) {
+				
+			}
+			
 
 		}
 	};
@@ -365,11 +373,13 @@ public class FacebookMessageActivity extends Activity {
 					public void onClick(View v) {
 						try {
 							String linkURL = link_details.getString("link");
-							Intent intent = new Intent(Intent.ACTION_VIEW, Uri
-									.parse(linkURL));
+							Intent intent = new Intent(Intent.ACTION_VIEW,Utils.createURIToLink(linkURL));
 							startActivity(intent);
 						} catch (JSONException e) {
 
+						} catch (UnsupportedEncodingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 
 					}

@@ -173,6 +173,7 @@ public class FacebookFeedsColumn extends AbstractColumn {
 			}
 
 			AssyncTaskManager.getInstance().removeProcess(this);
+			isLoading=false;
 		}
 
 	}

@@ -167,6 +167,7 @@ public class FacebookGroupColumn extends AbstractColumn {
 				}
 			}
 			AssyncTaskManager.getInstance().removeProcess(this);
+			isLoading=false;
 		}
 		
 

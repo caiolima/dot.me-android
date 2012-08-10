@@ -372,9 +372,10 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 				((PullToRefreshListView) listView).onRefreshComplete();
 			} else if (currentpage > 1) {
 				notifyNextPageFinish();
-				adapter.sort();
+//				adapter.sort();
 			}
 
+			isLoading=false;
 			AssyncTaskManager.getInstance().removeProcess(this);
 		}
 

@@ -384,7 +384,8 @@ public class AddSocialAccount extends Activity {
 						TwitterLoginActivity.class);
 				Bundle b = new Bundle();
 				b.putString("url", oAuthURL);
-
+				
+				
 				intent.putExtras(b);
 
 				startActivity(intent);

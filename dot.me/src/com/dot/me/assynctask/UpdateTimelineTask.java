@@ -43,7 +43,7 @@ public class UpdateTimelineTask extends AsyncTask<Void, Void, Void> {
 		this.ctx = ctx;
 		this.uParams = params;
 	}
-
+	
 	public UpdateTimelineTask(Context ctx, UpdateParams params,
 			PullToRefreshListView view, AbstractColumn column) {
 		this.ctx = ctx;

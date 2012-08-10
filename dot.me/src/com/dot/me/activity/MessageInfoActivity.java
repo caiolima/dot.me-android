@@ -53,16 +53,16 @@ public class MessageInfoActivity extends Activity {
 
 		Facade facade = Facade.getInstance(this);
 		String id_message = "";
-		int message_type=-1;
+		int message_type = -1;
 		Intent intent = getIntent();
 		if (intent != null) {
 			Bundle b = intent.getExtras();
 			if (b != null) {
 				id_message = b.getString("idMessage");
-				message_type=b.getInt("type");
+				message_type = b.getInt("type");
 			}
 		}
-		final Mensagem m = facade.getOneMessage(id_message,message_type);
+		final Mensagem m = facade.getOneMessage(id_message, message_type);
 
 		img_profile = (ImageView) findViewById(R.id.message_img_profile);
 		txt_content = (TextView) findViewById(R.id.message_lbl_text);
@@ -77,8 +77,8 @@ public class MessageInfoActivity extends Activity {
 		bt_retweet.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new RetweetTask(MessageInfoActivity.this, Long.parseLong(m.getIdMensagem()))
-						.execute();
+				new RetweetTask(MessageInfoActivity.this, Long.parseLong(m
+						.getIdMensagem())).execute();
 			}
 		});
 		lt_top.setOnClickListener(new OnClickListener() {
@@ -98,12 +98,14 @@ public class MessageInfoActivity extends Activity {
 			txt_content.setMovementMethod(LinkMovementMethod.getInstance());
 			TwitterUtils.stripUnderlines(txt_content);
 			txt_name.setText(m.getNome_usuario());
-			txt_nick.setText(TwitterUtils.friendlyFormat(m.getData(),MessageInfoActivity.this));
+			txt_nick.setText(TwitterUtils.friendlyFormat(m.getData(),
+					MessageInfoActivity.this));
 			URL url = m.getImagePath();
 			Bitmap b = ImageUtils.imageCache.get(url);
 			if (b == null) {
 				img_profile.setImageBitmap(null);
-				TwitterImageDownloadTask.executeDownload(this, img_profile, url);
+				TwitterImageDownloadTask
+						.executeDownload(this, img_profile, url);
 			} else {
 				img_profile.setImageBitmap(b);
 			}
@@ -115,14 +117,19 @@ public class MessageInfoActivity extends Activity {
 					Context ctx = MessageInfoActivity.this;
 					Intent intent = new Intent(ctx, SendTweetActivity.class);
 					Bundle b = new Bundle();
-					Bundle sendParams=new Bundle();
-					
-					sendParams.putLong("inReply", Long.parseLong(m.getIdMensagem()));
-					
+					Bundle sendParams = new Bundle();
+
+					sendParams.putLong("inReply",
+							Long.parseLong(m.getIdMensagem()));
+
 					b.putBundle("send_params", sendParams);
 					User user = Facade.getInstance(ctx).getOneUser(
 							m.getIdUser(), User.TWITTER);
-					b.putString("pre_text", "@"+user.getNick());
+					try {
+						b.putString("pre_text", "@" + user.getNick());
+					} catch (NullPointerException e) {
+						b.putString("pre_text", txt_content.getText().toString());
+					}
 					b.putString("type_message", "Twitter");
 					b.putString("action", "SendTwitteAction");
 
@@ -133,7 +140,8 @@ public class MessageInfoActivity extends Activity {
 
 			});
 
-			new InReplyContent(Long.parseLong(id_message),message_type).execute();
+			new InReplyContent(Long.parseLong(id_message), message_type)
+					.execute();
 		}
 
 	}
@@ -145,9 +153,9 @@ public class MessageInfoActivity extends Activity {
 
 		private List<Mensagem> conversation = new ArrayList<Mensagem>();
 
-		public InReplyContent(long id,int type) {
+		public InReplyContent(long id, int type) {
 			this.id = id;
-			this.type=type;
+			this.type = type;
 		}
 
 		@Override
@@ -162,12 +170,13 @@ public class MessageInfoActivity extends Activity {
 			long nextStatus = id;
 			Twitter t = TwitterUtils.getTwitter();
 			try {
-				nextStatus=Facade.getInstance(MessageInfoActivity.this)
-				.getOneMessage(Long.toString(id),type).getInReplyId();
+				nextStatus = Facade.getInstance(MessageInfoActivity.this)
+						.getOneMessage(Long.toString(id), type).getInReplyId();
 				while (nextStatus > 0) {
 
 					Mensagem m = Facade.getInstance(MessageInfoActivity.this)
-							.getOneMessage(Long.toString(nextStatus),Mensagem.TIPO_STATUS);
+							.getOneMessage(Long.toString(nextStatus),
+									Mensagem.TIPO_STATUS);
 					if (m == null) {
 						twitter4j.Status s = t.showStatus(nextStatus);
 						m = Mensagem.creteFromTwitterStatus(s);
@@ -199,19 +208,20 @@ public class MessageInfoActivity extends Activity {
 				TextView tweetText = (TextView) row.findViewById(R.id.twitte);
 
 				screenName.setText(m.getNome_usuario());
-				time.setText(TwitterUtils.friendlyFormat(m.getData(),MessageInfoActivity.this));
+				time.setText(TwitterUtils.friendlyFormat(m.getData(),
+						MessageInfoActivity.this));
 				tweetText.setText(TwitterUtils.createMessage(m.getMensagem()));
 				tweetText.setMovementMethod(LinkMovementMethod.getInstance());
 				TwitterUtils.stripUnderlines(tweetText);
 
-				TwitterImageDownloadTask.executeDownload(MessageInfoActivity.this, img,
-						m.getImagePath());
+				TwitterImageDownloadTask.executeDownload(
+						MessageInfoActivity.this, img, m.getImagePath());
 
 				lt_lst_conversation.addView(row);
 
 			}
-			
-			if(conversation.size()>0)
+
+			if (conversation.size() > 0)
 				lt_conversation.setVisibility(View.VISIBLE);
 		}
 

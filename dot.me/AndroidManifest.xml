@@ -16,30 +16,29 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Light.NoTitleBar"
-         >
+        android:theme="@android:style/Theme.Light.NoTitleBar" >
         <activity
             android:name="com.dot.me.activity.CreateMarkupActivity"
             android:screenOrientation="nosensor"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" >
                 </action>
             </intent-filter>
         </activity>
         <!-- teste -->
         <activity
-            android:launchMode="singleTask"
             android:name="com.dot.me.activity.AddSocialAccount"
+            android:launchMode="singleTask"
             android:screenOrientation="nosensor"
-            android:theme="@android:style/Theme.Black.NoTitleBar">
-            <intent-filter >
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" >
                 </action>
 
@@ -55,26 +54,36 @@
             </intent-filter>
         </activity>
         <activity
-            android:launchMode="singleTask"
             android:name="com.dot.me.activity.TimelineActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor">
-            <intent-filter >
+            android:launchMode="singleTask"
+            android:screenOrientation="nosensor"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" >
                 </action>
-                
-                <data android:host="facebook_group" android:scheme="add_column"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:host="twitter_search" android:scheme="add_column"/>
-                <data android:scheme="timeline" android:host="reload"/>
+
+                <data
+                    android:host="facebook_group"
+                    android:scheme="add_column" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="twitter_search"
+                    android:scheme="add_column" />
+                <data
+                    android:host="reload"
+                    android:scheme="timeline" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.dot.me.activity.DashboardActivity"
             android:screenOrientation="nosensor"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" >
                 </action>
 
@@ -86,27 +95,32 @@
             android:name="com.dot.me.activity.SendTweetActivity"
             android:screenOrientation="nosensor"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" >
                 </action>
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.dot.me.activity.SearchActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="nosensor"
-            android:theme="@android:style/Theme.Light.NoTitleBar" android:launchMode="singleTask">
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter>
-                <data android:scheme="dotme" android:host="refresh_trends"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <data
+                    android:host="refresh_trends"
+                    android:scheme="dotme" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.dot.me.activity.SearchResultActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor">
-            <intent-filter >
+            android:screenOrientation="nosensor"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            <intent-filter>
                 <data
                     android:host="do_search"
                     android:scheme="twitter_search" />
@@ -124,8 +138,9 @@
         </activity>
         <activity
             android:name="com.dot.me.activity.TwitterUserProfileActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor">
-            <intent-filter >
+            android:screenOrientation="nosensor"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            <intent-filter>
                 <data
                     android:host="find_user"
                     android:scheme="twitter_search_user" />
@@ -136,18 +151,65 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.BlackListActivity" android:screenOrientation="nosensor"></activity>
-        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.FacebookMessageActivity" android:screenOrientation="nosensor">
+        <activity
+            android:name="com.dot.me.activity.BlackListActivity"
+            android:screenOrientation="nosensor"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
-        <activity android:name="com.dot.me.activity.ManageFacebookGroupsActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor"></activity>
-        <activity android:name="com.dot.me.activity.FacebookCommentActivity" android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
-        <activity android:theme="@android:style/Theme.Light.NoTitleBar" android:name="com.dot.me.activity.ManageCollumnsActivity" android:screenOrientation="nosensor"></activity>
-        <activity android:name="com.dot.me.activity.TwitterLoginActivity"  android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor"></activity>
-        <activity android:name="com.dot.me.activity.TrendsLocationsActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="nosensor"></activity>
-        <activity android:name="com.dot.me.activity.ManageLabelsActivity"  android:screenOrientation="nosensor"></activity>
-        <service android:name="com.dot.me.service.MeGetterServices">
+        <activity
+            android:name="com.dot.me.activity.FacebookMessageActivity"
+            android:screenOrientation="nosensor"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.dot.me.activity.ManageFacebookGroupsActivity"
+            android:screenOrientation="nosensor"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.dot.me.activity.FacebookCommentActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.dot.me.activity.ManageCollumnsActivity"
+            android:screenOrientation="nosensor"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.dot.me.activity.TwitterLoginActivity"
+            android:screenOrientation="nosensor"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            <intent-filter>
+                <data
+                    android:host="web"
+                    android:scheme="dot_link" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.dot.me.activity.TrendsLocationsActivity"
+            android:screenOrientation="nosensor"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.dot.me.activity.ManageLabelsActivity"
+            android:screenOrientation="nosensor" >
+        </activity>
+
+        <service android:name="com.dot.me.service.MeGetterServices" >
         </service>
-        <activity android:name="com.dot.me.activity.ImageZoomActivity" android:theme="@android:style/Theme.Black.NoTitleBar"></activity>
+
+        <activity
+            android:name="com.dot.me.activity.ImageZoomActivity"
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.google.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
     </application>
 
 </manifest>

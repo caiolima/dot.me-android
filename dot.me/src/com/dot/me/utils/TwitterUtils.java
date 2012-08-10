@@ -1,5 +1,8 @@
 package com.dot.me.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Vector;
 
@@ -9,6 +12,7 @@ import com.dot.me.model.User;
 import com.dot.me.model.bd.Facade;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.GetChars;
 import android.text.Html;
 import android.text.Spannable;
@@ -129,7 +133,15 @@ public class TwitterUtils {
 				int initPos = word.indexOf("http");
 				String link = word.substring(initPos);
 				String preText = word.substring(0, initPos);
-				word = preText + "<a href=\"" + link + "\">" + link + "</a>";
+				Uri uri;
+				try {
+					//uri = Uri.parse("dot_link://web?url="+URLEncoder.encode(link, "UTF-8"));
+					
+					word = preText + "<a href=\"" + "dot_link://web?url="+URLEncoder.encode(link, "UTF-8") + "\">" + link + "</a>";
+				} catch (UnsupportedEncodingException e) {
+					
+				}
+				
 			}
 
 			out += word + complete + " ";
