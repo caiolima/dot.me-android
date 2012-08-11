@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
     android:id="@+id/linearLayout6"
     style="@style/LoginBackground"
     android:layout_width="match_parent"
@@ -39,6 +40,15 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <com.google.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        ads:adSize="BANNER"
+        android:visibility="gone"
+        ads:adUnitId="@string/admob_id" >
+    </com.google.ads.AdView>
 
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"

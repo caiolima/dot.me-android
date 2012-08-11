@@ -36,6 +36,11 @@ import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
+import com.google.ads.Ad;
+import com.google.ads.AdListener;
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
+import com.google.ads.AdRequest.ErrorCode;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -61,7 +66,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FacebookMessageActivity extends Activity {
+public class FacebookMessageActivity extends Activity implements AdListener{
 
 	private Button bt_comment, bt_like, bt_refresh;
 	private TextView txt_qtd_likes, txt_username, txt_message, txt_title_link,
@@ -79,6 +84,7 @@ public class FacebookMessageActivity extends Activity {
 	private int tipo;
 	private String nextPage;
 	private boolean commentsLoaded = false;
+	private AdView adView;
 
 	
 	
@@ -334,6 +340,8 @@ public class FacebookMessageActivity extends Activity {
 				pictureURL = linkDetais.getString("picture");
 			} catch (JSONException e) {
 
+			}catch (Exception e) {
+				// TODO: handle exception
 			}
 
 			if (pictureURL != null) {
@@ -386,6 +394,8 @@ public class FacebookMessageActivity extends Activity {
 				});
 			} catch (JSONException e) {
 
+			}catch (Exception e) {
+				// TODO: handle exception
 			}
 
 		}
@@ -401,6 +411,15 @@ public class FacebookMessageActivity extends Activity {
 		});
 		final Object data = getLastNonConfigurationInstance();
 
+		adView = (AdView) findViewById(R.id.adView);
+		
+		AdRequest adRequestBanner = new AdRequest();
+	    adRequestBanner.addTestDevice(AdRequest.TEST_EMULATOR);
+	    
+	    adView.setAdListener(this);
+	    
+	    adView.loadAd(adRequestBanner);
+		
 		new LoadCommentsTask(facebook, (CommentsCache) data, false).execute();
 
 	}
@@ -931,4 +950,39 @@ public class FacebookMessageActivity extends Activity {
 		String nextPage;
 
 	}
+	
+	 @Override
+	  public void onDismissScreen(Ad ad) {
+	    Log.v("teste ad", "onDismissScreen");
+	  }
+
+	  @Override
+	  public void onLeaveApplication(Ad ad) {
+	    Log.v("teste ad", "onLeaveApplication");
+	  }
+
+	  @Override
+	  public void onPresentScreen(Ad ad) {
+	    Log.v("teste ad", "onPresentScreen");
+	  }
+
+	  @Override
+	  public void onReceiveAd(Ad ad) {
+	    Log.v("teste ad", "Did Receive Ad");
+	    adView.setVisibility(View.VISIBLE);
+	  }
+
+	  @Override
+	  public void onFailedToReceiveAd(Ad ad, ErrorCode errorCode) {
+	    Log.v("teste ad", "Failed to receive ad (" + errorCode + ")");
+	  }
+	  
+	  /** Overwrite the onDestroy() method to dispose of banners first. */
+	  @Override
+	  public void onDestroy() {
+	    if (adView != null) {
+	      adView.destroy();
+	    }
+	    super.onDestroy();
+	  }
 }

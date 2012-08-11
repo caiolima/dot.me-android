@@ -301,6 +301,8 @@ public class FeddAdapter extends BaseAdapter {
 					pictureURL = linkDetais.getString("picture");
 				} catch (JSONException e) {
 
+				}catch (Exception e) {
+					// TODO: handle exception
 				}
 
 				if (pictureURL != null) {
@@ -337,6 +339,8 @@ public class FeddAdapter extends BaseAdapter {
 					lt_link_detais.setVisibility(View.VISIBLE);
 				} catch (JSONException e) {
 				
+				}catch (Exception e) {
+					// TODO: handle exception
 				}
 				
 				

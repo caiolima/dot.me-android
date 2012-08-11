@@ -19,6 +19,11 @@ import com.dot.me.model.UsuarioTwitter;
 import com.dot.me.model.bd.Facade;
 import com.dot.me.utils.ImageUtils;
 import com.dot.me.utils.TwitterUtils;
+import com.google.ads.Ad;
+import com.google.ads.AdListener;
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
+import com.google.ads.AdRequest.ErrorCode;
 
 import android.app.Activity;
 import android.content.Context;
@@ -27,6 +32,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,7 +42,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MessageInfoActivity extends Activity {
+public class MessageInfoActivity extends Activity implements AdListener {
 
 	private ImageView img_profile;
 	private ImageButton bt_response, bt_retweet;
@@ -44,6 +50,7 @@ public class MessageInfoActivity extends Activity {
 	private TextView txt_name;
 	private TextView txt_content;
 	private LinearLayout lt_top, lt_lst_conversation, lt_conversation;
+	private AdView adView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +135,8 @@ public class MessageInfoActivity extends Activity {
 					try {
 						b.putString("pre_text", "@" + user.getNick());
 					} catch (NullPointerException e) {
-						b.putString("pre_text", txt_content.getText().toString());
+						b.putString("pre_text", txt_content.getText()
+								.toString());
 					}
 					b.putString("type_message", "Twitter");
 					b.putString("action", "SendTwitteAction");
@@ -139,6 +147,15 @@ public class MessageInfoActivity extends Activity {
 				}
 
 			});
+
+			adView = (AdView) findViewById(R.id.adView);
+
+			AdRequest adRequestBanner = new AdRequest();
+			adRequestBanner.addTestDevice(AdRequest.TEST_EMULATOR);
+
+			adView.setAdListener(this);
+
+			adView.loadAd(adRequestBanner);
 
 			new InReplyContent(Long.parseLong(id_message), message_type)
 					.execute();
@@ -227,4 +244,38 @@ public class MessageInfoActivity extends Activity {
 
 	}
 
+	@Override
+	public void onDismissScreen(Ad ad) {
+		Log.v("teste ad", "onDismissScreen");
+	}
+
+	@Override
+	public void onLeaveApplication(Ad ad) {
+		Log.v("teste ad", "onLeaveApplication");
+	}
+
+	@Override
+	public void onPresentScreen(Ad ad) {
+		Log.v("teste ad", "onPresentScreen");
+	}
+
+	@Override
+	public void onReceiveAd(Ad ad) {
+		Log.v("teste ad", "Did Receive Ad");
+		adView.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void onFailedToReceiveAd(Ad ad, ErrorCode errorCode) {
+		Log.v("teste ad", "Failed to receive ad (" + errorCode + ")");
+	}
+
+	/** Overwrite the onDestroy() method to dispose of banners first. */
+	@Override
+	public void onDestroy() {
+		if (adView != null) {
+			adView.destroy();
+		}
+		super.onDestroy();
+	}
 }

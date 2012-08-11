@@ -137,8 +137,8 @@ public class TwitterUtils {
 				try {
 					//uri = Uri.parse("dot_link://web?url="+URLEncoder.encode(link, "UTF-8"));
 					
-					word = preText + "<a href=\"" + "dot_link://web?url="+URLEncoder.encode(link, "UTF-8") + "\">" + link + "</a>";
-				} catch (UnsupportedEncodingException e) {
+					word = preText + "<a href=\"" + link+ "\">" + link + "</a>";
+				} catch (Exception e) {
 					
 				}
 				
