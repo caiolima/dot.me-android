@@ -21,6 +21,7 @@ import com.dot.me.model.FacebookAccount;
 import com.dot.me.model.Mensagem;
 import com.dot.me.model.bd.DataBase;
 import com.dot.me.model.bd.Facade;
+import com.dot.me.utils.Constants;
 import com.dot.me.utils.FacebookUtils;
 import com.dot.me.utils.WebService;
 import com.facebook.android.Facebook;
@@ -33,6 +34,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -61,7 +63,9 @@ public class MeGetterServices extends Service {
 		
 		ctx = this;
 		acc = Account.getFacebookAccount(ctx);
-		if(acc==null){
+		SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, 0);
+		boolean isToDownload=settings.getBoolean(Constants.CONFIG_NOTIFICATIONS, true);
+		if(acc==null&&!isToDownload){
 			stopSelf();
 			return;
 		}
@@ -77,6 +81,13 @@ public class MeGetterServices extends Service {
 	private class MainTask extends TimerTask {
 		public void run() {
 
+			SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, 0);
+			boolean isToDownload=settings.getBoolean(Constants.CONFIG_NOTIFICATIONS, true);
+			
+			if(!isToDownload){
+				stopSelf();
+				return;
+			}
 			if (!DataBase.isOppened()) {
 				Facade.destroy();
 				DataBase.start(ctx);
@@ -121,7 +132,7 @@ public class MeGetterServices extends Service {
 						for (int i = array.length()-1; i >=0; i--) {
 							JSONObject metionJSON = array.getJSONObject(i);
 							Mensagem m = Mensagem
-									.createFromFacebookNotification(metionJSON);
+									.createFromFacebookNotification(metionJSON,MeGetterServices.this);
 							if (m != null) {
 								String link = m.getAddtions().getString("link");
 								if (link.startsWith("http://www.facebook.com/")

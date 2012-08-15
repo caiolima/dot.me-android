@@ -207,9 +207,10 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 
 	@Override
 	protected void onGetNextPage() {
-		if (isLoaddingNextPage)
+		if (isLoaddingNextPage){
+			
 			return;
-
+		}
 		super.onGetNextPage();
 		isLoaddingNextPage = true;
 		flagNextPage = true;

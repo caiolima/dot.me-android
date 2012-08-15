@@ -121,8 +121,10 @@ public class TwitterFeedsCollumn extends AbstractColumn {
 
 	@Override
 	protected void onGetNextPage() {
-		if (isLoaddingNextPage || currentPage == 0)
+		if (isLoaddingNextPage || currentPage == 0){
+			
 			return;
+		}
 
 		super.onGetNextPage();
 

@@ -157,7 +157,7 @@ public class MeCollumn extends AbstractColumn {
 						for (int i = 0; i < array.length(); i++) {
 							JSONObject metionJSON = array.getJSONObject(i);
 							Mensagem m = Mensagem
-									.createFromFacebookNotification(metionJSON);
+									.createFromFacebookNotification(metionJSON,ctx);
 							if (m != null) {
 								String link = m.getAddtions().getString("link");
 								if (link.startsWith("http://www.facebook.com/")
@@ -247,8 +247,10 @@ public class MeCollumn extends AbstractColumn {
 	@Override
 	protected void onGetNextPage() {
 
-		if ((nextFace == null && currentPage == 0) || isLoaddingNextPage)
+		if ((nextFace == null && currentPage == 0) || isLoaddingNextPage){
+			
 			return;
+		}
 		super.onGetNextPage();
 
 		isLoaddingNextPage = true;

@@ -109,7 +109,7 @@ public abstract class AbstractColumn {
 							&& (totalItemCount - visibleItemCount) == firstVisibleItem
 							&& !isLoaddingNextPage) {
 
-						isLoading=true;
+						
 						onGetNextPage();
 					}
 
@@ -290,6 +290,7 @@ public abstract class AbstractColumn {
 
 		loading = row;
 		listView.addFooterView(loading);
+		isLoading=true;
 	}
 
 	public abstract void init();

@@ -163,4 +163,21 @@
     <string name="image_view">Image View</string>
     <string name="admob_id">a150245438b7401</string>
     <string name="site">site</string>
+    <string name="notification_service">Notification service</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="update_his_status">updated his status</string>
+    <string name="update_her_status">updated her status</string>
+    <string name="shared">shared</string>
+    <string name="commented_on_post">also commented on a post in</string>
+    <string name="posted_in">posted in</string>
+    <string name="added_photo">added a new photo</string>
+    <string name="commented_photo_tag">commented on a photo that you are tagged in</string>
+    <string name="commented_status_tag">commented on a status that you are tagged in</string>
+	<string name="added_photo_you">added a photo of you</string>
+	<string name="likes_your_comment">likes your comment</string>
+	<string name="likes_your_status">likes your status</string>
+	<string name="commented_on_your_status">commented on your status</string>
+	<string name="like_comment">like your comment</string>
+	<string name="like_status">like your status</string>
 </resources>

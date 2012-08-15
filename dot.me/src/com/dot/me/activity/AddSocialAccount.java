@@ -44,6 +44,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -73,12 +74,13 @@ public class AddSocialAccount extends Activity {
 			"share_item", "status_update", "read_friendlists" };
 
 	private Button bt_logoutTwitter, bt_logoutFacebook, bt_twitter,
-			bt_facebook, bt_ok;
+			bt_facebook, bt_ok, bt_facebook_notifications;
 	private LinearLayout facebookPane, twitterPane;
 	private ImageView twitterImage, facebookImage;
 	private TextView twitterName, facebookName;
 	private boolean flagAccChanged = false;
-	private Handler h=new Handler(); 
+	private Handler h = new Handler();
+	private boolean mNotificationFlag;
 	private View.OnClickListener twitterLoggoutClick = new View.OnClickListener() {
 
 		@Override
@@ -117,6 +119,23 @@ public class AddSocialAccount extends Activity {
 					}
 
 				}
+			}, config_facebook_notification = new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					SharedPreferences settings = getSharedPreferences(
+							Constants.PREFS_NAME, 0);
+					SharedPreferences.Editor editor = settings.edit();
+					editor.putBoolean(Constants.CONFIG_NOTIFICATIONS, !mNotificationFlag);
+					mNotificationFlag=!mNotificationFlag;
+					if(mNotificationFlag){
+						bt_facebook_notifications.setText(getString(R.string.notification_service)+": "+getString(R.string.on));
+					}else{
+						bt_facebook_notifications.setText(getString(R.string.notification_service)+": "+getString(R.string.off));
+					}
+					// Commit the edits!
+					editor.commit();
+				}
 			};
 
 	// teste
@@ -143,6 +162,9 @@ public class AddSocialAccount extends Activity {
 		bt_logoutTwitter.setOnClickListener(twitterLoggoutClick);
 		bt_logoutFacebook.setOnClickListener(facebookLogoutClick);
 
+		bt_facebook_notifications = (Button) findViewById(R.id.bt_facebook_notifications);
+		bt_facebook_notifications.setOnClickListener(config_facebook_notification);
+		
 		bt_twitter = (Button) findViewById(R.id.singin_bt_twitter);
 		bt_twitter.setOnClickListener(new Button.OnClickListener() {
 
@@ -234,7 +256,16 @@ public class AddSocialAccount extends Activity {
 
 			}
 		});
-
+		
+		SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, 0);
+		mNotificationFlag=settings.getBoolean(Constants.CONFIG_NOTIFICATIONS, true);
+		
+		if(mNotificationFlag){
+			bt_facebook_notifications.setText(getString(R.string.notification_service)+": "+getString(R.string.on));
+		}else{
+			bt_facebook_notifications.setText(getString(R.string.notification_service)+": "+getString(R.string.off));
+		}
+		
 		updateLayout();
 
 	}
@@ -256,6 +287,7 @@ public class AddSocialAccount extends Activity {
 		if (fAcc != null) {
 			facebookPane.setVisibility(View.VISIBLE);
 			bt_facebook.setVisibility(View.GONE);
+			bt_facebook_notifications.setVisibility(View.VISIBLE);
 
 			facebookName.setText(fAcc.getName());
 
@@ -384,8 +416,7 @@ public class AddSocialAccount extends Activity {
 						TwitterLoginActivity.class);
 				Bundle b = new Bundle();
 				b.putString("url", oAuthURL);
-				
-				
+
 				intent.putExtras(b);
 
 				startActivity(intent);
@@ -565,6 +596,7 @@ public class AddSocialAccount extends Activity {
 				facade.logoutFacebook();
 				bt_facebook.setVisibility(View.VISIBLE);
 				facebookPane.setVisibility(View.GONE);
+				bt_facebook_notifications.setVisibility(View.GONE);
 				if (Account.getFacebookAccount(AddSocialAccount.this) == null
 						&& Account.getTwitterAccount(AddSocialAccount.this) == null)
 					bt_ok.setVisibility(View.GONE);
@@ -643,14 +675,14 @@ public class AddSocialAccount extends Activity {
 
 				loadingDialog.dismiss();
 				h.post(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						updateLayout();
-						
+
 					}
 				});
-				
+
 				flagAccChanged = true;
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

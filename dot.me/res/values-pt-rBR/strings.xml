@@ -160,5 +160,24 @@
     <string name="over_a_year">a muito tempo</string>
     <string name="about_one_minute_ago">por volta de 1 munito</string>
     <string name="remove_collumns_message">Tem certeza que deseja remover esta coluna? Esta operação é irreversível!</string>
-    
+    <string name="image_view">Imagem</string>
+    <string name="admob_id">a150245438b7401</string>
+    <string name="site">site</string>
+    <string name="notification_service">Notificações Facebook</string>
+    <string name="on">Ligada</string>
+    <string name="off">Desligada</string>
+    <string name="update_his_status">atualizou seu status</string>
+    <string name="update_her_status">atualizou seu status</string>
+    <string name="shared">compartilhou</string>
+    <string name="commented_on_post">comentou em uma publicação de</string>
+    <string name="posted_in">postou em</string>
+    <string name="added_photo">adicionou uma nvoa foto</string>
+    <string name="commented_photo_tag">comentou em uma foto que você está marcado</string>
+     <string name="commented_status_tag">comentou em uma publicação que você foi marcado</string>
+	<string name="added_photo_you">adicionou uma foto sua</string>
+	<string name="likes_your_comment">curtiu seu comentario</string>
+	<string name="likes_your_status">curtiu sua publicação</string>
+	<string name="commented_on_your_status">comentou(ram) em sua publicação</string>
+	<string name="like_comment">curtiram seu comentario</string>
+	<string name="like_status">curtiram sua publicação</string>
 </resources>

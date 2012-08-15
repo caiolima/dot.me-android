@@ -18,6 +18,8 @@ import twitter4j.Tweet;
 import twitter4j.URLEntity;
 import twitter4j.UserMentionEntity;
 
+import android.content.Context;
+
 import com.dot.me.command.IMessageAction;
 import com.dot.me.command.OpenFacebookGroupNotificationAction;
 import com.dot.me.command.OpenFacebookStatusAction;
@@ -28,6 +30,7 @@ import com.dot.me.command.OpenTwitterStatusAction;
 import com.dot.me.model.bd.Facade;
 import com.dot.me.utils.FacebookUtils;
 import com.dot.me.utils.PictureInfo;
+import com.dot.me.utils.Translator;
 
 public class Mensagem implements Comparable<Mensagem> {
 
@@ -223,7 +226,7 @@ public class Mensagem implements Comparable<Mensagem> {
 
 	}
 
-	public static Mensagem createFromFacebookNotification(JSONObject object) {
+	public static Mensagem createFromFacebookNotification(JSONObject object,Context ctx) {
 		Mensagem m = new Mensagem();
 
 		JSONObject addtions = new JSONObject();
@@ -246,7 +249,7 @@ public class Mensagem implements Comparable<Mensagem> {
 			}
 
 			String mensagem = object.getString("title");
-			m.setMensagem(mensagem);
+			m.setMensagem(Translator.translate(mensagem, ctx));
 
 			m.setIdMensagem(object.getString("id"));
 			JSONObject userObject = object.getJSONObject("from");
