@@ -41,6 +41,7 @@ import com.google.ads.AdListener;
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 import com.google.ads.AdRequest.ErrorCode;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -66,7 +67,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FacebookMessageActivity extends Activity implements AdListener{
+public class FacebookMessageActivity extends TrackedActivity implements AdListener{
 
 	private Button bt_comment, bt_like, bt_refresh;
 	private TextView txt_qtd_likes, txt_username, txt_message, txt_title_link,
@@ -917,6 +918,8 @@ public class FacebookMessageActivity extends Activity implements AdListener{
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
 			return null;
 		}

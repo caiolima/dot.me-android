@@ -56,8 +56,9 @@ import com.dot.me.view.LabelColunm;
 import com.dot.me.view.MeCollumn;
 import com.dot.me.view.SearchColumn;
 import com.dot.me.view.TwitterFeedsCollumn;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
-public class TimelineActivity extends Activity {
+public class TimelineActivity extends TrackedActivity {
 
 	private static TimelineActivity current;
 	private Vector<Account> users;

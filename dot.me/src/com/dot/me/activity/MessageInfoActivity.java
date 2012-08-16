@@ -24,6 +24,7 @@ import com.google.ads.AdListener;
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 import com.google.ads.AdRequest.ErrorCode;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -42,7 +43,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MessageInfoActivity extends Activity implements AdListener {
+public class MessageInfoActivity extends TrackedActivity implements AdListener {
 
 	private ImageView img_profile;
 	private ImageButton bt_response, bt_retweet;
