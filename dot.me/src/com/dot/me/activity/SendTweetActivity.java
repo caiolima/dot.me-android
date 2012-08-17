@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,8 +24,15 @@ import com.dot.me.message.action.ISendAction;
 import com.dot.me.model.Account;
 import com.dot.me.model.Draft;
 import com.dot.me.model.bd.Facade;
+import com.google.ads.Ad;
+import com.google.ads.AdListener;
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
+import com.google.ads.AdRequest.ErrorCode;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
-public class SendTweetActivity extends Activity {
+public class SendTweetActivity extends TrackedActivity implements
+AdListener {
 
 	protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
 	protected static final int GET_IMAGE_FROM_GALLERY = 1;
@@ -41,7 +49,8 @@ public class SendTweetActivity extends Activity {
 	private ISendAction action;
 	private String typeText;
 	private boolean isToSaveDraft=true;
-
+	private AdView adView;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -128,6 +137,14 @@ public class SendTweetActivity extends Activity {
 		if(savedDraft!=null){
 			txt_text.setText(savedDraft.getText());
 		}
+		
+		adView = (AdView) findViewById(R.id.adView);
+
+		AdRequest adRequestBanner = new AdRequest();
+
+		adView.setAdListener(this);
+
+		adView.loadAd(adRequestBanner);
 
 	}
 
@@ -278,6 +295,32 @@ public class SendTweetActivity extends Activity {
 			
 		}
 			
+	}
+	
+	@Override
+	public void onDismissScreen(Ad ad) {
+		Log.v("teste ad", "onDismissScreen");
+	}
+
+	@Override
+	public void onLeaveApplication(Ad ad) {
+		Log.v("teste ad", "onLeaveApplication");
+	}
+
+	@Override
+	public void onPresentScreen(Ad ad) {
+		Log.v("teste ad", "onPresentScreen");
+	}
+
+	@Override
+	public void onReceiveAd(Ad ad) {
+		Log.v("teste ad", "Did Receive Ad");
+		adView.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void onFailedToReceiveAd(Ad ad, ErrorCode errorCode) {
+		Log.v("teste ad", "Failed to receive ad (" + errorCode + ")");
 	}
 
 	

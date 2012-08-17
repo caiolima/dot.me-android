@@ -24,6 +24,7 @@ public class Constants {
 	public static final long QTD_MINUTES=3*600000;
 	public static final String PREFS_NAME = "MyConfigs";
 	public static final String CONFIG_NOTIFICATIONS = "notifications";
+	public static final String LAST_OPEN="last_open";
 	
 	
 }

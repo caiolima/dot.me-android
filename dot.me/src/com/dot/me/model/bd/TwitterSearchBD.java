@@ -30,7 +30,7 @@ public class TwitterSearchBD extends Dao{
 	}
 	
 	protected void delete(String search){
-		db.getDB().delete(DataBase.TB_SEARCH, DataBase.SEARCH_CONTENT+"=?", new String[]{search});
+		db.getDB().delete(DataBase.TB_SEARCH, DataBase.SEARCH_CONTENT+"=?", new String[]{search.toLowerCase()});
 	}
 	
 	protected void deleteAll(){

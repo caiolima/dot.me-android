@@ -15,6 +15,7 @@ import com.dot.me.view.DragListener;
 import com.dot.me.view.DragNDropListView;
 import com.dot.me.view.DropListener;
 import com.dot.me.view.RemoveListener;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,7 +34,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-public class ManageCollumnsActivity extends Activity {
+public class ManageCollumnsActivity extends TrackedActivity {
 
 	private Button bt_ok, bt_reset_collumns;
 	private DragNDropListView lst_drag;

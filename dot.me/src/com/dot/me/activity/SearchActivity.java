@@ -8,6 +8,7 @@ import com.dot.me.model.Account;
 import com.dot.me.model.TrendLocation;
 import com.dot.me.model.bd.Facade;
 import com.dot.me.utils.Constants;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,7 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends TrackedActivity {
 
 	private EditText txt_search;
 	private Button bt_search;

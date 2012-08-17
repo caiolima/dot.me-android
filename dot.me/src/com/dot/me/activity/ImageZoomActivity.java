@@ -11,6 +11,7 @@ import com.google.ads.AdListener;
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 import com.google.ads.AdRequest.ErrorCode;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 import android.app.Activity;
@@ -21,7 +22,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-public class ImageZoomActivity extends Activity implements AdListener {
+public class ImageZoomActivity extends TrackedActivity implements AdListener {
 
 	private ImageViewTouch img;
 	private ProgressBar progress;
@@ -56,7 +57,6 @@ public class ImageZoomActivity extends Activity implements AdListener {
 		adView = (AdView) findViewById(R.id.adView);
 
 		AdRequest adRequestBanner = new AdRequest();
-		adRequestBanner.addTestDevice(AdRequest.TEST_EMULATOR);
 
 		adView.setAdListener(this);
 

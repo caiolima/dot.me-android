@@ -37,7 +37,6 @@ import com.dot.me.utils.Constants;
 import com.dot.me.utils.TwitterUtils;
 import com.markupartist.android.widget.PullToRefreshListView;
 
-
 public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 
 	private String search;
@@ -87,22 +86,26 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 			final Vector<Mensagem> mensagens = new Vector<Mensagem>();
 
 			for (Tweet tweet : result.getTweets()) {
-				Mensagem m = Mensagem.createFromTweet(tweet);
+				try {
+					Mensagem m = Mensagem.createFromTweet(tweet);
 
-				Facade facade = Facade.getInstance(ctx);
+					Facade facade = Facade.getInstance(ctx);
 
-				if (!facade.exsistsStatus(m.getIdMensagem(), m.getTipo())) {
+					if (!facade.exsistsStatus(m.getIdMensagem(), m.getTipo())) {
 
-					facade.insert(m);
-					mensagens.add(m);
+						facade.insert(m);
+						mensagens.add(m);
 
+					}
+				} catch (Exception e) {
+					
 				}
 
 			}
 
-			if(TimelineActivity.h==null)
+			if (TimelineActivity.h == null)
 				return;
-			
+
 			TimelineActivity.h.post(new Runnable() {
 
 				@Override
@@ -117,28 +120,22 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 										m.getTipo());
 
 						}
-					} 
-					
+					}
+
 					for (Mensagem m : mensagens)
 						adapter.addItem(m);
 
 					if (currentpage > 1) {
 						notifyNextPageFinish();
-						
+
 					}
 				}
 			});
 
 		} catch (TwitterException e) {
 			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}catch(Exception e){
-			
+		}catch (Exception e) {
+
 		}
 
 	}
@@ -207,8 +204,8 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 
 	@Override
 	protected void onGetNextPage() {
-		if (isLoaddingNextPage){
-			
+		if (isLoaddingNextPage) {
+
 			return;
 		}
 		super.onGetNextPage();
@@ -222,15 +219,15 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 
 		final Vector<Mensagem> toAdd = new Vector<Mensagem>();
 		Facade facade = Facade.getInstance(ctx);
-		Vector<Mensagem> mensagens=facade
+		Vector<Mensagem> mensagens = facade
 				.getMensagemOf(Mensagem.TIPO_TWEET_SEARCH);
 		for (final Mensagem m : mensagens) {
-			JSONObject adds=m.getAddtions();
-			try{
-				String searchTag=adds.getString("search_tag");
-				if(searchTag.equals(search))
+			JSONObject adds = m.getAddtions();
+			try {
+				String searchTag = adds.getString("search_tag");
+				if (searchTag.equals(search))
 					toAdd.add(m);
-			}catch (Exception e) {
+			} catch (Exception e) {
 				continue;
 			}
 		}
@@ -247,9 +244,9 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 			});
 		}
 
-		if(toAdd.isEmpty())
-			return ;
-		
+		if (toAdd.isEmpty())
+			return;
+
 		Mensagem m = toAdd.firstElement();
 		if (m != null) {
 			if (System.currentTimeMillis() - m.getData().getTime() > Constants.QTD_MINUTES) {
@@ -268,7 +265,7 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 
 		private AccessToken token;
 		private Vector<Mensagem> mensagens = new Vector<Mensagem>();
-		private Vector<Mensagem> cachedMessages=new Vector<Mensagem>();
+		private Vector<Mensagem> cachedMessages = new Vector<Mensagem>();
 		private List<Mensagem> last;
 
 		public GetSearchTweetsTask(AccessToken token) {
@@ -292,9 +289,8 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 
 			}
 
-			
 			AssyncTaskManager.getInstance().addProccess(this);
-			
+
 			Twitter twitter = TwitterUtils.getTwitter(token);
 			Query q = new Query(search);
 			if (flagNextPage)
@@ -330,28 +326,27 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
-			
+
 			if (currentpage == 1) {
 				((PullToRefreshListView) listView).onRefreshComplete();
 				if (!mensagens.isEmpty()) {
 					adapter.clear();
 					for (Mensagem m : last)
-						facade.deleteMensagem(m.getIdMensagem(),
-								m.getTipo());
+						facade.deleteMensagem(m.getIdMensagem(), m.getTipo());
 
 				}
 			}
-			
+
 			for (Mensagem m : mensagens) {
-				JSONObject adds=m.getAddtions();
-				if(adds!=null){
+				JSONObject adds = m.getAddtions();
+				if (adds != null) {
 					try {
 						adds.put("search_tag", search);
 					} catch (JSONException e) {
 						continue;
 					}
-				}else{
-					adds=new JSONObject();
+				} else {
+					adds = new JSONObject();
 					try {
 						adds.put("search_tag", search);
 					} catch (JSONException e) {
@@ -373,10 +368,10 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 				((PullToRefreshListView) listView).onRefreshComplete();
 			} else if (currentpage > 1) {
 				notifyNextPageFinish();
-//				adapter.sort();
+				// adapter.sort();
 			}
 
-			isLoading=false;
+			isLoading = false;
 			AssyncTaskManager.getInstance().removeProcess(this);
 		}
 

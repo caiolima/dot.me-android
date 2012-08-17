@@ -1,6 +1,7 @@
 package com.dot.me.activity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -56,6 +58,8 @@ import com.dot.me.view.LabelColunm;
 import com.dot.me.view.MeCollumn;
 import com.dot.me.view.SearchColumn;
 import com.dot.me.view.TwitterFeedsCollumn;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.apps.analytics.easytracking.EasyTracker;
 import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 public class TimelineActivity extends TrackedActivity {
@@ -410,6 +414,18 @@ public class TimelineActivity extends TrackedActivity {
 		current = this;
 		super.onCreate(savedInstanceState);
 
+		SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, 0);
+		long lastTimeLogin=settings.getLong(Constants.LAST_OPEN, -1);
+		if(lastTimeLogin!=-1){
+			GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker.getInstance();
+			long openDist=new Date().getTime()-lastTimeLogin;
+			
+			if(openDist>0){
+				tracker.setCustomVar(1, "intervalo_ativacao", Long.toString(openDist/1000));
+			}
+			
+		}
+		
 		Facade.destroy();
 		DataBase.start(this);
 
@@ -679,6 +695,12 @@ public class TimelineActivity extends TrackedActivity {
 
 	@Override
 	protected void onDestroy() {
+		SharedPreferences settings = getSharedPreferences(
+				Constants.PREFS_NAME, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putLong(Constants.LAST_OPEN, new Date().getTime());
+		
+		editor.commit();
 		DataBase db = DataBase.getInstance(this);
 		if (!(db.isExecuting())) {
 			if (!reload)

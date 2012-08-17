@@ -6,6 +6,7 @@ import com.dot.me.app.R;
 import com.dot.me.model.Account;
 import com.dot.me.model.Label;
 import com.dot.me.model.bd.Facade;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import android.app.Activity;
 import android.database.SQLException;
@@ -22,7 +23,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class BlackListActivity extends Activity {
+public class BlackListActivity extends TrackedActivity {
 
 	private Button bt_add, bt_delete;
 	private ListView lst_words;

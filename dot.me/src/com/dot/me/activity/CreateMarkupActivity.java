@@ -20,6 +20,7 @@ import com.dot.me.model.bd.Facade;
 import com.dot.me.utils.Constants;
 import com.dot.me.utils.Menssage;
 import com.dot.me.utils.WebService;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -34,7 +35,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class CreateMarkupActivity extends Activity{
+public class CreateMarkupActivity extends TrackedActivity{
 
 	private EditText txt_nome;
 	private EditText txt_palavras;

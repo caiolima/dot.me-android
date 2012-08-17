@@ -415,8 +415,7 @@ public class FacebookMessageActivity extends TrackedActivity implements AdListen
 		adView = (AdView) findViewById(R.id.adView);
 		
 		AdRequest adRequestBanner = new AdRequest();
-	    adRequestBanner.addTestDevice(AdRequest.TEST_EMULATOR);
-	    
+		
 	    adView.setAdListener(this);
 	    
 	    adView.loadAd(adRequestBanner);

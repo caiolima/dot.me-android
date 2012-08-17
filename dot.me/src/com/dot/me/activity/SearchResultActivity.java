@@ -23,6 +23,7 @@ import com.dot.me.model.bd.DataBase;
 import com.dot.me.model.bd.Facade;
 import com.dot.me.utils.Constants;
 import com.dot.me.utils.TwitterUtils;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -36,7 +37,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SearchResultActivity extends Activity {
+public class SearchResultActivity extends TrackedActivity {
 
 	private String search_content;
 	private ListView lst_search;
@@ -85,10 +86,10 @@ public class SearchResultActivity extends Activity {
 
 					}
 				}
-				TimelineActivity timeline = TimelineActivity.getCurrent();
-				if (timeline != null) {
-					timeline.finish();
-				}
+//				TimelineActivity timeline = TimelineActivity.getCurrent();
+//				if (timeline != null) {
+//					timeline.finish();
+//				}
 				if (resultActivity) {
 					Intent intent = new Intent();
 					Bundle b = new Bundle();
