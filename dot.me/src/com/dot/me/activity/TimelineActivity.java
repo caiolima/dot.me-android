@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,8 +70,7 @@ public class TimelineActivity extends TrackedActivity {
 	private Vector<AbstractColumn> filters = new Vector<AbstractColumn>();
 	private ViewPager view_flipper;
 	public static Handler h = new Handler();
-	private TextView currentTittle;
-	private ImageButton bt_more, bt_send;
+	private ImageButton bt_more, bt_send, bt_organizer;
 	private Vector<Mensagem> currentList;
 	private AccessToken accessToken;
 	private int curentFilterPosition;
@@ -164,7 +164,7 @@ public class TimelineActivity extends TrackedActivity {
 						column.setConfig(config);
 
 						filters.add(column);
-						adapter.addView(column.getScrollView());
+						adapter.addView(column);
 						mSubject.registerObserver((LabelColunm) column);
 					} catch (JSONException e) {
 
@@ -255,7 +255,7 @@ public class TimelineActivity extends TrackedActivity {
 					column.setConfig(config);
 
 					filters.add(column);
-					adapter.addView(column.getScrollView());
+					adapter.addView(column);
 					mSubject.registerObserver((LabelColunm) column);
 				} catch (JSONException e) {
 
@@ -305,7 +305,7 @@ public class TimelineActivity extends TrackedActivity {
 										this, group);
 								fgCollumn.setConfig(confg);
 								filters.add(fgCollumn);
-								adapter.addView(fgCollumn.getScrollView());
+								adapter.addView(fgCollumn);
 
 							}
 
@@ -332,7 +332,7 @@ public class TimelineActivity extends TrackedActivity {
 
 					SearchColumn collumn = new SearchColumn(this, searchContent);
 					filters.add(collumn);
-					adapter.addView(collumn.getScrollView());
+					adapter.addView(collumn);
 					view_flipper.setCurrentItem(filters.size() - 1);
 					collumn.setConfig(confg);
 					collumn.init();
@@ -369,7 +369,7 @@ public class TimelineActivity extends TrackedActivity {
 					SearchColumn s = new SearchColumn(this,
 							searches.lastElement());
 
-					adapter.addView(s.getScrollView());
+					adapter.addView(s);
 					filters.add(s);
 					view_flipper
 							.setCurrentItem(view_flipper.getChildCount() - 1);
@@ -439,9 +439,97 @@ public class TimelineActivity extends TrackedActivity {
 		users = Account.getLoggedUsers(TimelineActivity.this);
 
 		view_flipper = (ViewPager) findViewById(R.id.coluna);
-		currentTittle = (TextView) findViewById(R.id.category_name);
+		
 		bt_send = (ImageButton) findViewById(R.id.timeline_bt_tweet);
 		bt_more = (ImageButton) findViewById(R.id.timeline_bt_more);
+		bt_organizer=(ImageButton) findViewById(R.id.timeline_bt_organizer);
+		
+		bt_organizer.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				final Vector<AbstractCommand> actions = new Vector<AbstractCommand>();
+				final Vector<Item> items = new Vector<Item>();
+				
+				items.add(new Item(getString(R.string.manage_labels),
+						R.drawable.labels));
+				
+				actions.add(new OpenManageLabelsCommand());
+
+				items.add(new Item(getString(R.string.manage_black_list),R.drawable.blacklist));
+				actions.add(new OpenManageBlackListCommand());
+				
+				ArrayAdapter<Item> adapter = new ArrayAdapter<Item>(
+						TimelineActivity.this,
+						android.R.layout.select_dialog_item,
+						android.R.id.text1, items) {
+					public View getView(int position, View convertView,
+							ViewGroup parent) {
+						// User super class to create the View
+						View v = super.getView(position, convertView, parent);
+						TextView tv = (TextView) v
+								.findViewById(android.R.id.text1);
+
+						// Put the image on the TextView
+						tv.setCompoundDrawablesWithIntrinsicBounds(
+								items.get(position).icon, 0, 0, 0);
+
+						// Add margin between image and text (support various
+						// screen densities)
+						int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
+						tv.setCompoundDrawablePadding(dp5);
+
+						return v;
+					}
+				};
+
+				AlertDialog dialog = new AlertDialog.Builder(
+						TimelineActivity.this)
+						.setTitle(getString(R.string.organization_option))
+						.setAdapter(adapter,
+								new DialogInterface.OnClickListener() {
+
+									public void onClick(DialogInterface dialog,
+											int position) {
+
+										actions.get(position).execute(
+												TimelineActivity.this);
+
+										/*
+										 * Intent intent = null;
+										 * 
+										 * 
+										 * 
+										 * if (position == 1) {
+										 * 
+										 * } else if (position == 0) {
+										 * 
+										 * } else if (position == 2) { try {
+										 * view_flipper
+										 * .removeViewAt(curentFilterPosition);
+										 * } catch (NullPointerException e) {
+										 * int lastCurrentFilterPosition =
+										 * curentFilterPosition; view_flipper
+										 * .setCurrentPage(curentFilterPosition
+										 * - 1); view_flipper
+										 * .removeView(filters
+										 * .get(lastCurrentFilterPosition)
+										 * .getScrollView()); }
+										 * filters.get(curentFilterPosition)
+										 * .deleteColumn();
+										 * filters.remove(curentFilterPosition);
+										 * curentFilterPosition--; view_flipper
+										 * .
+										 * setCurrentPage(curentFilterPosition);
+										 * }
+										 */
+									}
+								}).create();
+
+				dialog.show();
+				
+			}
+		});
 
 		bt_send.setOnClickListener(new Button.OnClickListener() {
 
@@ -465,14 +553,6 @@ public class TimelineActivity extends TrackedActivity {
 						R.drawable.collumn));
 
 				actions.add(new OpenManageCollumnCommand());
-				
-				items.add(new Item(getString(R.string.manage_labels),
-						R.drawable.labels));
-				
-				actions.add(new OpenManageLabelsCommand());
-
-				items.add(new Item(getString(R.string.manage_black_list),R.drawable.blacklist));
-				actions.add(new OpenManageBlackListCommand());
 				
 				if (Account.getFacebookAccount(TimelineActivity.this) != null) {
 					items.add(new Item(getString(R.string.group_columns),
@@ -555,7 +635,7 @@ public class TimelineActivity extends TrackedActivity {
 
 				AlertDialog dialog = new AlertDialog.Builder(
 						TimelineActivity.this)
-						.setTitle(getString(R.string.manage_columns))
+						.setTitle(getString(R.string.general_options))
 						.setAdapter(adapter,
 								new DialogInterface.OnClickListener() {
 
@@ -602,6 +682,7 @@ public class TimelineActivity extends TrackedActivity {
 
 		});
 
+		
 		adapter = new TimelinePagerAdapter(view_flipper);
 		loadCollumns();
 
@@ -652,7 +733,7 @@ public class TimelineActivity extends TrackedActivity {
 					public void onPageSelected(int position) {
 						curentFilterPosition = position;
 						AbstractColumn column = filters.get(position);
-						currentTittle.setText(column.getColumnTitle());
+						
 						currentCommand = column.getCommand();
 						if (currentCommand == null) {
 							bt_send.setVisibility(View.INVISIBLE);
@@ -688,7 +769,7 @@ public class TimelineActivity extends TrackedActivity {
 		 * } });
 		 */
 
-		currentTittle.setText(filters.get(0).getColumnTitle());
+		
 
 		new InitViewTask().execute();
 	}
@@ -729,17 +810,17 @@ public class TimelineActivity extends TrackedActivity {
 				 * timeline.updateTwittes(list, true);
 				 */
 
-				adapter.addView(column.getScrollView());
+				adapter.addView(column);
 			} else if (config.getType().equals(CollumnConfig.TWITTER_COLLUMN)) {
 				column = new TwitterFeedsCollumn(this);
 				filters.add(column);
 
-				adapter.addView(column.getScrollView());
+				adapter.addView(column);
 			} else if (config.getType().equals(CollumnConfig.ME)) {
 				column = new MeCollumn(this);
 				filters.add(column);
 
-				adapter.addView(column.getScrollView());
+				adapter.addView(column);
 			} else if (config.getType().equals(CollumnConfig.FACEBOOK_GROUPS)) {
 				try {
 					String id = config.getProprietes().getString("id");
@@ -748,7 +829,7 @@ public class TimelineActivity extends TrackedActivity {
 
 					column = new FacebookGroupColumn(this, fGroup);
 					filters.add(column);
-					adapter.addView(column.getScrollView());
+					adapter.addView(column);
 
 				} catch (JSONException e) {
 
@@ -766,7 +847,7 @@ public class TimelineActivity extends TrackedActivity {
 					column = new LabelColunm(m, this);
 					mSubject.registerObserver((LabelColunm) column);
 					filters.add(column);
-					adapter.addView(column.getScrollView());
+					adapter.addView(column);
 				} catch (JSONException e) {
 
 				}
@@ -777,7 +858,7 @@ public class TimelineActivity extends TrackedActivity {
 					column = new SearchColumn(this, search);
 					UpdateAction.registerUpdateRequest((SearchColumn) column);
 					filters.add(column);
-					adapter.addView(column.getScrollView());
+					adapter.addView(column);
 
 				} catch (JSONException e) {
 
@@ -816,7 +897,7 @@ public class TimelineActivity extends TrackedActivity {
 				SearchColumn s = new SearchColumn(this, new_search);
 				UpdateAction.registerUpdateRequest(s);
 				filters.add(s);
-				adapter.addView(s.getScrollView());
+				adapter.addView(s);
 
 				view_flipper.setCurrentItem(adapter.getCount() - 1);
 			}
@@ -922,22 +1003,22 @@ public class TimelineActivity extends TrackedActivity {
 
 	class InitViewTask extends AsyncTask<Void, Void, Void> {
 
-		private ProgressDialog progressDialog;
+//		private ProgressDialog progressDialog;
 
 		@Override
 		protected void onPreExecute() {
-
-			progressDialog = new ProgressDialog(TimelineActivity.this);
-
-			progressDialog.setCancelable(false);
-			progressDialog
-					.setMessage(getString(R.string.loading_cached_messages));
-
-			try {
-				progressDialog.show();
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
+//
+//			progressDialog = new ProgressDialog(TimelineActivity.this);
+//
+//			progressDialog.setCancelable(false);
+//			progressDialog
+//					.setMessage(getString(R.string.loading_cached_messages));
+//
+//			try {
+//				progressDialog.show();
+//			} catch (Exception e) {
+//				// TODO: handle exception
+//			}
 
 		}
 
@@ -962,19 +1043,8 @@ public class TimelineActivity extends TrackedActivity {
 
 		@Override
 		protected void onPostExecute(Void result) {
-			try {
-				for (AbstractColumn collumn : filters) {
-					int top = collumn.getConfig().getProprietes().getInt("top");
-					int scrollTo = collumn.getConfig().getProprietes()
-							.getInt("scrollTo");
-
-					collumn.getScrollView().setSelectionFromTop(scrollTo, top);
-				}
-
-			} catch (JSONException e) {
-				// TODO: handle exception
-			}
-			progressDialog.dismiss();
+			
+//			progressDialog.dismiss();
 			isStarting = false;
 		}
 
@@ -1049,8 +1119,6 @@ public class TimelineActivity extends TrackedActivity {
 			view_flipper.setCurrentItem(curentFilterPosition);
 
 			adapter.notifyDataSetChanged();
-			currentTittle.setText(filters.get(curentFilterPosition)
-					.getColumnTitle());
 			int i = 0;
 			for (CollumnConfig config : Facade.getInstance(
 					TimelineActivity.this).getAllConfig()) {

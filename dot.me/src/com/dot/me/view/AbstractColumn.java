@@ -3,7 +3,10 @@ package com.dot.me.view;
 import java.util.Observer;
 import java.util.Vector;
 
+import org.json.JSONException;
+
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -13,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.dot.me.activity.TimelineActivity;
 import com.dot.me.adapter.FeddAdapter;
@@ -33,7 +37,7 @@ public abstract class AbstractColumn {
 	protected Context ctx;
 	// protected ListView scrollView;
 	protected ListView listView;
-	protected LinearLayout list_twittes;
+	protected LinearLayout list_twittes,l_layout;
 	protected FeddAdapter adapter;
 	protected static Vector<AbstractColumn> instances = new Vector<AbstractColumn>();
 	// protected Vector<Mensagem> mList = new Vector<Mensagem>();
@@ -42,10 +46,11 @@ public abstract class AbstractColumn {
 	protected Facade facade;
 	private View loading;
 	protected boolean isLoaddingNextPage = false;
-	protected boolean isLoading=false;
+	protected boolean isLoading = false;
 	protected CollumnConfig config;
 	protected AbstractCommand command;
-
+	protected LinearLayout layout;
+	private ProgressBar progress;
 
 	public String getColumnTitle() {
 		return columnTitle;
@@ -60,33 +65,40 @@ public abstract class AbstractColumn {
 		facade = Facade.getInstance(ctx);
 		instances.add(this);
 		adapter = new FeddAdapter(ctx, this);
-		
+
+		layout = new LinearLayout(ctx);
+		layout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT));
+
 		if (isToRefresh) {
-			listView = new PullToRefreshListView(ctx){
+			listView = new PullToRefreshListView(ctx) {
 
 				@Override
 				public void onRefreshComplete() {
-					DataBase.getInstance(AbstractColumn.this.ctx).setExecuting(false);
+					DataBase.getInstance(AbstractColumn.this.ctx).setExecuting(
+							false);
 					super.onRefreshComplete();
 				}
-				
+
 			};
-			
+
 			listView.setDividerHeight(0);
-			((PullToRefreshListView)listView).getmRefreshView().setBackgroundResource(R.color.backgorung);
-			
+			((PullToRefreshListView) listView).getmRefreshView()
+					.setBackgroundResource(R.color.backgorung);
 
 			((PullToRefreshListView) listView)
 					.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
 
 						@Override
 						public void onRefresh() {
-							if(isLoading){
-								((PullToRefreshListView)listView).onRefreshComplete();
+							if (isLoading) {
+								((PullToRefreshListView) listView)
+										.onRefreshComplete();
 								return;
 							}
-							DataBase.getInstance(AbstractColumn.this.ctx).setExecuting(true);
-							isLoading=true;
+							DataBase.getInstance(AbstractColumn.this.ctx)
+									.setExecuting(true);
+							isLoading = true;
 							updateList();
 						}
 					});
@@ -102,14 +114,13 @@ public abstract class AbstractColumn {
 				@Override
 				public void onScroll(AbsListView view, int firstVisibleItem,
 						int visibleItemCount, int totalItemCount) {
-					if(isLoading)
+					if (isLoading)
 						return;
-						
-					if ((totalItemCount >=5)
+
+					if ((totalItemCount >= 5)
 							&& (totalItemCount - visibleItemCount) == firstVisibleItem
 							&& !isLoaddingNextPage) {
 
-						
 						onGetNextPage();
 					}
 
@@ -156,9 +167,25 @@ public abstract class AbstractColumn {
 			});
 		}
 
-		listView.setLayoutParams(new LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		listView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT));
 		listView.setAdapter(adapter);
+		listView.setVisibility(View.GONE);
+		
+		l_layout = new LinearLayout(ctx);
+		l_layout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT));
+
+		l_layout.setGravity(Gravity.CENTER);
+		layout.setGravity(Gravity.TOP);
+		
+		progress = new ProgressBar(ctx);
+		progress.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT));
+		l_layout.addView(progress);
+		
+		layout.addView(l_layout);
+		layout.addView(listView);
 
 		columnTitle = title;
 
@@ -181,10 +208,11 @@ public abstract class AbstractColumn {
 			@Override
 			public void run() {
 				// adapter.removeAll();
+				if (list != null)
 
-				for (Mensagem m : list) {
-					adapter.addItem(m);
-				}
+					for (Mensagem m : list) {
+						adapter.addItem(m);
+					}
 
 				adapter.sort();
 				// addMensagens(list, top);
@@ -290,7 +318,7 @@ public abstract class AbstractColumn {
 
 		loading = row;
 		listView.addFooterView(loading);
-		isLoading=true;
+		isLoading = true;
 	}
 
 	public abstract void init();
@@ -298,10 +326,10 @@ public abstract class AbstractColumn {
 	public void notifyNextPageFinish() {
 		listView.removeFooterView(loading);
 		isLoaddingNextPage = false;
-		isLoading=false;
+		isLoading = false;
 		DataBase.getInstance(ctx).setExecuting(false);
 	}
-	
+
 	public CollumnConfig getConfig() {
 		return config;
 	}
@@ -310,16 +338,40 @@ public abstract class AbstractColumn {
 		this.config = config;
 	}
 
-	public int getSelection(){
+	public int getSelection() {
 		return adapter.getSelection();
 	}
-	
-	public boolean isDeletable(){
+
+	public boolean isDeletable() {
 		return true;
 	}
-	
-	public AbstractCommand getCommand(){
+
+	public AbstractCommand getCommand() {
 		return command;
 	}
-	
+
+	protected void notifyInitFinished() {
+
+		//layout.setGravity(Gravity.CENTER);
+		l_layout.setVisibility(View.GONE);
+		listView.setVisibility(View.VISIBLE);
+
+		int top;
+		try {
+			top = getConfig().getProprietes().getInt("top");
+
+			int scrollTo = getConfig().getProprietes().getInt("scrollTo");
+
+			getScrollView().setSelectionFromTop(scrollTo, top);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public View getCollumnView() {
+		return layout;
+	}
+
 }

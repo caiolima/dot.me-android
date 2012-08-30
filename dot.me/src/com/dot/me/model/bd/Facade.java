@@ -61,7 +61,7 @@ public class Facade {
 		facebookGroupBd = new FacebookGroupsBD(ctx);
 		configDao = new CollumnConfigDao(ctx);
 		draftBD = new DraftBD(ctx);
-		locationBD=new LocationSelectedBD(ctx);
+		locationBD = new LocationSelectedBD(ctx);
 
 	}
 
@@ -257,11 +257,20 @@ public class Facade {
 	}
 
 	public User getOneUser(long id, int type) {
-		return userBD.getOne(id, type);
+		try {
+			return userBD.getOne(id, type);
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 
 	public User getOneUser(int id) {
-		return userBD.getOne(id);
+		try {
+			return userBD.getOne(id);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public int existsPalavra(String word) {
@@ -269,15 +278,27 @@ public class Facade {
 	}
 
 	public void insertInBlackList(String word) {
-		blackListBd.insert(word);
+		try {
+			blackListBd.insert(word);
+		} catch (Exception e) {
+
+		}
 	}
 
 	public void deleteInBlackList(String word) {
-		blackListBd.delete(word);
+		try {
+			blackListBd.delete(word);
+		} catch (Exception e) {
+
+		}
 	}
 
 	public Vector<String> getAllWordsInBlackList() {
-		return blackListBd.getAll();
+		try {
+			return blackListBd.getAll();
+		} catch (Exception e) {
+			return new Vector<String>();
+		}
 	}
 
 	public PalavraChave getOnePalavra(long id) {
@@ -379,23 +400,23 @@ public class Facade {
 		return draftBD.exists(id);
 	}
 
-	public void setLocation(TrendLocation l){
+	public void setLocation(TrendLocation l) {
 		locationBD.deleteCurrent();
 		locationBD.insert(l);
 	}
-	
-	public void deleteCurrentLocation(){
+
+	public void deleteCurrentLocation() {
 		locationBD.deleteCurrent();
 	}
-	
-	public TrendLocation getSavedTrend(){
-		TrendLocation t=locationBD.getSaved();
-		if(t==null){
-			t=new TrendLocation();
+
+	public TrendLocation getSavedTrend() {
+		TrendLocation t = locationBD.getSaved();
+		if (t == null) {
+			t = new TrendLocation();
 			t.setName("World");
 			t.setWoeid(1);
 		}
-			
+
 		return t;
 	}
 }

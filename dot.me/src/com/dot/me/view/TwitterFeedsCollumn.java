@@ -89,11 +89,11 @@ public class TwitterFeedsCollumn extends AbstractColumn {
 			@Override
 			public void run() {
 				updateTwittes(list, true);
-				
+				notifyInitFinished();
 			}
 		});
 		
-		if(list.isEmpty())
+		if(list==null||list.isEmpty())
 			return;
 		Mensagem m=null;
 		try{

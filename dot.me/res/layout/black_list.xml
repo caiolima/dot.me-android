@@ -9,13 +9,14 @@
         android:id="@+id/tableLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/top_timeline"
+        android:background="@drawable/top"
         android:gravity="center_vertical" >
 
         <TableRow
             android:id="@+id/tableRow1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="6dp"
             android:weightSum="1" >
 
             <Button

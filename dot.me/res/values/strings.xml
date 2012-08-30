@@ -180,5 +180,7 @@
 	<string name="commented_on_your_status">commented on your status</string>
 	<string name="like_comment">like your comment</string>
 	<string name="like_status">like your status</string>
+	<string name="general_options">General Options</string>
+	<string name="organization_option">Organization</string>
 	
 </resources>

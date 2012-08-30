@@ -139,12 +139,12 @@ AdListener {
 		}
 		
 		adView = (AdView) findViewById(R.id.adView);
-
-		AdRequest adRequestBanner = new AdRequest();
-
-		adView.setAdListener(this);
-
-		adView.loadAd(adRequestBanner);
+//
+//		AdRequest adRequestBanner = new AdRequest();
+//
+//		adView.setAdListener(this);
+//
+//		adView.loadAd(adRequestBanner);
 
 	}
 

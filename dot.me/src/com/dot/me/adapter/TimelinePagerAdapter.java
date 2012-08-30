@@ -8,6 +8,7 @@ import org.json.JSONException;
 
 import com.dot.me.model.CollumnConfig;
 import com.dot.me.model.bd.Facade;
+import com.dot.me.view.AbstractColumn;
 import com.markupartist.android.widget.PullToRefreshListView;
 
 import android.os.Parcelable;
@@ -15,11 +16,12 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ViewFlipper;
 
 public class TimelinePagerAdapter extends PagerAdapter {
 
-	private List<View> childs = new ArrayList<View>();
+	private List<AbstractColumn> childs = new ArrayList<AbstractColumn>();
 	private ViewPager parent;
 	private List<ScrollState> states = new ArrayList<ScrollState>();
 
@@ -27,9 +29,7 @@ public class TimelinePagerAdapter extends PagerAdapter {
 		parent = pager;
 	}
 
-	
-	
-	public void addView(View v) {
+	public void addView(AbstractColumn v) {
 		Facade facade = Facade.getInstance(parent.getContext());
 		CollumnConfig config = facade.getOneConfig(childs.size());
 		int top = 0;
@@ -65,26 +65,35 @@ public class TimelinePagerAdapter extends PagerAdapter {
 
 	@Override
 	public void destroyItem(View view, int pos, Object object) {
-		if (object instanceof PullToRefreshListView) {
+		if (object instanceof LinearLayout) {
+			ListView listView = null;
 			try {
-				ScrollState state = states.get(pos);
-				PullToRefreshListView vList = (PullToRefreshListView) object;
-				int index = vList.getFirstVisiblePosition();
-				View v = vList.getChildAt(0);
-				int top = (v == null) ? 0 : v.getTop();
-
-				state.top = top;
-				state.scrollTo = index;
-			} catch (IndexOutOfBoundsException e) {
+				listView = childs.get(pos).getScrollView();
+			} catch (Exception e) {
 				// TODO: handle exception
 			}
+			if (listView != null) {
+				try {
+					ScrollState state = states.get(pos);
+					ListView vList = listView;
+					int index = vList.getFirstVisiblePosition();
+					View v = vList.getChildAt(0);
+					int top = (v == null) ? 0 : v.getTop();
 
+					state.top = top;
+					state.scrollTo = index;
+				} catch (IndexOutOfBoundsException e) {
+					// TODO: handle exception
+				}
+
+			}
+			try {
+				((ViewPager) view).removeView((View) object);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 		}
-		try{
-			((ViewPager) view).removeView((View) object);
-		}catch (Exception e) {
-			// TODO: handle exception
-		}
+
 	}
 
 	@Override
@@ -99,13 +108,14 @@ public class TimelinePagerAdapter extends PagerAdapter {
 
 	@Override
 	public Object instantiateItem(View view, int position) {
-		View myView = childs.get(position);
+		View myView = childs.get(position).getCollumnView();
 		try {
 			((ViewPager) view).addView(myView);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		if (myView instanceof PullToRefreshListView) {
+		ListView listView = childs.get(position).getScrollView();
+		if (listView != null) {
 			Facade facade = Facade.getInstance(parent.getContext());
 			CollumnConfig config = facade.getOneConfig(position);
 
@@ -116,7 +126,7 @@ public class TimelinePagerAdapter extends PagerAdapter {
 				int scrollTo = states.get(position).scrollTo;
 
 				if (top != 0 && scrollTo != 0)
-					((PullToRefreshListView) myView).setSelectionFromTop(
+					listView.setSelectionFromTop(
 							scrollTo, top);
 			} catch (IndexOutOfBoundsException e) {
 				// TODO: handle exception
@@ -150,19 +160,20 @@ public class TimelinePagerAdapter extends PagerAdapter {
 		return POSITION_NONE;
 	}
 
-	public void clear(){
+	public void clear() {
 		childs.clear();
 		notifyDataSetChanged();
-		
+
 	}
-	
+
 	private class ScrollState {
 		public int top;
 		public int scrollTo;
 	}
-	
-	
-	
-	
+
+	@Override
+	public CharSequence getPageTitle(int position) {
+		return childs.get(position).getColumnTitle();
+	}
 
 }

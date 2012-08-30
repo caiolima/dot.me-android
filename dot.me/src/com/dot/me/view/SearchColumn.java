@@ -239,7 +239,7 @@ public class SearchColumn extends AbstractColumn implements IGetUpdateAction {
 				public void run() {
 					for (Mensagem m : toAdd)
 						adapter.addItem(m);
-
+					notifyInitFinished();
 				}
 			});
 		}

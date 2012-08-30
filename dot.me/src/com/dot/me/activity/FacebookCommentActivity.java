@@ -96,13 +96,13 @@ public class FacebookCommentActivity extends TrackedActivity implements
 		if (d != null)
 			txt_comment.setText(d.getText());
 
-		adView = (AdView) findViewById(R.id.adView);
-
-		AdRequest adRequestBanner = new AdRequest();
-
-		adView.setAdListener(this);
-
-		adView.loadAd(adRequestBanner);
+//		adView = (AdView) findViewById(R.id.adView);
+//
+//		AdRequest adRequestBanner = new AdRequest();
+//
+//		adView.setAdListener(this);
+//
+//		adView.loadAd(adRequestBanner);
 	}
 
 	@Override

@@ -69,7 +69,7 @@ import android.widget.Toast;
 
 public class FacebookMessageActivity extends TrackedActivity implements AdListener{
 
-	private Button bt_comment, bt_like, bt_refresh;
+	private Button bt_comment, bt_like;
 	private TextView txt_qtd_likes, txt_username, txt_message, txt_title_link,
 			txt_link_details_extras;
 	private ImageView img_load, img_picture, img_avatar, img_thumbnail;
@@ -89,16 +89,16 @@ public class FacebookMessageActivity extends TrackedActivity implements AdListen
 
 	
 	
-	private OnClickListener refreshClick = new OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			bt_refresh.setEnabled(false);
-			bt_refresh.setText(R.string.refreshing);
-
-			new LoadCommentsTask(facebook, null, true).execute();
-		}
-	};
+//	private OnClickListener refreshClick = new OnClickListener() {
+//
+//		@Override
+//		public void onClick(View v) {
+//			bt_refresh.setEnabled(false);
+//			bt_refresh.setText(R.string.refreshing);
+//
+//			new LoadCommentsTask(facebook, null, true).execute();
+//		}
+//	};
 
 	private OnClickListener openProfile = new OnClickListener() {
 
@@ -108,7 +108,7 @@ public class FacebookMessageActivity extends TrackedActivity implements AdListen
 			Intent intent;
 			try {
 				intent = new Intent(Intent.ACTION_VIEW,
-						Utils.createURIToLink("http://m.facebook.com/"
+						Utils.createURIToLink("http://www.facebook.com/"
 								+ current_message.getIdUser()));
 				startActivity(intent);
 			} catch (UnsupportedEncodingException e) {
@@ -157,14 +157,13 @@ public class FacebookMessageActivity extends TrackedActivity implements AdListen
 		img_load = (ImageView) findViewById(R.id.facebook_img_loading);
 		img_avatar = (ImageView) findViewById(R.id.facebook_img_user_avatar);
 		img_picture = (ImageView) findViewById(R.id.img_image_source);
-		bt_refresh = (Button) findViewById(R.id.bt_refresh);
 		lt_facebook_profile = (LinearLayout) findViewById(R.id.facebook_profile_lt);
 		lt_linkdetails = (LinearLayout) findViewById(R.id.lt_link_details);
 		img_thumbnail = (ImageView) findViewById(R.id.img_thumbnail);
 		txt_title_link = (TextView) findViewById(R.id.txt_link_datails);
 		txt_link_details_extras = (TextView) findViewById(R.id.txt_link_detais_extra);
 
-		bt_refresh.setOnClickListener(refreshClick);
+		//bt_refresh.setOnClickListener(refreshClick);
 		lt_facebook_profile.setOnClickListener(openProfile);
 
 		Intent intent = getIntent();
@@ -702,8 +701,8 @@ public class FacebookMessageActivity extends TrackedActivity implements AdListen
 				// list_comments.removeAllViews();
 				// commentsAdded.clear();
 
-				bt_refresh.setEnabled(true);
-				bt_refresh.setText(R.string.refresh);
+				//bt_refresh.setEnabled(true);
+				//bt_refresh.setText(R.string.refresh);
 			}
 
 			if (comments.size() == 0) {

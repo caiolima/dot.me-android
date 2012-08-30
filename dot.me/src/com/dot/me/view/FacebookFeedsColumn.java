@@ -220,7 +220,7 @@ public class FacebookFeedsColumn extends AbstractColumn {
 				@Override
 				public void run() {
 					updateTwittes(list, true);
-
+					notifyInitFinished();
 				}
 			});
 		}

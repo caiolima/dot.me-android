@@ -37,14 +37,15 @@ public class FacebookGroupColumn extends AbstractColumn {
 	private Facebook facebook;
 
 	public FacebookGroupColumn(Context ctx, FacebookGroup fg) {
-		super(ctx, fg.getName(),true);
+		super(ctx, fg.getName(), true);
 
 		this.fGroup = fg;
-		command=new OpenFacebookWriter(fg.getId(), "Facebook Group: "+fg.getName());
+		command = new OpenFacebookWriter(fg.getId(), "Facebook Group: "
+				+ fg.getName());
 	}
 
 	private FacebookGroupColumn(Context ctx, String title) {
-		super(ctx, title,true);
+		super(ctx, title, true);
 
 	}
 
@@ -63,7 +64,7 @@ public class FacebookGroupColumn extends AbstractColumn {
 		FacebookAccount acc = Account.getFacebookAccount(ctx);
 		if (acc != null) {
 			try {
-				facebook=FacebookUtils.getFacebook(ctx, acc);
+				facebook = FacebookUtils.getFacebook(ctx, acc);
 				new FacebookGroupFeedsGetterTask(fGroup).execute();
 			} catch (LostUserAccessException e) {
 
@@ -78,39 +79,40 @@ public class FacebookGroupColumn extends AbstractColumn {
 		private FacebookGroup fGroup;
 		private List<Mensagem> createdMessages = new ArrayList<Mensagem>();
 		private String nextPageRequest;
-		private boolean flagNextPage=false;
-		private List<Mensagem> lastMessages=new ArrayList<Mensagem>();
+		private boolean flagNextPage = false;
+		private List<Mensagem> lastMessages = new ArrayList<Mensagem>();
 
 		public FacebookGroupFeedsGetterTask(FacebookGroup fGroud) {
 			this.fGroup = fGroud;
 		}
 
-		public FacebookGroupFeedsGetterTask(FacebookGroup fGroud, String nextPageRequest) {
+		public FacebookGroupFeedsGetterTask(FacebookGroup fGroud,
+				String nextPageRequest) {
 			this(fGroud);
 			this.nextPageRequest = nextPageRequest;
-			this.flagNextPage=true;
+			this.flagNextPage = true;
 		}
 
 		@Override
 		protected Void doInBackground(Void... params) {
 			AssyncTaskManager.getInstance().addProccess(this);
 			try {
-				
-				for (Mensagem m : facade.getMensagemOf(Mensagem.TIPO_FACEBOOK_GROUP)) {
+
+				for (Mensagem m : facade
+						.getMensagemOf(Mensagem.TIPO_FACEBOOK_GROUP)) {
 					if (m.getIdMensagem().startsWith(fGroup.getId() + "_"))
 						lastMessages.add(m);
 				}
-				
-				String response="";
+
+				String response = "";
 				if (nextPageRequest == null) {
-					response = facebook.request(
-							fGroup.getId() + "/feed",
+					response = facebook.request(fGroup.getId() + "/feed",
 							FacebookUtils.getStandartFeedsBundle());
 				} else {
 					WebService wservice = new WebService(nextPageRequest);
 					response = wservice.webGet("", null);
 				}
-				
+
 				JSONObject json = new JSONObject(response);
 				createdMessages.addAll(FacebookUtils.createListOfFeeds(facade,
 						facebook, json, Mensagem.TIPO_FACEBOOK_GROUP));
@@ -137,45 +139,43 @@ public class FacebookGroupColumn extends AbstractColumn {
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 
-			if(!createdMessages.isEmpty()&&!flagNextPage){
+			if (!createdMessages.isEmpty() && !flagNextPage) {
 				adapter.clear();
 				for (Mensagem m : lastMessages) {
-					if(!createdMessages.contains(m))	
+					if (!createdMessages.contains(m))
 						facade.deleteMensagem(m.getIdMensagem(), m.getTipo());
 				}
 			}
-			
+
 			for (Mensagem m : createdMessages) {
 				adapter.addItem(m);
 			}
-			
-			adapter.sort();
-			
-			if(!flagNextPage){
-				((PullToRefreshListView)listView).onRefreshComplete();
-			}else
-				notifyNextPageFinish();
-			
 
-			JSONObject prop=config.getProprietes();
-			if(prop!=null){
+			adapter.sort();
+
+			if (!flagNextPage) {
+				((PullToRefreshListView) listView).onRefreshComplete();
+			} else
+				notifyNextPageFinish();
+
+			JSONObject prop = config.getProprietes();
+			if (prop != null) {
 				prop.remove("nextPage");
 				try {
 					prop.put("nextPage", nextPage);
 				} catch (JSONException e) {
-					
+
 				}
 			}
 			AssyncTaskManager.getInstance().removeProcess(this);
-			isLoading=false;
+			isLoading = false;
 		}
-		
 
 	}
 
 	@Override
 	protected void onGetNextPage() {
-		if(nextPage==null||isLoaddingNextPage)
+		if (nextPage == null || isLoaddingNextPage)
 			return;
 		super.onGetNextPage();
 
@@ -196,48 +196,50 @@ public class FacebookGroupColumn extends AbstractColumn {
 	public void init() {
 		Vector<Mensagem> mensagens = facade
 				.getMensagemOf(Mensagem.TIPO_FACEBOOK_GROUP);
-		final Vector<Mensagem> toAdd=new Vector<Mensagem>();
-		for (final Mensagem m : mensagens) {
-			if (m.getNome_usuario().contains(fGroup.getName())) {
-				toAdd.add(m);
+
+		final Vector<Mensagem> toAdd = new Vector<Mensagem>();
+		if (mensagens != null)
+			for (final Mensagem m : mensagens) {
+				if (m.getNome_usuario().contains(fGroup.getName())) {
+					toAdd.add(m);
+				}
 			}
-		}
 		TimelineActivity.h.post(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				for(Mensagem m:toAdd)
+				for (Mensagem m : toAdd)
 					adapter.addItem(m);
-				
-				
+
+				notifyInitFinished();
 			}
 		});
 		firstPut = false;
-		Mensagem m=null;
-		try{
-		m=toAdd.firstElement();
+		Mensagem m = null;
+		try {
+			m = toAdd.firstElement();
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		if(m!=null){
-			if(System.currentTimeMillis()-m.getData().getTime()>Constants.QTD_MINUTES){
-				nextPage=null;
-				JSONObject prop=config.getProprietes();
-				if (prop!=null) {
+		if (m != null) {
+			if (System.currentTimeMillis() - m.getData().getTime() > Constants.QTD_MINUTES) {
+				nextPage = null;
+				JSONObject prop = config.getProprietes();
+				if (prop != null) {
 					prop.remove("nextPage");
 				}
 			}
 		}
 
 	}
-	
+
 	@Override
 	public void setConfig(CollumnConfig config) {
 		super.setConfig(config);
 		try {
-			nextPage=config.getProprietes().getString("nextPage");
+			nextPage = config.getProprietes().getString("nextPage");
 		} catch (JSONException e) {
-			
+
 		}
 	}
 

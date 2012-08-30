@@ -180,4 +180,7 @@
 	<string name="commented_on_your_status">comentou(ram) em sua publicação</string>
 	<string name="like_comment">curtiram seu comentario</string>
 	<string name="like_status">curtiram sua publicação</string>
+	<string name="ga_api_key">UA-33723806-1</string>
+	<string name="general_options">Opções gerais</string>
+	<string name="organization_option">Organizações</string>
 </resources>
