@@ -36,6 +36,7 @@ import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -70,7 +71,7 @@ public class AddSocialAccount extends Activity {
 	private static boolean flagOauthTwitter, flagFacebook;
 	private ProgressDialog loadingDialog;
 	private String[] permissions = { "manage_notifications", "user_groups",
-			"user_status", "offline_access", "read_stream", "photo_upload",
+			"user_status", "offline_access", "read_stream", 
 			"share_item", "status_update", "read_friendlists" };
 
 	private Button bt_logoutTwitter, bt_logoutFacebook, bt_twitter,
@@ -81,8 +82,10 @@ public class AddSocialAccount extends Activity {
 	private boolean flagAccChanged = false;
 	private Handler h = new Handler();
 	private boolean mNotificationFlag;
+	private GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker
+			.getInstance();
 	private View.OnClickListener twitterLoggoutClick = new View.OnClickListener() {
-
+		
 		@Override
 		public void onClick(View v) {
 
@@ -97,7 +100,8 @@ public class AddSocialAccount extends Activity {
 			if (Account.getFacebookAccount(AddSocialAccount.this) == null
 					&& Account.getTwitterAccount(AddSocialAccount.this) == null)
 				bt_ok.setVisibility(View.GONE);
-
+			
+			tracker.trackEvent("Account events", "twitter", "logout", 1);
 		}
 	},
 			facebookLogoutClick = new View.OnClickListener() {
@@ -114,6 +118,8 @@ public class AddSocialAccount extends Activity {
 										Account.getFacebookAccount(AddSocialAccount.this));
 						new LogingOutFacebook(AddSocialAccount.this, facebook)
 								.execute();
+						
+						tracker.trackEvent("Account events", "facebook", "logout", 1);
 					} catch (LostUserAccessException e) {
 
 					}
@@ -130,8 +136,12 @@ public class AddSocialAccount extends Activity {
 					mNotificationFlag=!mNotificationFlag;
 					if(mNotificationFlag){
 						bt_facebook_notifications.setText(getString(R.string.notification_service)+": "+getString(R.string.on));
+						
+						tracker.trackEvent("Tools events", "facebook_notifications", "off", 1);
 					}else{
 						bt_facebook_notifications.setText(getString(R.string.notification_service)+": "+getString(R.string.off));
+						
+						tracker.trackEvent("Tools events", "facebook_notifications", "on", 1);
 					}
 					// Commit the edits!
 					editor.commit();
@@ -554,6 +564,8 @@ public class AddSocialAccount extends Activity {
 				Facade.getInstance(AddSocialAccount.this).insert(collumnConfig);
 
 			updateLayout();
+			
+			tracker.trackEvent("Account events", "twitter", "login", 1);
 
 		}
 
@@ -683,6 +695,8 @@ public class AddSocialAccount extends Activity {
 					}
 				});
 
+				
+				tracker.trackEvent("Account events", "facebook", "login", 1);
 				flagAccChanged = true;
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

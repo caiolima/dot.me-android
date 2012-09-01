@@ -20,6 +20,7 @@ import com.dot.me.model.bd.Facade;
 import com.dot.me.utils.Constants;
 import com.dot.me.utils.Menssage;
 import com.dot.me.utils.WebService;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import android.app.Activity;
@@ -44,6 +45,7 @@ public class CreateMarkupActivity extends TrackedActivity{
 	private boolean atualiza=false;
 	private Label currentMarcador;
 	private boolean labelCreted=false;
+	private GoogleAnalyticsTracker tracker=GoogleAnalyticsTracker.getInstance();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -180,10 +182,12 @@ public class CreateMarkupActivity extends TrackedActivity{
 
 		@Override
 		protected void onPostExecute(Void result) {
-			if(!atualiza)
+			if(!atualiza){
 				out=getString(R.string.markup_create_success);
-			else{
+				tracker.trackEvent("Filter Events", "labels", "created", 0);
+			}else{
 				out=getString(R.string.markup_updated_success);
+				tracker.trackEvent("Filter Events", "labels", "updated", 0);
 			}
 			/*JSONObject json;
 			try {

@@ -350,7 +350,7 @@ public abstract class AbstractColumn {
 		return command;
 	}
 
-	protected void notifyInitFinished() {
+	public void notifyInitFinished() {
 
 		//layout.setGravity(Gravity.CENTER);
 		l_layout.setVisibility(View.GONE);

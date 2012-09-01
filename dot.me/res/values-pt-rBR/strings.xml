@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, TwitteMarkupActivity!</string>
-    <string name="app_name">dot.me</string>
+    <string name="app_name">dotme</string>
     <string name="marcador_form_nome">Nome: </string>
     <string name="bt_send">Enviar</string>
     <string name="login">Login</string>

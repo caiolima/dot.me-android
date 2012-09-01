@@ -129,6 +129,8 @@ public class TwitterUtils {
 				}
 			}
 
+			word=word + complete;
+			
 			if (word.contains("http://") || (word.contains("https://"))) {
 				int initPos = word.indexOf("http");
 				String link = word.substring(initPos);
@@ -144,7 +146,7 @@ public class TwitterUtils {
 				
 			}
 
-			out += word + complete + " ";
+			out += word + " ";
 		}
 		out = out.substring(0, out.length() - 1);
 		out = out.replace("\n", "<br/>");

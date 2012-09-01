@@ -6,6 +6,7 @@ import com.dot.me.app.R;
 import com.dot.me.model.Account;
 import com.dot.me.model.Label;
 import com.dot.me.model.bd.Facade;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import android.app.Activity;
@@ -30,6 +31,7 @@ public class BlackListActivity extends TrackedActivity {
 	private EditText txt_word;
 	private Vector<String> selectedWords = new Vector<String>();
 	private ArrayAdapter<String> adapter;
+	private GoogleAnalyticsTracker tracker=GoogleAnalyticsTracker.getInstance();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,7 @@ public class BlackListActivity extends TrackedActivity {
 				for (String word : selectedWords) {
 					facade.deleteInBlackList(word);
 					adapter.remove(word);
+					tracker.trackEvent("Filter Events", "blacklist", "delete_word", selectedWords.size());
 				}
 
 				if (adapter.getCount() < 1) {
@@ -100,6 +103,7 @@ public class BlackListActivity extends TrackedActivity {
 					if (word.length() > 0) {
 
 						facade.insertInBlackList(word);
+						tracker.trackEvent("Filter Events", "blacklist", "added_word", 1);
 
 						adapter.add(word);
 						txt_word.setText("");

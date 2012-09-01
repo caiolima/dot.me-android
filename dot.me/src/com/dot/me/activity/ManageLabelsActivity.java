@@ -22,13 +22,16 @@ import com.dot.me.app.R;
 import com.dot.me.model.Account;
 import com.dot.me.model.Label;
 import com.dot.me.model.bd.Facade;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
-public class ManageLabelsActivity extends Activity implements ItemCheckedReciever{
+public class ManageLabelsActivity extends TrackedActivity implements ItemCheckedReciever{
 
 	private LabelAdapter adapter;
 	private Button bt_action;
 	private ListView lst_marcadores;
 	public static final int ADD_LABEL=1;
+	private GoogleAnalyticsTracker tracker=GoogleAnalyticsTracker.getInstance();
 	//private boolean delete = false;
 	
 	@SuppressLint("ParserError")
@@ -57,7 +60,7 @@ public class ManageLabelsActivity extends Activity implements ItemCheckedRecieve
 									for(Label m:ManageLabelsActivity.this.adapter.getSelecteds()){
 										m.changeEnable();
 										Facade.getInstance(ManageLabelsActivity.this).manageMarkup(m);
-										
+										tracker.trackEvent("Filter Events", "labels", "change_state", 0);
 									}
 									
 									ManageLabelsActivity.this.adapter.notifyDataSetChanged();
@@ -227,6 +230,7 @@ public class ManageLabelsActivity extends Activity implements ItemCheckedRecieve
 					}).create();
 			d.show();
 			
+			tracker.trackEvent("Filter Events", "labels", "deleted", 0);
 			
 			
 		}

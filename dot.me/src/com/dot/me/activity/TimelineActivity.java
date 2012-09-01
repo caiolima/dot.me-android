@@ -49,6 +49,7 @@ import com.dot.me.model.Label;
 import com.dot.me.model.Mensagem;
 import com.dot.me.model.bd.DataBase;
 import com.dot.me.model.bd.Facade;
+import com.dot.me.utils.AnalyticsUtils;
 import com.dot.me.utils.Constants;
 import com.dot.me.utils.Item;
 import com.dot.me.utils.SubjectMessage;
@@ -89,7 +90,7 @@ public class TimelineActivity extends TrackedActivity {
 	protected void onResume() {
 		super.onResume();
 		current = this;
-		//trecho de codigo para validar as colunas Label
+		// trecho de codigo para validar as colunas Label
 		if (!isStarting) {
 			boolean finish;
 			int qtdDeleted = 0;
@@ -119,11 +120,12 @@ public class TimelineActivity extends TrackedActivity {
 								adapter.removeViewAtPosition(config.getPos()
 										- qtdDeleted);
 								Facade.getInstance(this).deleteCollum(
-										config.getPos()-qtdDeleted);
+										config.getPos() - qtdDeleted);
 								finish = false;
 								qtdDeleted++;
-								for(int j=config.getPos();j<filters.size();j++){
-									AbstractColumn abs=filters.get(j);
+								for (int j = config.getPos(); j < filters
+										.size(); j++) {
+									AbstractColumn abs = filters.get(j);
 									abs.getConfig().setPos(j);
 								}
 								break;
@@ -163,6 +165,7 @@ public class TimelineActivity extends TrackedActivity {
 						Facade.getInstance(this).insert(config);
 						column.setConfig(config);
 
+						column.notifyInitFinished();
 						filters.add(column);
 						adapter.addView(column);
 						mSubject.registerObserver((LabelColunm) column);
@@ -195,7 +198,7 @@ public class TimelineActivity extends TrackedActivity {
 
 	private void verifyMarkupCollumns() {
 		boolean finish;
-		int qtdDeleted=0;
+		int qtdDeleted = 0;
 		do {
 			finish = true;
 			for (CollumnConfig config : Facade.getInstance(this).getAllConfig()) {
@@ -213,7 +216,7 @@ public class TimelineActivity extends TrackedActivity {
 
 						if (isToRemove) {
 							Facade.getInstance(this).deleteCollum(
-									config.getPos()-qtdDeleted);
+									config.getPos() - qtdDeleted);
 							finish = false;
 							qtdDeleted++;
 							continue;
@@ -304,6 +307,7 @@ public class TimelineActivity extends TrackedActivity {
 								FacebookGroupColumn fgCollumn = new FacebookGroupColumn(
 										this, group);
 								fgCollumn.setConfig(confg);
+								fgCollumn.notifyInitFinished();
 								filters.add(fgCollumn);
 								adapter.addView(fgCollumn);
 
@@ -331,8 +335,10 @@ public class TimelineActivity extends TrackedActivity {
 					}
 
 					SearchColumn collumn = new SearchColumn(this, searchContent);
+					collumn.notifyInitFinished();
 					filters.add(collumn);
 					adapter.addView(collumn);
+
 					view_flipper.setCurrentItem(filters.size() - 1);
 					collumn.setConfig(confg);
 					collumn.init();
@@ -384,7 +390,7 @@ public class TimelineActivity extends TrackedActivity {
 		super.onPause();
 
 		current = null;
-		
+
 		for (AbstractColumn collumn : filters) {
 			JSONObject obj = collumn.getConfig().getProprietes();
 			obj.remove("top");
@@ -414,18 +420,22 @@ public class TimelineActivity extends TrackedActivity {
 		current = this;
 		super.onCreate(savedInstanceState);
 
-		SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, 0);
-		long lastTimeLogin=settings.getLong(Constants.LAST_OPEN, -1);
-		if(lastTimeLogin!=-1){
-			GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker.getInstance();
-			long openDist=new Date().getTime()-lastTimeLogin;
-			
-			if(openDist>0){
-				tracker.setCustomVar(1, "intervalo_ativacao", Long.toString(openDist/1000));
+		SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME,
+				0);
+		long lastTimeLogin = settings.getLong(Constants.LAST_OPEN, -1);
+		if (lastTimeLogin != -1) {
+			GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker
+					.getInstance();
+			long openDist = new Date().getTime() - lastTimeLogin;
+
+			if (openDist > 0) {
+				tracker.setCustomVar(1, "intervalo_ativacao",
+						AnalyticsUtils.classifyReturInterval(openDist));
+				
 			}
-			
+
 		}
-		
+
 		Facade.destroy();
 		DataBase.start(this);
 
@@ -439,26 +449,27 @@ public class TimelineActivity extends TrackedActivity {
 		users = Account.getLoggedUsers(TimelineActivity.this);
 
 		view_flipper = (ViewPager) findViewById(R.id.coluna);
-		
+
 		bt_send = (ImageButton) findViewById(R.id.timeline_bt_tweet);
 		bt_more = (ImageButton) findViewById(R.id.timeline_bt_more);
-		bt_organizer=(ImageButton) findViewById(R.id.timeline_bt_organizer);
-		
+		bt_organizer = (ImageButton) findViewById(R.id.timeline_bt_organizer);
+
 		bt_organizer.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				final Vector<AbstractCommand> actions = new Vector<AbstractCommand>();
 				final Vector<Item> items = new Vector<Item>();
-				
+
 				items.add(new Item(getString(R.string.manage_labels),
 						R.drawable.labels));
-				
+
 				actions.add(new OpenManageLabelsCommand());
 
-				items.add(new Item(getString(R.string.manage_black_list),R.drawable.blacklist));
+				items.add(new Item(getString(R.string.manage_black_list),
+						R.drawable.blacklist));
 				actions.add(new OpenManageBlackListCommand());
-				
+
 				ArrayAdapter<Item> adapter = new ArrayAdapter<Item>(
 						TimelineActivity.this,
 						android.R.layout.select_dialog_item,
@@ -527,7 +538,7 @@ public class TimelineActivity extends TrackedActivity {
 								}).create();
 
 				dialog.show();
-				
+
 			}
 		});
 
@@ -553,7 +564,7 @@ public class TimelineActivity extends TrackedActivity {
 						R.drawable.collumn));
 
 				actions.add(new OpenManageCollumnCommand());
-				
+
 				if (Account.getFacebookAccount(TimelineActivity.this) != null) {
 					items.add(new Item(getString(R.string.group_columns),
 							R.drawable.group));
@@ -566,8 +577,6 @@ public class TimelineActivity extends TrackedActivity {
 					actions.add(new OpenSearchCommand());
 				}
 
-				
-
 				if (filters.get(curentFilterPosition).isDeletable()) {
 
 					items.add(new Item(getString(R.string.remove_column),
@@ -579,7 +588,9 @@ public class TimelineActivity extends TrackedActivity {
 
 							AlertDialog dialog = new AlertDialog.Builder(
 									activity)
-									.setTitle(getString(R.string.warning)).setMessage(getString(R.string.remove_collumns_message))
+									.setTitle(getString(R.string.warning))
+									.setMessage(
+											getString(R.string.remove_collumns_message))
 									.create();
 
 							dialog.setButton(DialogInterface.BUTTON_POSITIVE,
@@ -587,22 +598,25 @@ public class TimelineActivity extends TrackedActivity {
 									new DialogInterface.OnClickListener() {
 
 										@Override
-										public void onClick(DialogInterface dialog, int which) {
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
 											new RemoveCollumnTask().execute();
 
 										}
 									});
-							dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.no), new DialogInterface.OnClickListener() {
-								
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									
-									
-								}
-							});
+							dialog.setButton(DialogInterface.BUTTON_NEGATIVE,
+									getString(R.string.no),
+									new DialogInterface.OnClickListener() {
+
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+
+										}
+									});
 							dialog.show();
-							
-							
 
 						}
 					});
@@ -682,7 +696,6 @@ public class TimelineActivity extends TrackedActivity {
 
 		});
 
-		
 		adapter = new TimelinePagerAdapter(view_flipper);
 		loadCollumns();
 
@@ -733,7 +746,7 @@ public class TimelineActivity extends TrackedActivity {
 					public void onPageSelected(int position) {
 						curentFilterPosition = position;
 						AbstractColumn column = filters.get(position);
-						
+
 						currentCommand = column.getCommand();
 						if (currentCommand == null) {
 							bt_send.setVisibility(View.INVISIBLE);
@@ -769,18 +782,16 @@ public class TimelineActivity extends TrackedActivity {
 		 * } });
 		 */
 
-		
-
 		new InitViewTask().execute();
 	}
 
 	@Override
 	protected void onDestroy() {
-		SharedPreferences settings = getSharedPreferences(
-				Constants.PREFS_NAME, 0);
+		SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME,
+				0);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putLong(Constants.LAST_OPEN, new Date().getTime());
-		
+
 		editor.commit();
 		DataBase db = DataBase.getInstance(this);
 		if (!(db.isExecuting())) {
@@ -875,7 +886,7 @@ public class TimelineActivity extends TrackedActivity {
 			cont++;
 			if (cont == 1) {
 				currentCommand = column.getCommand();
-				if(currentCommand==null){
+				if (currentCommand == null) {
 					bt_send.setVisibility(View.INVISIBLE);
 				}
 			}
@@ -1003,22 +1014,22 @@ public class TimelineActivity extends TrackedActivity {
 
 	class InitViewTask extends AsyncTask<Void, Void, Void> {
 
-//		private ProgressDialog progressDialog;
+		// private ProgressDialog progressDialog;
 
 		@Override
 		protected void onPreExecute() {
-//
-//			progressDialog = new ProgressDialog(TimelineActivity.this);
-//
-//			progressDialog.setCancelable(false);
-//			progressDialog
-//					.setMessage(getString(R.string.loading_cached_messages));
-//
-//			try {
-//				progressDialog.show();
-//			} catch (Exception e) {
-//				// TODO: handle exception
-//			}
+			//
+			// progressDialog = new ProgressDialog(TimelineActivity.this);
+			//
+			// progressDialog.setCancelable(false);
+			// progressDialog
+			// .setMessage(getString(R.string.loading_cached_messages));
+			//
+			// try {
+			// progressDialog.show();
+			// } catch (Exception e) {
+			// // TODO: handle exception
+			// }
 
 		}
 
@@ -1043,8 +1054,8 @@ public class TimelineActivity extends TrackedActivity {
 
 		@Override
 		protected void onPostExecute(Void result) {
-			
-//			progressDialog.dismiss();
+
+			// progressDialog.dismiss();
 			isStarting = false;
 		}
 
@@ -1106,8 +1117,6 @@ public class TimelineActivity extends TrackedActivity {
 
 		private ProgressDialog progressDialog;
 
-		
-		
 		@Override
 		protected void onPostExecute(Void result) {
 
