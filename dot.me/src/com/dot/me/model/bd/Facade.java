@@ -346,6 +346,9 @@ public class Facade {
 	}
 
 	public void insert(CollumnConfig c) {
+		if(configDao.existsCollumnType(c.getType()))
+			return;
+		
 		configDao.insert(c);
 	}
 

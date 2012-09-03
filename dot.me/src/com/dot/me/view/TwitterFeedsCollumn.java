@@ -89,7 +89,7 @@ public class TwitterFeedsCollumn extends AbstractColumn {
 			@Override
 			public void run() {
 				updateTwittes(list, true);
-				notifyInitFinished();
+//				notifyInitFinished();
 			}
 		});
 		

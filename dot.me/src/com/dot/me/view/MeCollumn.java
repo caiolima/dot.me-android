@@ -92,7 +92,7 @@ public class MeCollumn extends AbstractColumn {
 				for (Mensagem m : toAdd)
 					adapter.addItem(m);
 
-				notifyInitFinished();
+//				notifyInitFinished();
 			}
 		});
 		firstPut = false;

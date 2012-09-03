@@ -170,21 +170,21 @@ public abstract class AbstractColumn {
 		listView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		listView.setAdapter(adapter);
-		listView.setVisibility(View.GONE);
+//		listView.setVisibility(View.GONE);
 		
-		l_layout = new LinearLayout(ctx);
-		l_layout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				LayoutParams.MATCH_PARENT));
-
-		l_layout.setGravity(Gravity.CENTER);
-		layout.setGravity(Gravity.TOP);
+//		l_layout = new LinearLayout(ctx);
+//		l_layout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+//				LayoutParams.MATCH_PARENT));
+//
+//		l_layout.setGravity(Gravity.CENTER);
+//		layout.setGravity(Gravity.TOP);
 		
-		progress = new ProgressBar(ctx);
-		progress.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT));
-		l_layout.addView(progress);
+//		progress = new ProgressBar(ctx);
+//		progress.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+//				LayoutParams.WRAP_CONTENT));
+//		l_layout.addView(progress);
 		
-		layout.addView(l_layout);
+//		layout.addView(l_layout);
 		layout.addView(listView);
 
 		columnTitle = title;

@@ -26,6 +26,7 @@ import com.dot.me.model.Mensagem;
 import com.dot.me.model.TwitterAccount;
 import com.dot.me.model.bd.DataBase;
 import com.dot.me.model.bd.Facade;
+import com.dot.me.utils.AnalyticsUtils;
 import com.dot.me.utils.BaseRequestListener;
 import com.dot.me.utils.Constants;
 import com.dot.me.utils.FacebookUtils;
@@ -72,7 +73,8 @@ public class AddSocialAccount extends Activity {
 	private ProgressDialog loadingDialog;
 	private String[] permissions = { "manage_notifications", "user_groups",
 			"user_status", "offline_access", "read_stream", 
-			"share_item", "status_update", "read_friendlists" };
+			"share_item", "status_update", "read_friendlists",
+			"user_birthday"};
 
 	private Button bt_logoutTwitter, bt_logoutFacebook, bt_twitter,
 			bt_facebook, bt_ok, bt_facebook_notifications;
@@ -234,7 +236,7 @@ public class AddSocialAccount extends Activity {
 								AsyncFacebookRunner runner = new AsyncFacebookRunner(
 										facebook);
 								Bundle params = new Bundle();
-								params.putString("fields", "name,picture,id");
+								params.putString("fields", "name,picture,id,gender,birthday,relationship_status");
 								runner.request("me", params,
 										new GetFacebookInfoTask());
 								// runner.request("me", new
@@ -564,8 +566,11 @@ public class AddSocialAccount extends Activity {
 				Facade.getInstance(AddSocialAccount.this).insert(collumnConfig);
 
 			updateLayout();
+			GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker
+					.getInstance();
 			
 			tracker.trackEvent("Account events", "twitter", "login", 1);
+			flagAccChanged=true;
 
 		}
 
@@ -657,6 +662,23 @@ public class AddSocialAccount extends Activity {
 				acc.setProfileImage(new URL(object.getString("picture")));
 				acc.setToken(facebook.getAccessToken());
 				acc.setExpires(facebook.getAccessExpires());
+				try{
+					String gender=object.getString("gender");
+					if(gender!=null){
+						tracker.setCustomVar(1, "gender", gender);
+					}
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
+				
+				try{
+					String birth=object.getString("birthday");
+					if(birth!=null){
+						tracker.setCustomVar(1, "age", AnalyticsUtils.classifyReturAge(birth));
+					}
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
 
 				Facade.destroy();
 				DataBase.start(AddSocialAccount.this);
@@ -695,7 +717,8 @@ public class AddSocialAccount extends Activity {
 					}
 				});
 
-				
+				GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker
+						.getInstance();
 				tracker.trackEvent("Account events", "facebook", "login", 1);
 				flagAccChanged = true;
 			} catch (JSONException e) {

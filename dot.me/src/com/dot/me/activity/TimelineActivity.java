@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -89,6 +90,10 @@ public class TimelineActivity extends TrackedActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		if(Account.getTwitterAccount(this)==null&&Account.getFacebookAccount(this)==null)
+			finish();
+			
 		current = this;
 		// trecho de codigo para validar as colunas Label
 		if (!isStarting) {
@@ -431,7 +436,7 @@ public class TimelineActivity extends TrackedActivity {
 			if (openDist > 0) {
 				tracker.setCustomVar(1, "intervalo_ativacao",
 						AnalyticsUtils.classifyReturInterval(openDist));
-				
+
 			}
 
 		}
@@ -1014,22 +1019,22 @@ public class TimelineActivity extends TrackedActivity {
 
 	class InitViewTask extends AsyncTask<Void, Void, Void> {
 
-		// private ProgressDialog progressDialog;
+		private ProgressDialog progressDialog;
 
 		@Override
 		protected void onPreExecute() {
-			//
-			// progressDialog = new ProgressDialog(TimelineActivity.this);
-			//
-			// progressDialog.setCancelable(false);
-			// progressDialog
-			// .setMessage(getString(R.string.loading_cached_messages));
-			//
-			// try {
-			// progressDialog.show();
-			// } catch (Exception e) {
-			// // TODO: handle exception
-			// }
+
+			progressDialog = new ProgressDialog(TimelineActivity.this);
+
+			progressDialog.setCancelable(false);
+			progressDialog
+					.setMessage(getString(R.string.loading_cached_messages));
+
+			try {
+				progressDialog.show();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 
 		}
 
@@ -1055,7 +1060,19 @@ public class TimelineActivity extends TrackedActivity {
 		@Override
 		protected void onPostExecute(Void result) {
 
-			// progressDialog.dismiss();
+			progressDialog.dismiss();
+			for (AbstractColumn collumn : filters) {
+				int top;
+				try {
+					top = collumn.getConfig().getProprietes().getInt("top");
+
+					int scrollTo = collumn.getConfig().getProprietes().getInt("scrollTo");
+
+					collumn.getScrollView().setSelectionFromTop(scrollTo, top);
+				} catch (JSONException e) {
+					collumn.getScrollView().setSelection(1);
+				}
+			}
 			isStarting = false;
 		}
 
@@ -1165,4 +1182,17 @@ public class TimelineActivity extends TrackedActivity {
 		}
 
 	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode==KeyEvent.KEYCODE_SEARCH){
+			Intent intent=new Intent(this,SearchActivity.class);
+			startActivity(intent);
+			
+			
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	
 }

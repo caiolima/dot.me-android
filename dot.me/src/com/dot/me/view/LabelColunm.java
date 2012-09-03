@@ -155,7 +155,7 @@ public class LabelColunm extends AbstractColumn implements MessageObserver {
 			@Override
 			public void run() {
 				updateTwittes(list, true);
-				notifyInitFinished();
+//				notifyInitFinished();
 				
 			}
 		});

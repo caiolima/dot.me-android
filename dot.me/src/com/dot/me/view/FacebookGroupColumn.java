@@ -211,7 +211,7 @@ public class FacebookGroupColumn extends AbstractColumn {
 				for (Mensagem m : toAdd)
 					adapter.addItem(m);
 
-				notifyInitFinished();
+//				notifyInitFinished();
 			}
 		});
 		firstPut = false;
