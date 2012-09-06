@@ -346,7 +346,10 @@ public class Facade {
 	}
 
 	public void insert(CollumnConfig c) {
-		if(configDao.existsCollumnType(c.getType()))
+		if((c.getType().equals(CollumnConfig.FACEBOOK_COLLUMN)||
+				c.getType().equals(CollumnConfig.ME)||
+				c.getType().equals(CollumnConfig.TWITTER_COLLUMN))&&
+				configDao.existsCollumnType(c.getType()))
 			return;
 		
 		configDao.insert(c);

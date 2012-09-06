@@ -34,6 +34,7 @@ import com.dot.me.model.FacebookGroup;
 import com.dot.me.model.bd.Facade;
 import com.dot.me.utils.FacebookUtils;
 import com.facebook.android.Facebook;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class ManageFacebookGroupsActivity extends Activity {
 
@@ -41,6 +42,7 @@ public class ManageFacebookGroupsActivity extends Activity {
 	private FacebookGroupAdapter adapter;
 	private View load_view;
 	private ListView list;
+	private GoogleAnalyticsTracker tracker=GoogleAnalyticsTracker.getInstance();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,7 @@ public class ManageFacebookGroupsActivity extends Activity {
 						.parse("add_column://facebook_group?new_groups="
 								+ group.getId()));
 				startActivity(intent);
+				tracker.trackEvent("Usage Events", "Facebook Groups", "added", 0);
 				finish();
 				
 			}

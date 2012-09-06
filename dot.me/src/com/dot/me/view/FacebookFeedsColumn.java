@@ -18,6 +18,7 @@ import com.dot.me.app.R;
 import com.dot.me.assynctask.AssyncTaskManager;
 import com.dot.me.command.OpenFacebookWriter;
 import com.dot.me.exceptions.LostUserAccessException;
+import com.dot.me.interfaces.IOnLabelRefreshListener;
 import com.dot.me.model.Account;
 import com.dot.me.model.CollumnConfig;
 import com.dot.me.model.FacebookAccount;
@@ -29,7 +30,7 @@ import com.dot.me.utils.WebService;
 import com.facebook.android.Facebook;
 import com.markupartist.android.widget.PullToRefreshListView;
 
-public class FacebookFeedsColumn extends AbstractColumn {
+public class FacebookFeedsColumn extends LabelListenerCollunm{
 
 	private boolean isLoaddingNextPage = false;
 	private String nextPage;
@@ -256,5 +257,4 @@ public class FacebookFeedsColumn extends AbstractColumn {
 
 		}
 	}
-
 }

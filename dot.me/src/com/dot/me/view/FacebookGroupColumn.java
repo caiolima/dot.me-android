@@ -24,6 +24,7 @@ import com.dot.me.utils.FacebookUtils;
 import com.dot.me.utils.WebService;
 import com.dot.me.view.FacebookFeedsColumn.FacebookNewsFeedGetterTask;
 import com.facebook.android.Facebook;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.markupartist.android.widget.PullToRefreshListView;
 
 import android.content.Context;
@@ -35,6 +36,7 @@ public class FacebookGroupColumn extends AbstractColumn {
 	private FacebookGroup fGroup;
 	private String nextPage;
 	private Facebook facebook;
+	private GoogleAnalyticsTracker tracker=GoogleAnalyticsTracker.getInstance();
 
 	public FacebookGroupColumn(Context ctx, FacebookGroup fg) {
 		super(ctx, fg.getName(), true);
@@ -56,6 +58,7 @@ public class FacebookGroupColumn extends AbstractColumn {
 			if (m.getIdMensagem().startsWith(fGroup.getId() + "_"))
 				facade.deleteMensagem(m.getIdMensagem(), m.getTipo());
 		}
+		tracker.trackEvent("Usage Events", "Facebook Groups", "removed", 0);
 	}
 
 	@Override

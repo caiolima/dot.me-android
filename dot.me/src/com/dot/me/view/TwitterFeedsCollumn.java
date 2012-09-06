@@ -16,6 +16,7 @@ import com.dot.me.activity.TimelineActivity;
 import com.dot.me.adapter.FeddAdapter;
 import com.dot.me.app.R;
 import com.dot.me.command.OpenTwitterWriter;
+import com.dot.me.interfaces.IOnLabelRefreshListener;
 import com.dot.me.model.Account;
 import com.dot.me.model.CollumnConfig;
 import com.dot.me.model.Mensagem;
@@ -30,7 +31,7 @@ import com.markupartist.android.widget.PullToRefreshListView;
 import android.content.Context;
 import android.os.AsyncTask;
 
-public class TwitterFeedsCollumn extends AbstractColumn {
+public class TwitterFeedsCollumn extends LabelListenerCollunm{
 
 	private int currentPage;
 	private boolean flagNextPage = false;
@@ -270,5 +271,7 @@ public class TwitterFeedsCollumn extends AbstractColumn {
 
 		}	
 	}
+	
+	
 	
 }

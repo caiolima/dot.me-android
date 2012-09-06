@@ -353,7 +353,7 @@ public abstract class AbstractColumn {
 	public void notifyInitFinished() {
 
 		//layout.setGravity(Gravity.CENTER);
-		l_layout.setVisibility(View.GONE);
+//		l_layout.setVisibility(View.GONE);
 		listView.setVisibility(View.VISIBLE);
 
 		int top;

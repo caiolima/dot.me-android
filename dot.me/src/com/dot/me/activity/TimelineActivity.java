@@ -43,6 +43,7 @@ import com.dot.me.command.OpenManageCollumnCommand;
 import com.dot.me.command.OpenManageLabelsCommand;
 import com.dot.me.command.OpenSearchCommand;
 import com.dot.me.command.OpenAccountCommand;
+import com.dot.me.interfaces.IOnLabelRefreshListener;
 import com.dot.me.model.Account;
 import com.dot.me.model.CollumnConfig;
 import com.dot.me.model.FacebookGroup;
@@ -50,6 +51,7 @@ import com.dot.me.model.Label;
 import com.dot.me.model.Mensagem;
 import com.dot.me.model.bd.DataBase;
 import com.dot.me.model.bd.Facade;
+import com.dot.me.subjects.LabelRefresListenerList;
 import com.dot.me.utils.AnalyticsUtils;
 import com.dot.me.utils.Constants;
 import com.dot.me.utils.Item;
@@ -170,7 +172,7 @@ public class TimelineActivity extends TrackedActivity {
 						Facade.getInstance(this).insert(config);
 						column.setConfig(config);
 
-						column.notifyInitFinished();
+//						column.notifyInitFinished();
 						filters.add(column);
 						adapter.addView(column);
 						mSubject.registerObserver((LabelColunm) column);
@@ -312,7 +314,7 @@ public class TimelineActivity extends TrackedActivity {
 								FacebookGroupColumn fgCollumn = new FacebookGroupColumn(
 										this, group);
 								fgCollumn.setConfig(confg);
-								fgCollumn.notifyInitFinished();
+//								fgCollumn.notifyInitFinished();
 								filters.add(fgCollumn);
 								adapter.addView(fgCollumn);
 
@@ -340,7 +342,7 @@ public class TimelineActivity extends TrackedActivity {
 					}
 
 					SearchColumn collumn = new SearchColumn(this, searchContent);
-					collumn.notifyInitFinished();
+//					collumn.notifyInitFinished();
 					filters.add(collumn);
 					adapter.addView(collumn);
 
@@ -811,6 +813,7 @@ public class TimelineActivity extends TrackedActivity {
 
 	private void loadCollumns() {
 		int cont = 0;
+		LabelRefresListenerList labelListenerSubject=LabelRefresListenerList.getInstance();
 		for (CollumnConfig config : Facade.getInstance(this).getAllConfig()) {
 
 			AbstractColumn column = null;
@@ -827,11 +830,13 @@ public class TimelineActivity extends TrackedActivity {
 				 */
 
 				adapter.addView(column);
+				labelListenerSubject.registerListerner((IOnLabelRefreshListener)column);
 			} else if (config.getType().equals(CollumnConfig.TWITTER_COLLUMN)) {
 				column = new TwitterFeedsCollumn(this);
 				filters.add(column);
 
 				adapter.addView(column);
+				labelListenerSubject.registerListerner((IOnLabelRefreshListener)column);
 			} else if (config.getType().equals(CollumnConfig.ME)) {
 				column = new MeCollumn(this);
 				filters.add(column);

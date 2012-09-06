@@ -105,9 +105,13 @@ public class TwitterUtils {
 		}
 	}
 
+	private static String validCharacters = "abcdefghijklmnopqrstuvwxyz%-0123456789/ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 	public static Spanned createMessage(String content) {
 		String out = "";
+		content = content.replace("\n", " <br/> ");
 		String[] words = content.split(" ");
+
 		// Vector<String> allWords = new Vector<String>();
 
 		/*
@@ -117,33 +121,30 @@ public class TwitterUtils {
 		 */
 
 		for (String word : words) {
-			String complete = "";
-			if (word.contains("\n")) {
-				String aux = word;
-				int pos = word.indexOf("\n");
-				word = word.substring(0, word.indexOf("\n"));
-				try {
-					complete = aux.substring(pos - 1);
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
-			}
 
-			word=word + complete;
-			
 			if (word.contains("http://") || (word.contains("https://"))) {
 				int initPos = word.indexOf("http");
 				String link = word.substring(initPos);
-				String preText = word.substring(0, initPos);
-				Uri uri;
+				boolean continueAnalising = true;
+				do {
+					String charact = link.substring(link.length() - 1);
+					if (validCharacters.contains(charact))
+						break;
+
+					link = link.substring(0, link.length() - 1);
+
+				} while (continueAnalising);
 				try {
-					//uri = Uri.parse("dot_link://web?url="+URLEncoder.encode(link, "UTF-8"));
-					
-					word = preText + "<a href=\"" + link+ "\">" + link + "</a>";
+					// uri =
+					// Uri.parse("dot_link://web?url="+URLEncoder.encode(link,
+					// "UTF-8"));
+
+					word = word.replace(link, "<a href=\"" + link + "\">"
+							+ link + "</a>");
 				} catch (Exception e) {
-					
+
 				}
-				
+
 			}
 
 			out += word + " ";
