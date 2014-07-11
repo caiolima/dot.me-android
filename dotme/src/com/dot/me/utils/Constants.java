@@ -2,10 +2,10 @@ package com.dot.me.utils;
 
 public class Constants {
 
-	public static final String FACEBOOK_APP_ID="206851786009863";
+	public static final String FACEBOOK_APP_ID="xxx";
 	
-	public static final String CONSUMER_KEY = "evIeEiqjofChzHErIlpEbA";
-	public static final String CONSUMER_SECRET= "2BibC7Q851GwlqDFDD4RO7Z8Tjbl6SvroinrWnPaiI";
+	public static final String CONSUMER_KEY = "xxx";
+	public static final String CONSUMER_SECRET= "xxx";
 	
 	public static final String REQUEST_URL = "http://api.twitter.com/oauth/request_token";
 	public static final String ACCESS_URL = "http://api.twitter.com/oauth/access_token";
@@ -17,7 +17,7 @@ public class Constants {
 	public static final String	OAUTH_CALLBACK_HOST		= "callback";
 	public static final String	OAUTH_CALLBACK_URL		= OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
 
-	public static final String SERVER_NAME="http://192.168.0.120:8080/TwitteMarkup/";
+	//public static final String SERVER_NAME="http://192.168.0.120:8080/TwitteMarkup/";
 	
 	public static final int QTD_FEEDS=25;
 	
